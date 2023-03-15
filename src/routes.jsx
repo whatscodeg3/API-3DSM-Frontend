@@ -3,11 +3,14 @@ import { Route, Routes } from "react-router-dom";
 
 import HomeComercial from "./pages/HomeComercial/index"
 
-function Rotas() {
+const Rotas = () => {
     return (
         <div>
             <Routes>
-                <Route path="/" element={<HomeComercial/>} />
+                <Route exact path="/" element={<HomeComercial/>} />
+                <Route exact path="/cadastro/cliente" element={<HomeComercial/>} />
+                <Route exact path="/cadastro/compra" element={<HomeComercial/>} />
+                <Route exact path="/listagem/compra" element={<HomeComercial/>} />
             </Routes>
         </div>
     )

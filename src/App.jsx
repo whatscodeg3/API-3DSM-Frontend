@@ -1,15 +1,16 @@
 import React from "react";
+import { Router } from 'react-router-dom';
+
 
 import Rotas from "./routes"
-import HomeComercial from "./pages/HomeComercial/index"
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      <HomeComercial />
-      {/* <Rotas /> */}
+    <div className="app">
+      <Rotas />
     </div>
-  );
+  )
 }
 
 export default App;

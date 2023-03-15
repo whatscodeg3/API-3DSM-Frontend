@@ -11,10 +11,16 @@ export const Card = styled.div`
 
     color: #333333;
     font-size: 30px;
-    font-family: 'Ubuntu';
+    font-family: 'Ubuntu', sans-serif;
     background: #FFFFFF;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.25);
     border-radius: 27px;
+    cursor: pointer;
+
+    :hover {
+        transform: scale(1.1);
+        transition: all 0.5s;
+    }
 `;
 
 export const PersonImage = styled.img`
