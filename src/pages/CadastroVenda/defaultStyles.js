@@ -29,7 +29,7 @@ export const Cpf = styled.div`
     flex-direction: column;
     color: #F18524;
     gap: 30px;
-    height: 70%;
+    height: 75%;
 `;
 
 export const Center = styled.div`
