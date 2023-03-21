@@ -17,7 +17,7 @@ export default function CampoDePreencherNumero() {
 
     return (
         <div>
-            <InputNumber useGrouping={false} inputId="ValorInserido" value={ValorInseridoNoCampo} onValueChange={(e) => setValue(e.value)}  />
+            <InputNumber name="" useGrouping={false} inputId="ValorInserido" value={ValorInseridoNoCampo} onValueChange={(e) => setValue(e.value)}  />
         </div>
     )
 }

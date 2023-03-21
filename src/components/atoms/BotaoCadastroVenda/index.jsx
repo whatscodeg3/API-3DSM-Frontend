@@ -14,7 +14,7 @@ import 'primereact/resources/primereact.min.css';
 function BotaoCadastroVenda() {
     return ( 
         <div>
-            <Button label="Cadastrar"/>
+            <Button type="submit" label="Cadastrar"/>
         </div>
     )
 }

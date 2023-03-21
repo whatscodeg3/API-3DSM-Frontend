@@ -17,7 +17,7 @@ export default function CampoDePreencherDinheiro() {
 
     return (
         <div>
-            <InputNumber inputId="ValorInserido" value={ValorInseridoNoCampo} onValueChange={(e) => setValue(e.value)} minFractionDigits={2} maxFractionDigits={5} prefix="R$" />
+            <InputNumber name="" inputId="ValorInserido" value={ValorInseridoNoCampo} onValueChange={(e) => setValue(e.value)} minFractionDigits={2} maxFractionDigits={5} prefix="R$" />
         </div>
     )
 }

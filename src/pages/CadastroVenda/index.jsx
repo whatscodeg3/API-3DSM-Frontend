@@ -28,24 +28,26 @@ function CadastroVenda() {
                     <Card>
                         <Line/>
                     </Card>
-                    <Card>
-                        <Center>
-                            <label className="font-bold block mb-2">Valor Total</label> <br/>
-                            <CampoDePreencherDinheiro/>
-                        </Center>
+                        <form method="post" action="(metodo post controller)"> 
+                            <Card>
+                                <Center>
+                                    <label className="font-bold block mb-2">Valor Total</label> <br/>
+                                    <CampoDePreencherDinheiro/>
+                                </Center>
 
-                        <Center>
-                            <label className="font-bold block mb-2">Quantidade de Parcelas</label> <br/>
-                            <CampoDeQuantidadePrestacao/>
-                        </Center>
+                                <Center>
+                                    <label className="font-bold block mb-2">Quantidade de Parcelas</label> <br/>
+                                    <CampoDeQuantidadePrestacao/>
+                                </Center>
 
-                        <Center>
-                            <label className="font-bold block mb-2">Parcelas no Valor de:</label> <br/>
-                            <CampoDeExibicaoDeNumero/>
-                        </Center>
+                                <Center>
+                                    <label className="font-bold block mb-2">Parcelas no Valor de:</label> <br/>
+                                    <CampoDeExibicaoDeNumero/>
+                                </Center>
 
-                        <BotaoCadastroVenda/>
-                    </Card>
+                                <BotaoCadastroVenda/>
+                            </Card>
+                        </form>
                 </Cards>
             </Container>
             
