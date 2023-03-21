@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container } from "./defaultStyles"
+import { Container, MainBlock, Fields, InputField, Title } from "./defaultStyles"
 
 // Img
 import IconBack from "../../assets/img/IconBack.svg"
@@ -14,24 +14,27 @@ function CadastroCliente() {
             <GlobalStyle />
 
             <Container>
-                <div>
-                    <div>
-                        <input type="text" name="name" placeholder="Nome Completo" />
-                        <input type="text" name="name" placeholder="CPF" /> {/* OBS: Fazer validação */}
-                        <input type="text" name="name" placeholder="Email" />
-                        <input type="text" name="name" placeholder="Telefone" />
-                        <input type="text" name="name" placeholder="Data de Nascimento" />
-                        <input type="text" name="name" placeholder="CEP" /> {/* OBS: Fazer autopreenchimento */}
-                    </div>
-                    <div>
-                        <input type="text" name="name" placeholder="Logradouro(rua, avenida, ...)" />
-                        <input type="text" name="name" placeholder="Estado" />
-                        <input type="text" name="name" placeholder="Bairro" />
-                        <input type="text" name="name" placeholder="Cidade" />
-                        <input type="text" name="name" placeholder="Número" />
-                        <input type="text" name="name" placeholder="Complemento" />
-                    </div>
-                </div>
+                <Title>
+                    Cadastro de Cliente
+                </Title>
+                <MainBlock>
+                    <Fields>
+                        <InputField type="text" name="name" placeholder="Nome Completo" />
+                        <InputField type="text" name="name" placeholder="CPF" /> {/* OBS: Fazer validação */}
+                        <InputField type="text" name="name" placeholder="Email" />
+                        <InputField type="text" name="name" placeholder="Telefone" />
+                        <InputField type="text" name="name" placeholder="Data de Nascimento" />
+                        <InputField type="text" name="name" placeholder="CEP" /> {/* OBS: Fazer autopreenchimento */}
+                    </Fields>
+                    <Fields>
+                        <InputField type="text" name="name" placeholder="Logradouro(rua, avenida, ...)" />
+                        <InputField type="text" name="name" placeholder="Estado" />
+                        <InputField type="text" name="name" placeholder="Bairro" />
+                        <InputField type="text" name="name" placeholder="Cidade" />
+                        <InputField type="text" name="name" placeholder="Número" />
+                        <InputField type="text" name="name" placeholder="Complemento" />
+                    </Fields>
+                </MainBlock>
 
                 <button type="submit">Cadastrar</button>
 
