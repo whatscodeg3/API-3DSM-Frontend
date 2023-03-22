@@ -14,11 +14,13 @@ export const Title = styled.p`
     color: #F18524;
     font-size: 35px;
     font-family: 'Ubuntu', sans-serif;
+
+    margin: 0px;
 `;
 
 export const MainBlock = styled.div`
     width: 100vw;
-    height: 90vh;
+    height: 70vh;
 
     display: flex;
     justify-content: center;
@@ -47,3 +49,34 @@ export const InputField = styled.input`
     
     outline: none;
 `;
+
+export const ButtonSubmit = styled.button`
+    width: 180px;
+    height: 50px;
+
+    color: #FFFFFF;
+    background: #F1841F;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border: none;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+
+    cursor: pointer;
+    :hover {
+        transform: scale(1.1);
+        transition: all 0.5s;
+    }
+`;
+
+export const ImageBack = styled.img`
+    position: fixed;
+    right: 10px;
+
+    :hover {
+        transform: scale(1.1);
+        transition: all 0.5s;
+    }
+`;
+
