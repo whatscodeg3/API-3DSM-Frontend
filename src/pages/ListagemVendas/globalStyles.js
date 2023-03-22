@@ -6,7 +6,11 @@ export const GlobalStyle = createGlobalStyle`
         height: 100vh;
         margin: 0%;
         padding: 0%;
-
         background-color: #F5F6FA;
+        overflow-x:hidden;
+    }
+
+    .shadow{
+        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
     }
 `;
