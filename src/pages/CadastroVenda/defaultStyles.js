@@ -7,6 +7,7 @@ export const Container = styled.div`
 
 export const Cards = styled.div`
     height: 100%;
+    widht: 100%;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -29,7 +30,6 @@ export const Cpf = styled.div`
     flex-direction: column;
     color: #F18524;
     gap: 30px;
-    height: 75%;
 `;
 
 export const Center = styled.div`
