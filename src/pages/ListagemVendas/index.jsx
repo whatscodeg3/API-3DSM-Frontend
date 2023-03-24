@@ -13,85 +13,35 @@ import SearchField from '../../components/organisms/SearchField';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
+import { ProgressSpinner } from 'primereact/progressspinner'
 
 
-//theme
-import "primereact/resources/themes/lara-light-indigo/theme.css";  
-//core
-import "primereact/resources/primereact.min.css";
-
-//icons
-import "primeicons/primeicons.css";  
-
+//API's
+import { apiClient, apiPurchases } from '../../services/api';
 
 
 function ListagemVendas(){
-    const [ products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [ purchases, setPurchases] = useState([]);
+    const [ clients, setClients] = useState([]);
     const [selectedCell, setSelectedCell] = useState(null);
     const [contentToModal, setContent] = useState();
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({cpf: { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    
 
     useEffect(() => {
-        setProducts(data);
-    }, []);
-
-    const data = [
-        {
-            code: 1,
-            cpf: "haha",
-            category: "jjjj",
-            quantity: 5
-        },
-        {
-            code: 2,
-            cpf: "kkk",
-            category: "jjjj",
-            quantity: 5
-        },
-        {
-            code: 3,
-            cpf: "ll",
-            category: "jjjj",
-            quantity: 5
-        },
-        {
-            code: 1,
-            cpf: "haha",
-            category: "jjjj",
-            quantity: 5
-        },
-        {
-            code: 2,
-            cpf: "kkk",
-            category: "jjjj",
-            quantity: 5
-        },
-        {
-            code: 3,
-            cpf: "ll",
-            category: "jjjj",
-            quantity: 5
-        },        {
-            code: 1,
-            cpf: "haha",
-            category: "jjjj",
-            quantity: 5
-        },
-        {
-            code: 2,
-            cpf: "kkk",
-            category: "jjjj",
-            quantity: 5
-        },
-        {
-            code: 3,
-            cpf: "ll3", 
-            category: "jjjj",
-            quantity: 5
+        async function loadData() {
+            const clientResponse = await apiClient.get("/client/query");
+            const purchasesResponse = await apiPurchases.get(`/api/purchases/${1}`);
+            setPurchases(purchasesResponse.data);
+            setClients(clientResponse.data);
         }
-    ]
+        loadData();
+        setLoading(false);
+
+    }, []);
 
     const isCellSelectable = (event) => (event.data.field === 'quantity' || event.data.field === 'category' ? false : true);
     
@@ -105,7 +55,7 @@ function ListagemVendas(){
         setGlobalFilterValue(value);
     };
 
-
+    //continuar função
     const showModal = (event) =>{
         setContent(event.value)
         setVisible(true)
@@ -116,9 +66,10 @@ function ListagemVendas(){
             <GlobalStyle/>
             <Container>     
                 <Title>Listagem de Vendas</Title>
-                <SearchField  value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='Digite um CPF'/>
-                    <DataTable
-                        value={products} 
+                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
+                    {loading && <ProgressSpinner/>}
+                    {!loading && <DataTable
+                        value={purchases} 
                         paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
                         cellSelection selectionMode="single"
                         onCellSelect={showModal}
@@ -128,16 +79,38 @@ function ListagemVendas(){
                         style={{width:'90%', margin:'auto'}}
                         className='shadow'
                     >
-                        <Column field="code" header="Ver mais" headerStyle={{color:'#F18524'}}></Column>
-                        <Column field="cpf" header="CPF" headerStyle={{color:'#F18524'}}></Column>
-                        <Column field="category" header="Valor Total" headerStyle={{color:'#F18524'}}></Column>
-                        <Column field="quantity" header="Parcelas" headerStyle={{color:'#F18524'}}></Column>
-                    </DataTable>
+                        <Column 
+                            field="" 
+                            body="Clique Aqui" 
+                            align="center" 
+                            header="Ver mais" 
+                            headerStyle={{color:'#F18524'}}
+                        ></Column>
+                        <Column 
+                            field="cpf" 
+                            align="center" 
+                            header="CPF" 
+                            headerStyle={{color:'#F18524'}}
+                        ></Column>
+                        <Column 
+                            field="payment_value" 
+                            align="center" 
+                            header="Valor Total" 
+                            headerStyle={{color:'#F18524'}}
+                        ></Column>
+                        <Column 
+                            field="" 
+                            align="center" 
+                            header="Parcelas" 
+                            headerStyle={{color:'#F18524'}}
+                        ></Column>
+                    </DataTable>}
                     <Dialog 
                         visible={visible}
                         onHide={() => setVisible(false)}
-
-                    ><p>{contentToModal}</p></Dialog>
+                    >
+                        <p>{contentToModal}</p>
+                    </Dialog>
             </Container>
         </>
     )

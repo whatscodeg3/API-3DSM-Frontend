@@ -1,10 +1,10 @@
 import styled from "styled-components"
 
 export const Field = styled.input`
-    margin-bottom: 20px;
-    padding: 10px 15px;
+    padding: 10px;
+    padding-left: 40px;
 
-    width:90%;
+    width:90vw;
     max-height: 80px;
 
     border-radius:max(40px);
