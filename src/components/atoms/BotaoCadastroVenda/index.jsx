@@ -14,7 +14,7 @@ import 'primereact/resources/primereact.min.css';
 function BotaoCadastroVenda() {
     return ( 
         <div>
-            <Button type="submit" label="Cadastrar"/>
+            <Button type="submit" value={() => handleSubmit(onsubmit)()} label="Cadastrar"/>
         </div>
     )
 }

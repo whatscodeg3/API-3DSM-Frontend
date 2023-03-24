@@ -16,8 +16,8 @@ export default function CampoDeQuantidadePrestacao() {
     const [QuantidadeDeParcelas, setValue] = useState(0);
 
     return (
-        <div>
-            <InputNumber name="" inputId="BotaoQueAumentaEDiminuiQuantidade" value={QuantidadeDeParcelas} onValueChange={(e) => setValue(e.value)} min={0} showButtons buttonLayout="horizontal" decrementButtonIcon="pi pi-chevron-left" incrementButtonIcon="pi pi-chevron-right" />
+        <div > 
+            <InputNumber inputId="BotaoQueAumentaEDiminuiQuantidade" value={QuantidadeDeParcelas} onValueChange={(e) => setValue(e.value)} min={0} showButtons buttonLayout="horizontal" decrementButtonIcon="pi pi-chevron-left" incrementButtonIcon="pi pi-chevron-right" />
         </div>
     )
 }
