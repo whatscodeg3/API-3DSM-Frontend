@@ -25,7 +25,7 @@ const CadastroVenda = () => {
 
 	const onSubmit = (data) => {
 
-		const ObjetoSoComValorTotaleIdCliente= { paymentValue: data.paymentValue};
+		const ObjetoSoComValorTotaleIdCliente= { paymentValue: data.paymentValue, installmentQuantity: data.installment};
 		console.log(ObjetoSoComValorTotaleIdCliente)
 
 		axios.post('http://localhost:8080/api/purchases', ObjetoSoComValorTotaleIdCliente)
@@ -58,7 +58,13 @@ const CadastroVenda = () => {
 
 	const watchQuantidadeParcela = watch("installment");
 
-	const valorDaDivisao = watchValorTotal/watchQuantidadeParcela;
+	var valorDaDivisao = 0
+
+	if(watchQuantidadeParcela == 0){
+		valorDaDivisao = 0
+	} else {
+		valorDaDivisao = watchValorTotal/watchQuantidadeParcela
+	}
 
 	return (
 		<>
@@ -105,8 +111,7 @@ const CadastroVenda = () => {
 									defaultValue={paymentValue}
 									rules={{ required: "Campo obrigatório" }}
 									render={({ field }) => (										
-										<InputNumber id="paymentValue" name="paymentValue"
-										value={field.value}
+										<InputNumber name="paymentValue" value={field.value}
 										onValueChange={(e) => {setpaymentValue(e.value)
 									  	field.onChange(e.value)}} 
 										className={errors?.paymentValue && "input-error"}/>
