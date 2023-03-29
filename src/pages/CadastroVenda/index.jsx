@@ -6,30 +6,16 @@ import axios from 'axios';
 import { GlobalStyle } from "./globalStyles"
 import { Container, Cards, Line, Center, Card, Cpf} from "./defaultStyles"
 
-// icons do prime
-import 'primeicons/primeicons.css';
-
-// theme
-import 'primereact/resources/themes/bootstrap4-light-blue/theme.css';
-
-// css necessario do prime
-import 'primereact/resources/primereact.min.css';
-
-
 // Components
 import CampoDePreencherDinheiro from "../../components/atoms/CampoDePreencherDinheiro";
-import CampoDePreencherNumero from "../../components/atoms/CampoDePreencherNumero";
-import CampoDeQuantidadePrestacao from "../../components/atoms/CampoDePreencherQuantidade";
-import CampoDeExibicaoDeNumero from "../../components/atoms/CampoDeExibicaoDeNumero";
 
 
 // Component Primereact
 import { Button } from "primereact/button";
 import { InputNumber } from 'primereact/inputnumber';
-import { InputText } from 'primereact/inputtext';
 
 const CadastroVenda = () => {
-	const [id_client, setcpf] = useState(0);
+	const [cpf, setcpf] = useState(0);
 	const [paymentValue, setpaymentValue] = useState(0);
 	const [installment, setinstallment] = useState(0); 
 
@@ -39,15 +25,15 @@ const CadastroVenda = () => {
 
 	const onSubmit = (data) => {
 
-		const ObjetoSoComValorTotaleIdCliente= { paymentValue: data.paymentValue, id_client: data.id_client };
+		const ObjetoSoComValorTotaleIdCliente= { paymentValue: data.paymentValue};
 		console.log(ObjetoSoComValorTotaleIdCliente)
 
-		axios.post('http://localhost:8080/api/purchases', ObjetoSoComValorTotaleIdCliente)
+		axios.post('http://localhost:8080/api/purchases/${cpf}', ObjetoSoComValorTotaleIdCliente)
 
 		.then(response => {console.log("Envio do Formulario deu Certo !")
 
 			const ObjetoRetornadoPeloMetodoDaRota = response.data;
-			const ObjetoComIdDaVendaParcelasValorTotal = { id: ObjetoRetornadoPeloMetodoDaRota.id, installment: data.installment, paymentValue: data.paymentValue }
+			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: data.paymentValue }
 
 			console.log(ObjetoComIdDaVendaParcelasValorTotal)
 			axios.post('http://localhost:8080/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
@@ -86,11 +72,11 @@ const CadastroVenda = () => {
 								<Controller
 									name="id_client"
 									control={control}
-									defaultValue={id_client}
+									defaultValue={cpf}
 									rules={{ required: "Campo obrigatório" }}
 									render={({ field }) => (
 										<InputNumber
-										name="id_client"
+										name="cpf"
 										value={field.value}
 										onChange={(e) => {
 											setcpf(e.value);
@@ -135,7 +121,7 @@ const CadastroVenda = () => {
 
 							<Center>
 								
-							//<label className="font-bold block mb-2">Quantidade de Parcelas</label> <br />
+							<label className="font-bold block mb-2">Quantidade de Parcelas</label> <br />
 							<Controller
 								name="installment"
 								control={control}
