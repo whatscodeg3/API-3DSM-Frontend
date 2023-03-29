@@ -24,8 +24,9 @@ function ListagemVendas(){
     const [loading, setLoading] = useState(true);
     const [ purchases, setPurchases] = useState([]);
     const [ clients, setClients] = useState([]);
+    const [ dataToTable, setDataToTable]  = useState([]);
     const [selectedCell, setSelectedCell] = useState(null);
-    const [contentToModal, setContent] = useState();
+    const [modal, setModal] = useState();
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({cpf: { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -33,12 +34,14 @@ function ListagemVendas(){
 
     useEffect(() => {
         async function loadData() {
-            const clientResponse = await apiClient.get("/client/query");
-            const purchasesResponse = await apiPurchases.get(`/api/purchases/${1}`);
+            // const clientResponse = await apiClient.get("/client/query");
+            const purchasesResponse = await apiPurchases.get(`/api/purchases`);
             setPurchases(purchasesResponse.data);
-            setClients(clientResponse.data);
+            // setClients(clientResponse.data);
         }
+        
         loadData();
+        console.log(purchases)
         setLoading(false);
 
     }, []);
@@ -57,60 +60,62 @@ function ListagemVendas(){
 
     //continuar função
     const showModal = (event) =>{
-        setContent(event.value)
-        setVisible(true)
-    }
+            setVisible(true)
+            setModal()
+
+
+
+        // setModal(event.value)
+        // setVisible(true)
+    };
     
     return(
         <>
             <GlobalStyle/>
             <Container>     
-                <Title>Listagem de Vendas</Title>
+                <Title color='#F18524'>Listagem de Vendas</Title>
                 <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
-                    {loading && <ProgressSpinner/>}
-                    {!loading && <DataTable
-                        value={purchases} 
+                {loading && <ProgressSpinner/>}
+                {!loading && 
+                    <DataTable
+                        value={dataToTable} 
                         paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
                         cellSelection selectionMode="single"
                         onCellSelect={showModal}
                         isDataSelectable={isCellSelectable}
                         filters={filters}
-                        emptyMessage='No found.'
+                        emptyMessage='Sem informações'
                         style={{width:'90%', margin:'auto'}}
                         className='shadow'
                     >
                         <Column 
-                            field="" 
+                            field="purchaseID" 
                             body="Clique Aqui" 
                             align="center" 
                             header="Ver mais" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
-                            field="cpf" 
+                            field="clientCpf" 
                             align="center" 
                             header="CPF" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
-                            field="payment_value" 
+                            field="purchaseValue" 
                             align="center" 
                             header="Valor Total" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
-                            field="" 
+                            field="installmentsQuantity" 
                             align="center" 
                             header="Parcelas" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
-                    </DataTable>}
-                    <Dialog 
-                        visible={visible}
-                        onHide={() => setVisible(false)}
-                    >
-                        <p>{contentToModal}</p>
-                    </Dialog>
+                    </DataTable>
+                }
+                <Dialog visible={visible} onHide={() => setVisible(false)}><Title>Informações de venda</Title></Dialog>
             </Container>
         </>
     )

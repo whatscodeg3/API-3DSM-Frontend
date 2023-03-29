@@ -9,7 +9,7 @@ export const Container = styled.div`
 
 
 export const Title = styled.h1`
-    color: #F18524;
+    color: ${props => props.color};
     font-family: Ubuntu;
     height: 50px;
     margin-top:0;

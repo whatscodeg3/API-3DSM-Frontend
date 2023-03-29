@@ -10,7 +10,7 @@ export const apiClient = axios.create({
   baseURL: "http://localhost:8080"
 })
 
-//api client
+//api purchases
 export const apiPurchases = axios.create({
   baseURL: "http://localhost:8081"
 })
