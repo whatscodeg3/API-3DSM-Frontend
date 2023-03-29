@@ -28,7 +28,7 @@ const CadastroVenda = () => {
 		const ObjetoSoComValorTotaleIdCliente= { paymentValue: data.paymentValue};
 		console.log(ObjetoSoComValorTotaleIdCliente)
 
-		axios.post('http://localhost:8080/api/purchases/${cpf}', ObjetoSoComValorTotaleIdCliente)
+		axios.post('http://localhost:8080/api/purchases', ObjetoSoComValorTotaleIdCliente)
 
 		.then(response => {console.log("Envio do Formulario deu Certo !")
 
