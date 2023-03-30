@@ -11,7 +11,7 @@ export const Container = styled.div`
 export const Title = styled.h1`
     color: ${props => props.color};
     font-family: Ubuntu;
-    height: 50px;
+    font-size: ${props => props.height};
     margin-top:0;
 `
 
