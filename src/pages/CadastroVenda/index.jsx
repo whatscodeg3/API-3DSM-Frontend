@@ -4,38 +4,72 @@ import axios from 'axios';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Cards, Line, Center, Card, Cpf} from "./defaultStyles"
-
-// Components
-import CampoDePreencherDinheiro from "../../components/atoms/CampoDePreencherDinheiro";
+import { Container, Cards, Line, Center, Card, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label} from "./defaultStyles"
 
 
 // Component Primereact
 import { Button } from "primereact/button";
 import { InputNumber } from 'primereact/inputnumber';
+import { InputText } from 'primereact/inputtext';
+
 
 const CadastroVenda = () => {
 	const [cpf, setcpf] = useState(0);
-	const [paymentValue, setpaymentValue] = useState(0);
 	const [installment, setinstallment] = useState(0); 
+	const [paymentValue, setpaymentValue] = useState("0,00");
 
 	const { control, handleSubmit, formState: { errors }, watch } = useForm();
+
+	// variaveis de formatação do valor trazido pos formatarValorParaComecarDaDireita
+	const Concatenar = "R$ " + paymentValue;
+	const TrocaPontoPorNada = paymentValue.replace(".", "");
+	const TrocaVirgulaPorPonto = TrocaPontoPorNada.replace(",", ".");
+	const TransformaEmNumberpaymentValue = parseFloat(TrocaVirgulaPorPonto);
+
+
+	//formata o valor para começar da direita para a esquerda, por se tratar de dinheiro
+  	const formatarValorParaComecarDaDireita = (valorSemFormatacao) => {
+	  // Remove todos os caracteres que não são digitos de 0 a 9, depois transforma em float e então string, ppara poder mudar os valores como um texto.
+	  let valorFormatado = parseFloat(valorSemFormatacao.replace(/[^\d]/g, "")).toString();
+	  
+	  // se for colocado apenas 1 caracter, adiciona 0 a esquerda
+	  if (valorFormatado.length === 1) valorFormatado = `0${valorFormatado}`;
+	  
+	  // vai adicionar 0 a esquerda até ter no minimo 3 digitos, ou seja se colocar 1 ficaria 001, se for 10 entao 010
+	  valorFormatado = valorFormatado.padStart(3, "0");
+	  
+	  // pega os dois ultimos digitos e ponhe uma virgula antes deles, assim formando os centavos.
+	  const valorInteiro = valorFormatado.substring(0, valorFormatado.length - 2);
+	  const valorDecimal = valorFormatado.substring(valorFormatado.length - 2);
+	  
+	  // coloca virgula "," antes dos 2 ultimos numeros, e vai colocando . a cada 3 digitos.
+	  valorFormatado = `${valorInteiro.replace(/(\d)(?=(\d{3})+$)/g, '$1.')},${valorDecimal}`;
+	  return valorFormatado;
+	};
+
+	const onChangeValorInserido = (e) => {
+	  const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
+	  // Seta o novo valor pos formação usando o setState do useState
+	  setpaymentValue(ValorInseridoPosFormatacao);
+	};
 
 
 
 	const onSubmit = (data) => {
 
-		const ObjetoSoComValorTotaleIdCliente= { paymentValue: data.paymentValue, installmentQuantity: data.installment};
-		console.log(ObjetoSoComValorTotaleIdCliente)
+		const ObjetoSoComValorTotaleIdCliente= { installmentQuantity: data.installment};
+		ObjetoSoComValorTotaleIdCliente.paymentValue=TransformaEmNumberpaymentValue;
+
+		//console.log(ObjetoSoComValorTotaleIdCliente)
 
 		axios.post('http://localhost:8080/api/purchases', ObjetoSoComValorTotaleIdCliente)
 
 		.then(response => {console.log("Envio do Formulario deu Certo !")
 
 			const ObjetoRetornadoPeloMetodoDaRota = response.data;
-			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: data.paymentValue }
+			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoRetornadoPeloMetodoDaRota.paymentValue }
+			//console.log(ObjetoComIdDaVendaParcelasValorTotal)
 
-			console.log(ObjetoComIdDaVendaParcelasValorTotal)
 			axios.post('http://localhost:8080/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
 			.then((response) => {
 
@@ -53,9 +87,6 @@ const CadastroVenda = () => {
 	}
 
 	
-	
-	const watchValorTotal = watch("paymentValue");
-
 	const watchQuantidadeParcela = watch("installment");
 
 	var valorDaDivisao = 0
@@ -63,8 +94,9 @@ const CadastroVenda = () => {
 	if(watchQuantidadeParcela == 0){
 		valorDaDivisao = 0
 	} else {
-		valorDaDivisao = watchValorTotal/watchQuantidadeParcela
+		valorDaDivisao = TransformaEmNumberpaymentValue/watchQuantidadeParcela
 	}
+
 
 	return (
 		<>
@@ -74,15 +106,15 @@ const CadastroVenda = () => {
 						<Cpf>
 							<Center>
 
-								<label className="font-bold block mb-2">Digite um CPF</label> <br />
+								<Label className="font-bold block mb-2">Digite um CPF</Label> <br />
 								<Controller
 									name="id_client"
 									control={control}
 									defaultValue={cpf}
 									rules={{ required: "Campo obrigatório" }}
 									render={({ field }) => (
-										<InputNumber
-										name="cpf"
+										<StyledCpf name="cpf"
+										style={{ width: '400px' }}
 										value={field.value}
 										onChange={(e) => {
 											setcpf(e.value);
@@ -101,39 +133,33 @@ const CadastroVenda = () => {
 						<Card>
 							<Line />
 						</Card>
-						<Card>						
+						<Card>		
+
+							<Center>
+								<Titulo>Cadastro de Venda</Titulo>
+							</Center>
+											
 							<Center>
 
-							<label className="font-bold block mb-2">Valor Total</label> <br />
-							<Controller
-									name="paymentValue"
-									control={control}
-									defaultValue={paymentValue}
-									rules={{ required: "Campo obrigatório" }}
-									render={({ field }) => (										
-										<InputNumber name="paymentValue" value={field.value}
-										onValueChange={(e) => {setpaymentValue(e.value)
-									  	field.onChange(e.value)}} 
-										className={errors?.paymentValue && "input-error"}/>
-									)}
-								/>
+							<Label className="font-bold block mb-2">Valor Total</Label> <br />
+										
+							<InputText style={{ width: '400px' }} name="paymentValue" onChange={onChangeValorInserido} value={Concatenar} prefix="R$"
+							className={errors?.paymentValue && "input-error"}/>
 
 							{errors?.paymentValue?.type == "required" && (<p className="error-message">Valor Total da Venda Necessário</p>)}
-							
-							<CampoDePreencherDinheiro/>
 							
 							</Center>
 
 							<Center>
 								
-							<label className="font-bold block mb-2">Quantidade de Parcelas</label> <br />
+							<Label className="font-bold block mb-2">Quantidade de Parcelas</Label> <br />
 							<Controller
 								name="installment"
 								control={control}
 								defaultValue={installment}
 								rules={{ required: "Campo obrigatório" }}
 								render={({ field }) => (
-									<InputNumber id="installment" name="installment"
+									<StyledParcelas style={{ width: '400px' }} id="installment" name="installment"
 									className={errors?.installment && "input-error"}
 									value={field.value}
               						onValueChange={(e) => {setinstallment(e.value)
@@ -147,13 +173,13 @@ const CadastroVenda = () => {
 
 							<Center>
 								
-							<label className="font-bold block mb-2">Parcelas no Valor de:</label> <br />
-							<InputNumber id="installmentValue" name="installmentValue"
-							value={valorDaDivisao} disabled prefix="R$"/>
+							<Label className="font-bold block mb-2">Parcelas no Valor de:</Label> <br />
+							<InputNumber style={{ width: '400px' }} id="installmentValue" name="installmentValue"
+							value={valorDaDivisao} disabled prefix="R$ "/>
 
 							</Center>
 
-							<Button onClick={() => handleSubmit(onSubmit)()} label="Cadastrar"></Button>
+							<StyledBotaoCadastro onClick={() => handleSubmit(onSubmit)()} label="Cadastrar"></StyledBotaoCadastro>
 						</Card>
 					</Cards>
 				</Container>

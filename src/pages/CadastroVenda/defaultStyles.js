@@ -1,4 +1,6 @@
 import styled from "styled-components"
+import { InputNumber } from 'primereact/inputnumber';
+import { Button } from "primereact/button";
 
 export const Container = styled.div`
     width: 100vw;
@@ -45,4 +47,33 @@ export const Line = styled.div`
     height: 0%;
     border: 1.5px solid #333333;
     transform: rotate(90deg);
+`;
+
+export const StyledParcelas = styled(InputNumber)`
+  .p-inputnumber-button {
+    background-color: white !important;
+    color: black !important;
+    border: none;
+  }
+`;
+
+export const StyledCpf = styled(InputNumber)`
+    text-align: center; 
+`;
+
+export const StyledBotaoCadastro = styled(Button)`
+    background-color: #F18524 !important;
+    border: none;
+`;
+
+export const Titulo = styled.h1`
+    font-family: Ubuntu;
+    height: 50px;
+    margin-top:0;
+
+    color: #F18524;
+`;
+
+export const Label = styled.label`
+    font-size: 20px;
 `;
