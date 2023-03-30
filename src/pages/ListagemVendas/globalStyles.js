@@ -8,6 +8,7 @@ export const GlobalStyle = createGlobalStyle`
         padding: 0%;
         background-color: #F5F6FA;
         overflow-x:hidden;
+        font-family: Ubuntu;
     }
 
     .shadow{

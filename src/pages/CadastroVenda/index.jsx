@@ -62,7 +62,11 @@ const CadastroVenda = () => {
 
 		console.log(ObjetoSoComValorTotaleIdCliente)
 
-		axios.post('http://localhost:8080/api/purchases', ObjetoSoComValorTotaleIdCliente)
+		const cpf = data.cpf
+
+		console.log(cpf)
+
+		axios.post(`http://localhost:8080/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
 
 		.then(response => {console.log("Envio do Formulario deu Certo !")
 
@@ -127,7 +131,7 @@ const CadastroVenda = () => {
 											
 							<Center>
 
-							<Label className="font-bold block mb-2">Valor Total</Label> <br />
+							<Label style={{ width: '400px' }} className="font-bold block mb-2">Valor Total</Label> <br />
 										
 							<InputText style={{ width: '400px' }} name="paymentValue" onChange={onChangeValorInserido} value={Concatenar} prefix="R$"
 							className={errors?.paymentValue && "input-error"}/>
