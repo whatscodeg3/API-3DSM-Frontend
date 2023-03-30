@@ -77,3 +77,19 @@ export const Titulo = styled.h1`
 export const Label = styled.label`
     font-size: 20px;
 `;
+
+export const InputCPF = styled.input`
+    width: 430px;
+    height: 50px;
+
+    padding-left: 30px;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    background: #F5F6FA;
+    border: none;
+    border-bottom: 4px solid #696969;
+    border-radius: 3px;
+    
+    outline: none;
+`;

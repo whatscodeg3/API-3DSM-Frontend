@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Cards, Line, Center, Card, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label} from "./defaultStyles"
+import { Container, Cards, Line, Center, Card, InputCPF, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label} from "./defaultStyles"
 
 
 // Component Primereact
@@ -15,10 +15,10 @@ import { InputText } from 'primereact/inputtext';
 
 const CadastroVenda = () => {
 	const [cpf, setcpf] = useState(0);
-	const [installment, setinstallment] = useState(0); 
+	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState("0,00");
 
-	const { control, handleSubmit, formState: { errors }, watch } = useForm();
+	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
 
 	// variaveis de formatação do valor trazido pos formatarValorParaComecarDaDireita
 	const Concatenar = "R$ " + paymentValue;
@@ -60,7 +60,7 @@ const CadastroVenda = () => {
 		const ObjetoSoComValorTotaleIdCliente= { installmentQuantity: data.installment};
 		ObjetoSoComValorTotaleIdCliente.paymentValue=TransformaEmNumberpaymentValue;
 
-		//console.log(ObjetoSoComValorTotaleIdCliente)
+		console.log(ObjetoSoComValorTotaleIdCliente)
 
 		axios.post('http://localhost:8080/api/purchases', ObjetoSoComValorTotaleIdCliente)
 
@@ -106,25 +106,11 @@ const CadastroVenda = () => {
 						<Cpf>
 							<Center>
 
-								<Label className="font-bold block mb-2">Digite um CPF</Label> <br />
-								<Controller
-									name="id_client"
-									control={control}
-									defaultValue={cpf}
-									rules={{ required: "Campo obrigatório" }}
-									render={({ field }) => (
-										<StyledCpf name="cpf"
-										style={{ width: '400px' }}
-										value={field.value}
-										onChange={(e) => {
-											setcpf(e.value);
-											field.onChange(e.value);
-										}}
-										decimalseparator=""
-  										format={false}
-										className={errors?.cpf && "input-error"}
-										/>
-									)}
+								<InputCPF 
+									type="text" 
+									name="cpf" 
+									placeholder="Digite um CPF"
+									{...register("cpf", { required: "Precisa que seja inserido o CPF do cliente"})}
 								/>
 								{errors?.cpf?.type == "required" && (<p className="error-message">CPF Necessário</p>)}
 								
@@ -164,7 +150,7 @@ const CadastroVenda = () => {
 									value={field.value}
               						onValueChange={(e) => {setinstallment(e.value)
 									field.onChange(e.value)}} 
-			  						min={0} showButtons buttonLayout="horizontal" 
+			  						min={1} showButtons buttonLayout="horizontal" 
 									decrementButtonIcon="pi pi-chevron-left" incrementButtonIcon="pi pi-chevron-right"/>
 							)}/>
 							{errors?.installment?.type == "required" && (<p className="error-message">Necessário a Quantidade de Parcelas da Venda</p>)}
