@@ -12,6 +12,7 @@ import { Card } from "../../components/atoms/Cards/defaultStyles";
 // Img
 import IconBag from "../../assets/img/IconBag.svg"
 import IconPerson from "../../assets/img/IconPerson.svg"
+import IconDocument from "../../assets/img/IconDocument.svg"
 
 function HomeComercial() {
     return (
@@ -30,7 +31,7 @@ function HomeComercial() {
                         {/* Card Cliente */}
                         <Link to={"/cadastro/cliente"} style={{ textDecoration: 'none' }}>
                             <Card className="animate__animated animate__slideInLeft">
-                                <img src={IconPerson} alt="IconPerson" />
+                                <img src={IconPerson} style={{ width: "4vw" }} alt="IconPerson" />
                                 <p>
                                     Cadastrar<br/>cliente
                                 </p>
@@ -40,7 +41,7 @@ function HomeComercial() {
                         {/* Card Compra */}
                         <Link to={"/cadastro/compra"} style={{ textDecoration: 'none' }}>
                             <Card className="animate__animated animate__slideInUp">
-                                <img src={IconBag} alt="IconBag" />
+                                <img src={IconBag} style={{ width: "4vw" }} alt="IconBag" />
                                 <p>
                                     Cadastrar<br/>compra
                                 </p>
@@ -50,7 +51,7 @@ function HomeComercial() {
                         {/* Card Listagem */}
                         <Link to={"/listagem/compra"} style={{ textDecoration: 'none' }}>
                         <Card className="animate__animated animate__slideInRight">
-                            <img src={IconBag} alt="IconBag" />
+                            <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
                             <p>
                                 Listagem<br/>compras
                             </p>
