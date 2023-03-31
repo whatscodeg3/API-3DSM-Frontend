@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import {useForm, Controller } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 // Styles
@@ -15,8 +16,9 @@ import { InputText } from 'primereact/inputtext';
 const CadastroVenda = () => {
 	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState("0,00");
-
+	const [ValueRedirect, setRedirect] = useState(false)
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
+	const navigate = useNavigate();
 
 	// variaveis de formatação do valor trazido pos formatarValorParaComecarDaDireita
 	const Concatenar = "R$ " + paymentValue;
@@ -29,17 +31,13 @@ const CadastroVenda = () => {
   	const formatarValorParaComecarDaDireita = (valorSemFormatacao) => {
 	  // Remove todos os caracteres que não são digitos de 0 a 9, depois transforma em float e então string, ppara poder mudar os valores como um texto.
 	  let valorFormatado = parseFloat(valorSemFormatacao.replace(/[^\d]/g, "")).toString();
-	  
 	  // se for colocado apenas 1 caracter, adiciona 0 a esquerda
 	  if (valorFormatado.length === 1) valorFormatado = `0${valorFormatado}`;
-	  
 	  // vai adicionar 0 a esquerda até ter no minimo 3 digitos, ou seja se colocar 1 ficaria 001, se for 10 entao 010
 	  valorFormatado = valorFormatado.padStart(3, "0");
-	  
 	  // pega os dois ultimos digitos e ponhe uma virgula antes deles, assim formando os centavos.
 	  const valorInteiro = valorFormatado.substring(0, valorFormatado.length - 2);
 	  const valorDecimal = valorFormatado.substring(valorFormatado.length - 2);
-	  
 	  // coloca virgula "," antes dos 2 ultimos numeros, e vai colocando . a cada 3 digitos.
 	  valorFormatado = `${valorInteiro.replace(/(\d)(?=(\d{3})+$)/g, '$1.')},${valorDecimal}`;
 	  return valorFormatado;
@@ -50,8 +48,6 @@ const CadastroVenda = () => {
 	  // Seta o novo valor pos formação usando o setState do useState
 	  setpaymentValue(ValorInseridoPosFormatacao);
 	};
-
-
 
 	const onSubmit = (data) => {
 
@@ -75,18 +71,16 @@ const CadastroVenda = () => {
 
 				console.log("Envio da Venda Criada deu Certo !");
 				window.alert("Cadastrado com sucesso!");
+				setRedirect(true)
+
 			  })
 
 			.catch((error) => {
-
-				console.error("Erro na Criação de Parcelas !");
-				window.alert("Erro na Criação de Parcelas !");
-			  });
+				window.alert("Erro na Criação de Parcelas !");});
 			})
-
-		.catch(error => window.alert("Erro ao Cadastrar a Venda!"))
-		
-		console.log(data)
+		.catch(error => 
+			window.alert("Erro ao Cadastrar a Venda!"))
+		//console.log(data)
 	}
 
 	
@@ -100,6 +94,12 @@ const CadastroVenda = () => {
 		valorDaDivisao = TransformaEmNumberpaymentValue/watchQuantidadeParcela
 	}
 
+
+	useEffect(() => {
+		if (ValueRedirect) {
+			navigate('/');
+		}
+	  }, [ValueRedirect, navigate]);
 
 	return (
 		<>
@@ -130,7 +130,7 @@ const CadastroVenda = () => {
 											
 							<Center>
 
-							<Label style={{ width: '400px' }} className="font-bold block mb-2">Valor Total</Label> <br />
+							<Label className="font-bold block mb-2">Valor Total</Label> <br />
 										
 							<InputText style={{ width: '400px' }} name="paymentValue" onChange={onChangeValorInserido} value={Concatenar} prefix="R$"
 							className={errors?.paymentValue && "input-error"}/>
@@ -169,6 +169,7 @@ const CadastroVenda = () => {
 							</Center>
 
 							<StyledBotaoCadastro onClick={() => handleSubmit(onSubmit)()} label="Cadastrar"></StyledBotaoCadastro>
+
 						</Card>
 					</Cards>
 				</Container>
