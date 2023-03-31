@@ -47,7 +47,6 @@ function HomeComercial() {
                                 </p>
                             </Card>
                         </Link>
-
                         {/* Card Listagem */}
                         <Link to={"/listagem/compra"} style={{ textDecoration: 'none' }}>
                         <Card className="animate__animated animate__slideInRight">
