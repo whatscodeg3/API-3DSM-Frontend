@@ -40,7 +40,6 @@ function ListagemVendas(){
         }
         loadData(); 
         setLoading(false);
-
     }, []);
     
     const onGlobalFilterChange = (e) => {
@@ -74,19 +73,23 @@ function ListagemVendas(){
     //continuar função
     const showModal = (event) =>{
         setVisible(true)
-        let content;
+        let installmentsFromEvent = event.props.rowData.installment
+        let content = installmentsFromEvent.map((installment) => {
+            return {
+                    id: installment.id, paymentDate: installment.paymentDate.toLocaleString(), installmentValue: installment.installmentValue, isInstallmentPayed: false
+                    }
+        })
         if (event.field == "id"){
             content = 
                 <DataTable 
                     value={event.props.rowData.installment}
                     tableStyle={{ minWidth: '50rem' }}
                 >
-                    <Column field="" align="center" header="Parcela"></Column>
-                    <Column field="paymentDate" dataType="date"  align="center" header="Data de Vencimento"></Column>
-                    <Column field="category" align="center" header="Data de Pagamento"></Column>
-                    <Column field="status" align="center" header="Status"></Column>
+                    <Column field="" align="center" header="Parcela" headerStyle={{color:'#F18524'}}></Column>
+                    <Column field="paymentDate" dataType="date"  align="center" header="Data de Vencimento" headerStyle={{color:'#F18524'}}></Column>
+                    <Column field="category" body="" align="center" header="Data de Pagamento" headerStyle={{color:'#F18524'}}></Column>
                 </DataTable>;
-            setModalContent(content)
+
         }
     
 
