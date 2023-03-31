@@ -1,7 +1,7 @@
 import styled from "styled-components"
 
 export const Field = styled.input`
-    padding: 10px;
+    padding: 15px;
     padding-left: 40px;
 
     width:90vw;
@@ -15,4 +15,7 @@ export const Field = styled.input`
     font-family: 'IBM Plex Sans';
     font-style: normal;
     font-weight: 400;
+    font-size: 1rem
+
+
 `

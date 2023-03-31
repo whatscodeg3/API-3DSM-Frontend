@@ -4,7 +4,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Title } from "./defaultStyles"
+import { Container, Title, ContainerUserInfo } from "./defaultStyles"
 
 //Self Components
 import SearchField from '../../components/organisms/SearchField';
@@ -24,14 +24,14 @@ function ListagemVendas(){
     const [loading, setLoading] = useState(true);
     const [ purchases, setPurchases] = useState([]);
     const [ clients, setClients] = useState([]);
-    const [ dataToTable, setDataToTable]  = useState([]);
     const [selectedCell, setSelectedCell] = useState(null);
-    const [modal, setModal] = useState();
+    const [modalContent, setModalContent] = useState();
+    const [titleContent, setTitleContent] = useState();
     const [visible, setVisible] = useState(false);
-    const [filters, setFilters] = useState({cpf: { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
+    const [filters, setFilters] = useState({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     
-
+    
     useEffect(() => {
         async function loadData() {
             // const clientResponse = await apiClient.get("/client/query");
@@ -39,31 +39,96 @@ function ListagemVendas(){
             setPurchases(purchasesResponse.data);
             // setClients(clientResponse.data);
         }
-        
-        loadData();
-        console.log(purchases)
+        loadData(); 
         setLoading(false);
-
     }, []);
-
-    const isCellSelectable = (event) => (event.data.field === 'quantity' || event.data.field === 'category' ? false : true);
     
     const onGlobalFilterChange = (e) => {
         const value = e.target.value;
+        
         let _filters = { ...filters };
 
-        _filters['cpf'].value = value;
+        _filters['client.cpf'].value = value;
 
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
 
+    const isCellSelectable = (event) => (event.data.field === 'paymentValue' || event.data.field === 'installment.length' ? false : true);
+
+    const formatCurrency = (value) => {
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
+    const priceBodyTemplate = (purchases) => {
+        return formatCurrency(purchases.paymentValue);
+    };
+    
+    function formatField(event){
+        let kk =  event.value.toLocaleString()
+    
+        return kk
+
+    }
+
+
     //continuar função
     const showModal = (event) =>{
-            setVisible(true)
-            setModal()
+        setVisible(true)
+        let installmentsFromEvent = event.props.rowData.installment
+        let contentFormated = installmentsFromEvent.map((installment) => {
+            return {
+                    id: installment.id, paymentDate: installment.paymentDate.toLocaleString(), installmentValue: installment.installmentValue, isInstallmentPayed: false
+                    }
+        })
+        if (event.field == "id"){
+            let titleContent = 
+                <Title height='2rem'>
+                    Informações de Venda
+                </Title>;
+            setTitleContent(titleContent)
+            let contentToModal = 
+                <DataTable 
+                    value={contentFormated}
+                    tableStyle={{ minWidth: '50rem' }}
+                >
+                    <Column field="" align="center" header="Parcela" headerStyle={{color:'#F18524'}}></Column>
+                    <Column field="paymentDate" dataType="date"  align="center" header="Data de Vencimento" headerStyle={{color:'#F18524'}}></Column>
+                    <Column field="category" body="" align="center" header="Data de Pagamento" headerStyle={{color:'#F18524'}}></Column>
+                </DataTable>;
+            setModalContent(contentToModal)
 
-
+        } else if (event.field == "client.cpf"){
+            let titleContent = 
+                <Title height='2rem'>
+                    Informações de Cliente
+                </Title>;
+            setTitleContent(titleContent)
+            let contentToModal = 
+                <ContainerUserInfo>
+                    <div>
+                        <label>Nome</label>
+                        <input type="text" value={event.props.rowData.client["fullName"]} disabled />
+                    </div>
+                    <div>
+                        <label>CPF</label>
+                        <input type="text" value={event.props.rowData.client["cpf"]} disabled />
+                    </div>
+                    <div>
+                        <label>Email</label>
+                        <input type="text" value={event.props.rowData.client["email"]} disabled />
+                    </div>
+                    <div>
+                        <label>Telefone</label>
+                        <input type="text" value={event.props.rowData.client["telephone"]} disabled />
+                    </div>
+                    <div>
+                        <label>Data Nasc.</label>
+                        <input type="text" value={event.props.rowData.client["birthDate"]} disabled />
+                    </div>
+                </ContainerUserInfo>;
+            setModalContent(contentToModal)
+        }
+    
 
         // setModal(event.value)
         // setVisible(true)
@@ -78,10 +143,11 @@ function ListagemVendas(){
                 {loading && <ProgressSpinner/>}
                 {!loading && 
                     <DataTable
-                        value={dataToTable} 
+                        value={purchases}
                         paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
-                        cellSelection selectionMode="single"
-                        onCellSelect={showModal}
+                        cellSelection 
+                        selectionMode="single"
+                        onCellClick={showModal}
                         isDataSelectable={isCellSelectable}
                         filters={filters}
                         emptyMessage='Sem informações'
@@ -89,33 +155,44 @@ function ListagemVendas(){
                         className='shadow'
                     >
                         <Column 
-                            field="purchaseID" 
+                            field="id"
                             body="Clique Aqui" 
                             align="center" 
                             header="Ver mais" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
-                            field="clientCpf" 
+                            field="client.cpf"
                             align="center" 
                             header="CPF" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
-                            field="purchaseValue" 
+                            field="paymentValue"
+                            body={priceBodyTemplate}
                             align="center" 
                             header="Valor Total" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
-                            field="installmentsQuantity" 
+                            field="installment.length"
                             align="center" 
                             header="Parcelas" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                     </DataTable>
                 }
-                <Dialog visible={visible} onHide={() => setVisible(false)}><Title>Informações de venda</Title></Dialog>
+                <Dialog 
+                    visible={visible} 
+                    onHide={() => {setVisible(false);setModalContent('');setTitleContent('')}} 
+                    style={{ minWidth: '50vw' }}
+                    header={titleContent}
+                    headerStyle={{textAlign:"center"}}
+                    closeOnEscape={true}
+                >
+                    <hr/>
+                    {modalContent}
+                </Dialog>
             </Container>
         </>
     )
