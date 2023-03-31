@@ -8,13 +8,11 @@ import { Container, Cards, Line, Center, Card, InputCPF, Cpf, StyledParcelas, St
 
 
 // Component Primereact
-import { Button } from "primereact/button";
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 
 
 const CadastroVenda = () => {
-	const [cpf, setcpf] = useState(0);
 	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState("0,00");
 
@@ -60,13 +58,11 @@ const CadastroVenda = () => {
 		const ObjetoSoComValorTotaleIdCliente= { installmentQuantity: data.installment};
 		ObjetoSoComValorTotaleIdCliente.paymentValue=TransformaEmNumberpaymentValue;
 
-		console.log(ObjetoSoComValorTotaleIdCliente)
+		//console.log(ObjetoSoComValorTotaleIdCliente)
 
 		const cpf = data.cpf
 
-		console.log(cpf)
-
-		axios.post(`http://localhost:8080/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
+		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
 
 		.then(response => {console.log("Envio do Formulario deu Certo !")
 
@@ -74,19 +70,22 @@ const CadastroVenda = () => {
 			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoRetornadoPeloMetodoDaRota.paymentValue }
 			//console.log(ObjetoComIdDaVendaParcelasValorTotal)
 
-			axios.post('http://localhost:8080/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
+			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
 			.then((response) => {
 
 				console.log("Envio da Venda Criada deu Certo !");
+				alert("Cadastrado com sucesso!");
 			  })
 
 			.catch((error) => {
 
-				console.error("Envio da Venda Deu erro !");
+				console.error("Erro na Criação de Parcelas !");
+				alert("Erro na Criação de Parcelas !");
 			  });
 			})
 
-		.catch(error => console.log("Envio do Formulario deu Erro !")) 
+		.catch(error => alert("Erro ao Cadastrar a Venda!"))
+		
 		console.log(data)
 	}
 
