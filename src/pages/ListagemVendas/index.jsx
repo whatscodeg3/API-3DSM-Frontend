@@ -4,7 +4,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Title } from "./defaultStyles"
+import { Container, Title, ContainerUserInfo } from "./defaultStyles"
 
 //Self Components
 import SearchField from '../../components/organisms/SearchField';
@@ -26,6 +26,7 @@ function ListagemVendas(){
     const [ clients, setClients] = useState([]);
     const [selectedCell, setSelectedCell] = useState(null);
     const [modalContent, setModalContent] = useState();
+    const [titleContent, setTitleContent] = useState();
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -74,22 +75,58 @@ function ListagemVendas(){
     const showModal = (event) =>{
         setVisible(true)
         let installmentsFromEvent = event.props.rowData.installment
-        let content = installmentsFromEvent.map((installment) => {
+        let contentFormated = installmentsFromEvent.map((installment) => {
             return {
                     id: installment.id, paymentDate: installment.paymentDate.toLocaleString(), installmentValue: installment.installmentValue, isInstallmentPayed: false
                     }
         })
         if (event.field == "id"){
-            content = 
+            let titleContent = 
+                <Title height='2rem'>
+                    Informações de Venda
+                </Title>;
+            setTitleContent(titleContent)
+            let contentToModal = 
                 <DataTable 
-                    value={event.props.rowData.installment}
+                    value={contentFormated}
                     tableStyle={{ minWidth: '50rem' }}
                 >
                     <Column field="" align="center" header="Parcela" headerStyle={{color:'#F18524'}}></Column>
                     <Column field="paymentDate" dataType="date"  align="center" header="Data de Vencimento" headerStyle={{color:'#F18524'}}></Column>
                     <Column field="category" body="" align="center" header="Data de Pagamento" headerStyle={{color:'#F18524'}}></Column>
                 </DataTable>;
+            setModalContent(contentToModal)
 
+        } else if (event.field == "client.cpf"){
+            let titleContent = 
+                <Title height='2rem'>
+                    Informações de Cliente
+                </Title>;
+            setTitleContent(titleContent)
+            let contentToModal = 
+                <ContainerUserInfo>
+                    <div>
+                        <label>Nome</label>
+                        <input type="text" value={event.props.rowData.client["fullName"]} disabled />
+                    </div>
+                    <div>
+                        <label>CPF</label>
+                        <input type="text" value={event.props.rowData.client["cpf"]} disabled />
+                    </div>
+                    <div>
+                        <label>Email</label>
+                        <input type="text" value={event.props.rowData.client["email"]} disabled />
+                    </div>
+                    <div>
+                        <label>Telefone</label>
+                        <input type="text" value={event.props.rowData.client["telephone"]} disabled />
+                    </div>
+                    <div>
+                        <label>Data Nasc.</label>
+                        <input type="text" value={event.props.rowData.client["birthDate"]} disabled />
+                    </div>
+                </ContainerUserInfo>;
+            setModalContent(contentToModal)
         }
     
 
@@ -147,9 +184,9 @@ function ListagemVendas(){
                 }
                 <Dialog 
                     visible={visible} 
-                    onHide={() => {setVisible(false);setModalContent('')}} 
+                    onHide={() => {setVisible(false);setModalContent('');setTitleContent('')}} 
                     style={{ minWidth: '50vw' }}
-                    header={<Title height='2rem'>Informações de venda</Title>}
+                    header={titleContent}
                     headerStyle={{textAlign:"center"}}
                     closeOnEscape={true}
                 >
