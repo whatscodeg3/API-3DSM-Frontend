@@ -74,17 +74,17 @@ const CadastroVenda = () => {
 			.then((response) => {
 
 				console.log("Envio da Venda Criada deu Certo !");
-				alert("Cadastrado com sucesso!");
+				window.alert("Cadastrado com sucesso!");
 			  })
 
 			.catch((error) => {
 
 				console.error("Erro na Criação de Parcelas !");
-				alert("Erro na Criação de Parcelas !");
+				window.alert("Erro na Criação de Parcelas !");
 			  });
 			})
 
-		.catch(error => alert("Erro ao Cadastrar a Venda!"))
+		.catch(error => window.alert("Erro ao Cadastrar a Venda!"))
 		
 		console.log(data)
 	}
