@@ -25,6 +25,7 @@ export const ImgLogo = styled.img`
 export const ImgLogout = styled.img`
     display: none; // Próximas Sprints
     padding: 20px;
+    cursor: pointer;
 `;
 
 export const Name = styled.p`

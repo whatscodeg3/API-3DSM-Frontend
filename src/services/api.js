@@ -4,7 +4,6 @@ import axios from "axios";
 axios.defaults.headers.common = {
   "Content-Type": "application/json"
 }
-
 //api client
 export const apiClient = axios.create({
   baseURL: "http://localhost:8080"
