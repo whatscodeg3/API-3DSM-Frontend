@@ -15,10 +15,12 @@ import { InputText } from 'primereact/inputtext';
 
 const CadastroVenda = () => {
 	const [installment, setinstallment] = useState(1); 
-	const [paymentValue, setpaymentValue] = useState("0,00");
+	const [paymentValue, setpaymentValue] = useState("");
+	const [valorOriginal, setValorOriginal] = useState("");
 	const [ValueRedirect, setRedirect] = useState(false)
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
 	const navigate = useNavigate();
+	console.log(valorOriginal)
 
 	// variaveis de formatação do valor trazido pos formatarValorParaComecarDaDireita
 	const Concatenar = "R$ " + paymentValue;
@@ -29,30 +31,35 @@ const CadastroVenda = () => {
 
 	//formata o valor para começar da direita para a esquerda, por se tratar de dinheiro
   	const formatarValorParaComecarDaDireita = (valorSemFormatacao) => {
-	  // Remove todos os caracteres que não são digitos de 0 a 9, depois transforma em float e então string, ppara poder mudar os valores como um texto.
-	  let valorFormatado = parseFloat(valorSemFormatacao.replace(/[^\d]/g, "")).toString();
-	  // se for colocado apenas 1 caracter, adiciona 0 a esquerda
-	  if (valorFormatado.length === 1) valorFormatado = `0${valorFormatado}`;
-	  // vai adicionar 0 a esquerda até ter no minimo 3 digitos, ou seja se colocar 1 ficaria 001, se for 10 entao 010
-	  valorFormatado = valorFormatado.padStart(3, "0");
-	  // pega os dois ultimos digitos e ponhe uma virgula antes deles, assim formando os centavos.
-	  const valorInteiro = valorFormatado.substring(0, valorFormatado.length - 2);
-	  const valorDecimal = valorFormatado.substring(valorFormatado.length - 2);
-	  // coloca virgula "," antes dos 2 ultimos numeros, e vai colocando . a cada 3 digitos.
-	  valorFormatado = `${valorInteiro.replace(/(\d)(?=(\d{3})+$)/g, '$1.')},${valorDecimal}`;
+	 	 // Remove todos os caracteres que não são digitos de 0 a 9, depois transforma em float e então string, ppara poder mudar os valores como um texto.
+	 	 let valorFormatado = parseFloat(valorSemFormatacao.replace(/[^\d]/g, "")).toString();
+	 	 // se for colocado apenas 1 caracter, adiciona 0 a esquerda
+	 	 if (valorFormatado.length === 1) valorFormatado = `0${valorFormatado}`;
+	 	 // vai adicionar 0 a esquerda até ter no minimo 3 digitos, ou seja se colocar 1 ficaria 001, se for 10 entao 010
+	 	 valorFormatado = valorFormatado.padStart(3, "0");
+	 	 // pega os dois ultimos digitos e ponhe uma virgula antes deles, assim formando os centavos.
+	 	 const valorInteiro = valorFormatado.substring(0, valorFormatado.length - 2);
+	  	const valorDecimal = valorFormatado.substring(valorFormatado.length - 2);
+	  	// coloca virgula "," antes dos 2 ultimos numeros, e vai colocando . a cada 3 digitos.
+	 	 valorFormatado = `${valorInteiro.replace(/(\d)(?=(\d{3})+$)/g, '$1.')},${valorDecimal}`;
+	  	let texto = valorFormatado.replace(/[.,]/g, '');
+		setValorOriginal(texto)
 	  return valorFormatado;
 	};
 
 	const onChangeValorInserido = (e) => {
-	  const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
+	  	const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
 	  // Seta o novo valor pos formação usando o setState do useState
-	  setpaymentValue(ValorInseridoPosFormatacao);
+	  	setpaymentValue(ValorInseridoPosFormatacao);
 	};
+
+	const FormataDinheiro = valorOriginal/100 
+	console.log(FormataDinheiro)
 
 	const onSubmit = (data) => {
 
 		const ObjetoSoComValorTotaleIdCliente= { installmentQuantity: data.installment};
-		ObjetoSoComValorTotaleIdCliente.paymentValue=TransformaEmNumberpaymentValue;
+		ObjetoSoComValorTotaleIdCliente.paymentValue=FormataDinheiro;
 
 		//console.log(ObjetoSoComValorTotaleIdCliente)
 
@@ -63,7 +70,7 @@ const CadastroVenda = () => {
 		.then(response => {console.log("Envio do Formulario deu Certo !")
 
 			const ObjetoRetornadoPeloMetodoDaRota = response.data;
-			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoRetornadoPeloMetodoDaRota.paymentValue }
+			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
 			//console.log(ObjetoComIdDaVendaParcelasValorTotal)
 
 			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
@@ -86,14 +93,7 @@ const CadastroVenda = () => {
 	
 	const watchQuantidadeParcela = watch("installment");
 
-	var valorDaDivisao = 0
-
-	if(watchQuantidadeParcela == 0){
-		valorDaDivisao = 0
-	} else {
-		valorDaDivisao = TransformaEmNumberpaymentValue/watchQuantidadeParcela
-	}
-
+	var valorDaDivisao = FormataDinheiro/watchQuantidadeParcela
 
 	useEffect(() => {
 		if (ValueRedirect) {

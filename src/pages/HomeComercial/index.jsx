@@ -39,7 +39,7 @@ function HomeComercial() {
                         </Link>
 
                         {/* Card Compra */}
-                        <Link to={"/cadastro/compra"} style={{ textDecoration: 'none' }}>
+                        <Link to={"/cadastro/venda"} style={{ textDecoration: 'none' }}>
                             <Card className="animate__animated animate__slideInUp">
                                 <img src={IconBag} style={{ width: "4vw" }} alt="IconBag" />
                                 <p>
@@ -48,7 +48,7 @@ function HomeComercial() {
                             </Card>
                         </Link>
                         {/* Card Listagem */}
-                        <Link to={"/listagem/compra"} style={{ textDecoration: 'none' }}>
+                        <Link to={"/listagem/venda"} style={{ textDecoration: 'none' }}>
                         <Card className="animate__animated animate__slideInRight">
                             <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
                             <p>
