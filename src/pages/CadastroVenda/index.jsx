@@ -1,17 +1,19 @@
 import React, { useState, useEffect  } from "react";
 import {useForm, Controller } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Cards, Line, Center, Card, InputCPF, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label} from "./defaultStyles"
+import { Container, Cards, Line, Center, Card, InputCPF, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label, ImageBack} from "./defaultStyles"
 
 
 // Component Primereact
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 
+// Images
+import IconBack from '../../assets/img/IconBack.svg'
 
 const CadastroVenda = () => {
 	const [installment, setinstallment] = useState(1); 
@@ -172,6 +174,9 @@ const CadastroVenda = () => {
 
 						</Card>
 					</Cards>
+					<Link to={"/"} style={{ textDecoration: "none" }}>
+						<ImageBack src={IconBack} alt="IconBack" />
+					</Link>
 				</Container>
 		</>
 	)

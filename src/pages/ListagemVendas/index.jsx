@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Title, ContainerUserInfo } from "./defaultStyles"
+import { Container, Title, ContainerUserInfo, ImageBack } from "./defaultStyles"
 
 //Self Components
 import SearchField from '../../components/organisms/SearchField';
@@ -15,6 +15,8 @@ import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner'
 
+// Images
+import IconBack from '../../assets/img/IconBack.svg'
 
 //API's
 import { apiClient, apiPurchases } from '../../services/api';
@@ -74,12 +76,18 @@ function ListagemVendas(){
     //continuar função
     const showModal = (event) =>{
         setVisible(true)
+
         let installmentsFromEvent = event.props.rowData.installment
-        let contentFormated = installmentsFromEvent.map((installment) => {
+        let contentFormated = installmentsFromEvent.map((installment, i) => {
             return {
-                    id: installment.id, paymentDate: installment.paymentDate.toLocaleString(), installmentValue: installment.installmentValue, isInstallmentPayed: false
-                    }
+                id: installment.id,
+                installmentNumber: i + 1,
+                paymentDate: installment.paymentDate,
+                installmentValue: installment.installmentValue,
+                isInstallmentPayed: false
+            }
         })
+        
         if (event.field == "id"){
             let titleContent = 
                 <Title height='2rem'>
@@ -91,9 +99,25 @@ function ListagemVendas(){
                     value={contentFormated}
                     tableStyle={{ minWidth: '50rem' }}
                 >
-                    <Column field="" align="center" header="Parcela" headerStyle={{color:'#F18524'}}></Column>
-                    <Column field="paymentDate" dataType="date"  align="center" header="Data de Vencimento" headerStyle={{color:'#F18524'}}></Column>
-                    <Column field="category" body="" align="center" header="Data de Pagamento" headerStyle={{color:'#F18524'}}></Column>
+                    <Column 
+                        field="installmentNumber" 
+                        align="center" 
+                        header="Parcela" 
+                        headerStyle={{color:'#F18524'}}>
+                    </Column>
+                    <Column 
+                        field="paymentDate" 
+                        dataType="date"  
+                        align="center" 
+                        header="Data de Vencimento" 
+                        headerStyle={{color:'#F18524'}}>
+                    </Column>
+                    <Column 
+                        field="installmentValue" 
+                        body="" align="center" 
+                        header="Valor da Parcela" 
+                        headerStyle={{color:'#F18524'}}>
+                    </Column>
                 </DataTable>;
             setModalContent(contentToModal)
 
@@ -193,6 +217,9 @@ function ListagemVendas(){
                     <hr/>
                     {modalContent}
                 </Dialog>
+                <Link to={"/"} style={{ textDecoration: "none" }}>
+					<ImageBack src={IconBack} alt="IconBack" />
+				</Link>
             </Container>
         </>
     )

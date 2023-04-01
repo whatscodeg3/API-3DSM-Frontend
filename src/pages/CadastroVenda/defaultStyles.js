@@ -97,3 +97,14 @@ export const InputCPF = styled.input`
     border-radius: 3px;
     outline: none;
 `;
+
+export const ImageBack = styled.img`
+    position: fixed;
+    top: 90%;
+    left: 95%;
+
+    :hover {
+        transform: scale(1.1);
+        transition: all 0.5s;
+    }
+`;
