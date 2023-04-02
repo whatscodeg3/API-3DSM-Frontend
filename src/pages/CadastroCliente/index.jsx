@@ -23,48 +23,52 @@ function CadastroCliente() {
     
     const navigate = useNavigate();
     const onSubmit = async (value) => {
-    let formatJson = {
+      let formatJson = {
         fullName: value["fullName"],
         cpf: value["cpf"],
         email: value["email"],
-      telephone: value["telephone"],
-      birthDate: value["birthDate"],
-      address: {
-          cep: value["cep"],
-          publicPlace: value["publicPlace"] + value["numero"],
-          neighborhood: value["neighborhood"],
-          city: value["city"],
-        state: value["state"],
-        complement: value["complement"],
-    },
-};
+        telephone: value["telephone"],
+        birthDate: value["birthDate"],
+        address: {
+            cep: value["cep"],
+            publicPlace: value["publicPlace"] + value["numero"],
+            neighborhood: value["neighborhood"],
+            city: value["city"],
+            state: value["state"],
+            complement: value["complement"],
+        },
+      };
+          
+      const response = await apiClient.get("/client/query")
+      let data = response.data
+      let valido = false
 
-    const response = await apiClient.get("/client/query")
-    let data = response.data
-    let valido = false
-
-    await data.forEach(e => {
-        if(value["cpf"] == e["cpf"]){
-            window.alert("Este CPF já está cadastrado!")
-        }else if(value["cpf"] != e["cpf"]){
-          valido = true
-        }  
-    });
-    
-    try{
-        if(valido == true){
-          await apiClient.post("/client/create", formatJson)
-          navigate("/");
-        }
-    } catch(error) {
-      if(error.response.data["cpf"] == undefined){
-        window.alert(error.response.data["email"])
+      if(data.length != 0){
+        await data.forEach(e => {
+          if(value["cpf"] == e["cpf"]){
+              window.alert("Este CPF já está cadastrado!")
+          }else if(value["cpf"] != e["cpf"]){
+            valido = true
+          }
+        });
       }else{
-        window.alert(error.response.data["cpf"])
+        valido = true
       }
-    }
-  };
-  
+      
+      try{
+          if(valido == true){
+            await apiClient.post("/client/create", formatJson)
+            navigate("/");
+          }
+      } catch(error) {
+        if(error.response.data["cpf"] == undefined){
+          window.alert(error.response.data["email"])
+        }else{
+          window.alert(error.response.data["cpf"])
+        }
+      }
+    };
+    
   const checkCEP = (value) => {
       const cep = value.target.value.replace(/\D/g, "");
       fetch(`http://viacep.com.br/ws/${cep}/json/`)
