@@ -14,6 +14,8 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner'
+import { Button } from 'primereact/button';
+
 
 // Images
 import IconBack from '../../assets/img/IconBack.svg'
@@ -26,7 +28,7 @@ function ListagemVendas(){
     const [loading, setLoading] = useState(true);
     const [ purchases, setPurchases] = useState([]);
     const [ clients, setClients] = useState([]);
-    const [selectedCell, setSelectedCell] = useState(null);
+    const [installmentsPayed, setInstallmentsPayed] = useState(null);
     const [modalContent, setModalContent] = useState();
     const [titleContent, setTitleContent] = useState();
     const [visible, setVisible] = useState(false);
@@ -61,36 +63,59 @@ function ListagemVendas(){
     const formatCurrency = (value) => {
         return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     };
-    const priceBodyTemplate = (purchases) => {
-        return formatCurrency(purchases.paymentValue);
-    };
-    
-    function formatField(event){
-        let kk =  event.value.toLocaleString()
-    
-        return kk
+    const priceBodyTemplate = (event) => {
+        if(event.paymentValue){
+            return formatCurrency(event.paymentValue)
+        }else if(event.installmentValue){
+            return formatCurrency(event.installmentValue)
 
+        }
+        
+    };
+    const checkInstallmentAsPayed = (installmentId) => {
+        const decision = window.confirm("Deseja confirmar o pagamento desta parcela?")
+        
+        if(decision){
+            async function confirmPayment(){
+                await apiPurchases.patch(`/api/installments/${installmentId}`); 
+                const purchasesUpdated = await apiPurchases.get(`/api/purchases`)
+                setPurchases(purchasesUpdated.data)
+            }
+            confirmPayment()
+            setModalContent('')
+            setTitleContent('')
+            window.alert("Pagamento da parcela confirmado")
+        }else{
+            window.alert("Confirmação do pagamento cancelada")
+        }
+        setVisible(false)
+    }
+    
+    const installmentCheck = (event) =>{
+        return event.isInstallmentPayed ?  
+            "Parcela paga" : 
+            <Button label="Confirmar" severity="success"  onClick={() => {checkInstallmentAsPayed(event.id)}}/>
     }
 
 
-    //continuar função
     const showModal = (event) =>{
-        setVisible(true)
-
         let installmentsFromEvent = event.props.rowData.installment
         let contentFormated = installmentsFromEvent.map((installment, i) => {
+            let installmentDueDate = installment.installmentDueDate.split("-")
+            let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.installmentDueDate.split("-")
             return {
                 id: installment.id,
                 installmentNumber: i + 1,
-                paymentDate: installment.paymentDate,
+                installmentDueDate: `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`,
+                paymentDate: paymentDate == null?  '' :`${paymentDate[2]}/${paymentDate[1]}/${paymentDate[0]}`,
                 installmentValue: installment.installmentValue,
-                isInstallmentPayed: false
+                isInstallmentPayed: installment.isInstallmentPayed 
             }
         })
         
         if (event.field == "id"){
             let titleContent = 
-                <Title height='2rem'>
+                <Title height='2rem' color="#696969">
                     Informações de Venda
                 </Title>;
             setTitleContent(titleContent)
@@ -101,22 +126,49 @@ function ListagemVendas(){
                 >
                     <Column 
                         field="installmentNumber" 
+                        bodyStyle={{color:"#F18524"}}
                         align="center" 
                         header="Parcela" 
-                        headerStyle={{color:'#F18524'}}>
+                        headerStyle={{color:'#696969'}}>
                     </Column>
                     <Column 
-                        field="paymentDate" 
-                        dataType="date"  
+                        field="installmentDueDate"
+                        bodyStyle={{color:"#F18524"}}
                         align="center" 
                         header="Data de Vencimento" 
-                        headerStyle={{color:'#F18524'}}>
+                        headerStyle={{color:'#696969'}}>
                     </Column>
                     <Column 
-                        field="installmentValue" 
-                        body="" align="center" 
+                        field="paymentDate"
+                        bodyStyle={{color:"#F18524"}}
+                        align="center" 
+                        header="Data de Pagamento" 
+                        headerStyle={{color:'#696969'}}>
+                    </Column>
+                    {/* <Column 
+                        field="installmentValue"
+                        body={priceBodyTemplate} 
+                        align="center"
+                        bodyStyle={{color:"#F18524" }}
                         header="Valor da Parcela" 
-                        headerStyle={{color:'#F18524'}}>
+                        headerStyle={{color:'#696969'}}>
+                    </Column>
+                    <Column 
+                        field="isInstallmentPayed"
+                        body=""
+                        bodyStyle={{color:"#F18524"}}
+                        dataType="date"  
+                        align="center" 
+                        header="Status" 
+                        headerStyle={{color:'#696969'}}>
+                    </Column> */}
+                    <Column
+                        body={installmentCheck}
+                        bodyStyle={{color:"#F18524"}}
+                        align="center" 
+                        header="Confirmar pagamento"
+                        headerStyle={{color:'#696969'}}>
+                        
                     </Column>
                 </DataTable>;
             setModalContent(contentToModal)
@@ -152,10 +204,8 @@ function ListagemVendas(){
                 </ContainerUserInfo>;
             setModalContent(contentToModal)
         }
-    
+        setVisible(true)
 
-        // setModal(event.value)
-        // setVisible(true)
     };
     
     return(
@@ -171,7 +221,7 @@ function ListagemVendas(){
                         paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
                         cellSelection 
                         selectionMode="single"
-                        onCellClick={showModal}
+                        onCellSelect={showModal}
                         isDataSelectable={isCellSelectable}
                         filters={filters}
                         emptyMessage='Sem informações'
