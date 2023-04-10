@@ -5,8 +5,7 @@ import axios from 'axios';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Cards, Line, Center, Card, InputCPF, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label, ImageBack} from "./defaultStyles"
-
+import { Container, Cards, StyledInputText, Line, Center, Card, InputCPF, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label, ImageBack} from "./defaultStyles"
 
 // Component Primereact
 import { InputNumber } from 'primereact/inputnumber';
@@ -16,20 +15,28 @@ import { InputText } from 'primereact/inputtext';
 import IconBack from '../../assets/img/IconBack.svg'
 
 const CadastroVenda = () => {
+	// UseState da verificação de cpf
+	const [nome, setNome] = useState('');
+	const [email, setEmail] = useState('');
+	const [telefone, setTelefone] = useState('');
+	const [dataNascimento, setDataNascimento] = useState('');
+	const [cep, setCep] = useState('');
+	const [error, setError] = useState(false);
+
+	// UseState do cadastro da venda
 	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState("");
 	const [valorOriginal, setValorOriginal] = useState("");
 	const [ValueRedirect, setRedirect] = useState(false)
+
+	// Syntaxe do UseForm
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
+
+	// Syntaxe do useNavigate
 	const navigate = useNavigate();
-	console.log(valorOriginal)
 
 	// variaveis de formatação do valor trazido pos formatarValorParaComecarDaDireita
 	const Concatenar = "R$ " + paymentValue;
-	const TrocaPontoPorNada = paymentValue.replace(".", "");
-	const TrocaVirgulaPorPonto = TrocaPontoPorNada.replace(",", ".");
-	const TransformaEmNumberpaymentValue = parseFloat(TrocaVirgulaPorPonto);
-
 
 	//formata o valor para começar da direita para a esquerda, por se tratar de dinheiro
   	const formatarValorParaComecarDaDireita = (valorSemFormatacao) => {
@@ -56,7 +63,40 @@ const CadastroVenda = () => {
 	};
 
 	const FormataDinheiro = valorOriginal/100 
-	console.log(FormataDinheiro)
+	//console.log(FormataDinheiro)
+
+	const watchQuantidadeParcela = watch("installment");
+
+	var valorDaDivisao = FormataDinheiro/watchQuantidadeParcela
+	
+
+	////////////////////////////////////////////////////////////////
+	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
+	function handleInput(cpf) {
+		const CpfParaVerificar = cpf.target.value;
+
+		axios.post(`ROTA/${CpfParaVerificar}`)
+		.then(response => {
+			const ResultadoDevolvido = response.data
+			if (ResultadoDevolvido.mensagem == 'Cpf não existe'){
+				setError(true);
+			} else {
+				setError(false);
+				setNome(ResultadoDevolvido.nome);
+				setEmail(ResultadoDevolvido.email);
+				setTelefone(ResultadoDevolvido.telefone);
+				setDataNascimento(ResultadoDevolvido.dataNascimento);
+				setCep(ResultadoDevolvido.cep);
+			}
+
+		})
+		.catch(error => {});
+
+		console.log(ResultadoDevolvido);
+	  }
+
+	////////////////////////////////////////////////////////////////
+
 
 	const onSubmit = (data) => {
 
@@ -67,7 +107,7 @@ const CadastroVenda = () => {
 
 		const cpf = data.cpf
 
-		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
+		axios.get(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
 
 		.then(response => {console.log("Envio do Formulario deu Certo !")
 
@@ -92,11 +132,6 @@ const CadastroVenda = () => {
 		//console.log(data)
 	}
 
-	
-	const watchQuantidadeParcela = watch("installment");
-
-	var valorDaDivisao = FormataDinheiro/watchQuantidadeParcela
-
 	useEffect(() => {
 		if (ValueRedirect) {
 			navigate('/');
@@ -116,10 +151,33 @@ const CadastroVenda = () => {
 									name="cpf" 
 									placeholder="Digite um CPF"
 									{...register("cpf", { required: "Precisa que seja inserido o CPF do cliente"})}
+									onInput={handleInput}
 								/>
 								{errors?.cpf?.type == "required" && (<p className="error-message">CPF Necessário</p>)}
+								{error && <p className="error-message">CPF Não foi encontrado</p>}
 								
 							</Center>
+
+							<Center>
+								<StyledInputText style={{ width: '400px' }} value={nome} name="nome" disabled/>
+							</Center>
+
+							<Center>
+								<StyledInputText style={{ width: '400px' }} value={email} name="email" disabled/>
+							</Center>
+														
+							<Center>
+								<StyledInputText style={{ width: '400px' }} value={telefone} name="telefone" disabled/>
+							</Center>
+														
+							<Center>
+								<StyledInputText style={{ width: '400px' }} value={dataNascimento} name="data_nascimento" disabled/>
+							</Center>
+														
+							<Center>
+								<StyledInputText style={{ width: '400px' }} value={cep} name="CEP" disabled/>
+							</Center>
+							
 						</Cpf>
 						<Card>
 							<Line />
@@ -170,7 +228,7 @@ const CadastroVenda = () => {
 
 							</Center>
 
-							<StyledBotaoCadastro onClick={() => handleSubmit(onSubmit)()} label="Cadastrar"></StyledBotaoCadastro>
+							<StyledBotaoCadastro disabled={error} onClick={() => handleSubmit(onSubmit)()} label="Cadastrar"></StyledBotaoCadastro>
 
 						</Card>
 					</Cards>
