@@ -7,7 +7,7 @@ import ListagemVendas from "./pages/ListagemVendas";
 import CadastroVenda from "./pages/CadastroVenda";
 import CadastroCliente from "./pages/CadastroCliente";
 
-const Rotas = () => {
+const Rotas: React.FC = () => {
     return (
         <div>
             <Routes>
