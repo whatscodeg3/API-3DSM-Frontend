@@ -26,15 +26,15 @@ import { apiClient, apiPurchases } from '../../services/api';
 
 function ListagemVendas(){
     const [loading, setLoading] = useState(true);
-    const [ purchases, setPurchases] = useState([]);
-    const [ clients, setClients] = useState([]);
+    const [purchases, setPurchases] = useState([]);
+    const [clients, setClients] = useState([]);
     const [installmentsPayed, setInstallmentsPayed] = useState(null);
     const [modalContent, setModalContent] = useState();
     const [titleContent, setTitleContent] = useState();
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    
+
     
     useEffect(() => {
         async function loadData() {
@@ -77,6 +77,7 @@ function ListagemVendas(){
         
         if(decision){
             async function confirmPayment(){
+
                 await apiPurchases.patch(`/api/installments/${installmentId}`); 
                 const purchasesUpdated = await apiPurchases.get(`/api/purchases`)
                 setPurchases(purchasesUpdated.data)
@@ -99,15 +100,19 @@ function ListagemVendas(){
 
 
     const showModal = (event) =>{
+        console.log(event)
         let installmentsFromEvent = event.props.rowData.installment
         let contentFormated = installmentsFromEvent.map((installment, i) => {
+            console.log(installment)
             let installmentDueDate = installment.installmentDueDate.split("-")
-            let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.installmentDueDate.split("-")
+            let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.paymentDate.split("-")
+            let creditDate = installment.creditDate == null? installment.creditDate : installment.creditDate.split("-")
             return {
                 id: installment.id,
                 installmentNumber: i + 1,
                 installmentDueDate: `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`,
                 paymentDate: paymentDate == null?  '' :`${paymentDate[2]}/${paymentDate[1]}/${paymentDate[0]}`,
+                creditDate: creditDate == null?  '' :`${creditDate[2]}/${creditDate[1]}/${creditDate[0]}`,
                 installmentValue: installment.installmentValue,
                 isInstallmentPayed: installment.isInstallmentPayed 
             }
@@ -145,7 +150,14 @@ function ListagemVendas(){
                         header="Data de Pagamento" 
                         headerStyle={{color:'#696969'}}>
                     </Column>
-                    {/* <Column 
+                    <Column 
+                        field="creditDate"
+                        bodyStyle={{color:"#F18524"}}
+                        align="center" 
+                        header="Data de Credito" 
+                        headerStyle={{color:'#696969'}}>
+                    </Column>
+                    <Column 
                         field="installmentValue"
                         body={priceBodyTemplate} 
                         align="center"
@@ -153,7 +165,7 @@ function ListagemVendas(){
                         header="Valor da Parcela" 
                         headerStyle={{color:'#696969'}}>
                     </Column>
-                    <Column 
+                    {/* <Column 
                         field="isInstallmentPayed"
                         body=""
                         bodyStyle={{color:"#F18524"}}

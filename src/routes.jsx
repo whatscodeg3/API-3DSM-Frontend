@@ -6,6 +6,7 @@ import HomeComercial from "./pages/HomeComercial/index"
 import ListagemVendas from "./pages/ListagemVendas";
 import CadastroVenda from "./pages/CadastroVenda";
 import CadastroCliente from "./pages/CadastroCliente";
+import ListaClienteUsuario from "./pages/ListaClienteUsuario";
 
 const Rotas = () => {
     return (
@@ -15,6 +16,7 @@ const Rotas = () => {
                 <Route exact path="/cadastro/cliente" element={<CadastroCliente/>} />
                 <Route exact path="/cadastro/venda" element={<CadastroVenda/>} />
                 <Route exact path="/listagem/venda" element={<ListagemVendas/>} />
+                <Route exact path="/listagem/cliente" element={<ListaClienteUsuario/>} />
             </Routes>
         </div>
     )

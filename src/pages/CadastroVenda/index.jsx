@@ -78,7 +78,7 @@ const CadastroVenda = () => {
 		axios.post(`ROTA/${CpfParaVerificar}`)
 		.then(response => {
 			const ResultadoDevolvido = response.data
-			if (ResultadoDevolvido.mensagem == 'Cpf não existe'){
+			if (ResultadoDevolvido.mensagem == 'Nenhum cliente foi encontrado'){
 				setError(true);
 			} else {
 				setError(false);
