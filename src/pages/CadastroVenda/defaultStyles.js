@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 export const Container = styled.div`
     width: 100vw;
     height: 100vh;
-    font-family: "Ubuntu"
+    font-family: "Ubuntu";
 `;
 
 export const Cards = styled.div`
@@ -15,7 +15,6 @@ export const Cards = styled.div`
     justify-content: space-evenly;
     align-items: center;
     gap: 100px;
-    border: 10.5px solid #333333;
     font-family: Ubuntu;
 `;
 

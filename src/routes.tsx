@@ -4,7 +4,7 @@ import { Route, Routes } from "react-router-dom";
 // Pages
 import HomeComercial from "./pages/HomeComercial/index"
 import ListagemVendas from "./pages/ListagemVendas";
-import CadastroVenda from "./pages/CadastroVenda/index.tsx";
+import CadastroVenda from "./pages/CadastroVenda/index";
 import CadastroCliente from "./pages/CadastroCliente";
 
 const Rotas: React.FC = () => {

@@ -17,19 +17,14 @@ import IconBack from '../../assets/img/IconBack.svg'
 
 const CadastroVenda = () => {
 	const [installment, setinstallment] = useState(1); 
-	const [paymentValue, setpaymentValue] = useState("");
-	const [valorOriginal, setValorOriginal] = useState("");
+	const [paymentValue, setpaymentValue] = useState<string>("");
+	const [valorOriginal, setValorOriginal] = useState<string>("");
 	const [ValueRedirect, setRedirect] = useState(false)
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
 	const navigate = useNavigate();
-	console.log(valorOriginal)
 
 	// variaveis de formatação do valor trazido pos formatarValorParaComecarDaDireita
 	const Concatenar = "R$ " + paymentValue;
-	const TrocaPontoPorNada = paymentValue.replace(".", "");
-	const TrocaVirgulaPorPonto = TrocaPontoPorNada.replace(",", ".");
-	const TransformaEmNumberpaymentValue = parseFloat(TrocaVirgulaPorPonto);
-
 
 	//formata o valor para começar da direita para a esquerda, por se tratar de dinheiro
   	const formatarValorParaComecarDaDireita = (valorSemFormatacao) => {
@@ -55,29 +50,27 @@ const CadastroVenda = () => {
 	  	setpaymentValue(ValorInseridoPosFormatacao);
 	};
 
-	const FormataDinheiro = valorOriginal/100 
+	const FormataDinheiro = Number(valorOriginal)/100 
 
-	const onSubmit = (data) => {
+	const onSubmit = (data : any) => {
 
-		const ObjetoSoComValorTotaleIdCliente= { installmentQuantity: data.installment};
-		ObjetoSoComValorTotaleIdCliente.paymentValue=FormataDinheiro;
+		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
+		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 
-		//console.log(ObjetoSoComValorTotaleIdCliente)
 
 		const cpf = data.cpf
 
 		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
 
-		.then(response => {console.log("Envio do Formulario deu Certo !")
+		.then(response => {
 
 			const ObjetoRetornadoPeloMetodoDaRota = response.data;
 			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
-			//console.log(ObjetoComIdDaVendaParcelasValorTotal)
+	
 
 			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
 			.then((response) => {
 
-				console.log("Envio da Venda Criada deu Certo !");
 				window.alert("Cadastrado com sucesso!");
 				setRedirect(true)
 
@@ -88,7 +81,7 @@ const CadastroVenda = () => {
 			})
 		.catch(error => 
 			window.alert("Erro ao Cadastrar a Venda!"))
-		//console.log(data)
+		
 	}
 
 	
