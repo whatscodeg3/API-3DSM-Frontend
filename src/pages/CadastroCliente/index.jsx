@@ -23,48 +23,52 @@ function CadastroCliente() {
     
     const navigate = useNavigate();
     const onSubmit = async (value) => {
-    let formatJson = {
+      let formatJson = {
         fullName: value["fullName"],
         cpf: value["cpf"],
         email: value["email"],
-      telephone: value["telephone"],
-      birthDate: value["birthDate"],
-      address: {
-          cep: value["cep"],
-          publicPlace: value["publicPlace"] + value["numero"],
-          neighborhood: value["neighborhood"],
-          city: value["city"],
-        state: value["state"],
-        complement: value["complement"],
-    },
-};
+        telephone: value["telephone"],
+        birthDate: value["birthDate"],
+        address: {
+            cep: value["cep"],
+            publicPlace: value["publicPlace"] + value["numero"],
+            neighborhood: value["neighborhood"],
+            city: value["city"],
+            state: value["state"],
+            complement: value["complement"],
+        },
+      };
+          
+      const response = await apiClient.get("/client/query")
+      let data = response.data
+      let valido = false
 
-    const response = await apiClient.get("/client/query")
-    let data = response.data
-    let valido = false
-
-    await data.forEach(e => {
-        if(value["cpf"] == e["cpf"]){
-            window.alert("Este CPF já está cadastrado!")
-        }else if(value["cpf"] != e["cpf"]){
-          valido = true
-        }  
-    });
-    
-    try{
-        if(valido == true){
-          await apiClient.post("/client/create", formatJson)
-          navigate("/");
-        }
-    } catch(error) {
-      if(error.response.data["cpf"] == undefined){
-        window.alert(error.response.data["email"])
+      if(data.length != 0){
+        await data.forEach(e => {
+          if(value["cpf"] == e["cpf"]){
+              window.alert("Este CPF já está cadastrado!")
+          }else if(value["cpf"] != e["cpf"]){
+            valido = true
+          }
+        });
       }else{
-        window.alert(error.response.data["cpf"])
+        valido = true
       }
-    }
-  };
-  
+      
+      try{
+          if(valido == true){
+            await apiClient.post("/client/create", formatJson)
+            navigate("/");
+          }
+      } catch(error) {
+        if(error.response.data["cpf"] == undefined){
+          window.alert(error.response.data["email"])
+        }else{
+          window.alert(error.response.data["cpf"])
+        }
+      }
+    };
+    
   const checkCEP = (value) => {
       const cep = value.target.value.replace(/\D/g, "");
       fetch(`http://viacep.com.br/ws/${cep}/json/`)
@@ -77,44 +81,6 @@ function CadastroCliente() {
         setFocus("numero");
       });
   };
-
-  // function validaCPF(value) {
-  //     const cpf = value.target.value.replace(/[^\d]/g, "")
-
-  //     if (cpf.length !== 11) {
-  //         return false;
-  //     }
-
-  //     const repeated = /^(.)\1+$/;
-  //     if (repeated.test(cpf)) {
-  //         return false;
-  //     }
-
-  //     let sum = 0;
-  //     let remainder;
-  //     for (let i = 1; i <= 9; i++) {
-  //         sum += parseInt(cpf.substring(i-1, i)) * (11 - i);
-  //     }
-  //     remainder = (sum * 10) % 11;
-  //     if ((remainder === 10) || (remainder === 11)) {
-  //         remainder = 0;
-  //     }
-  //     if (remainder !== parseInt(cpf.substring(9, 10))) {
-  //         return false;
-  //     }
-  //     sum = 0;
-  //     for (let i = 1; i <= 10; i++) {
-  //         sum += parseInt(cpf.substring(i-1, i)) * (12 - i);
-  //     }
-  //     remainder = (sum * 10) % 11;
-  //     if ((remainder === 10) || (remainder === 11)) {
-  //         remainder = 0;
-  //     }
-  //     if (remainder !== parseInt(cpf.substring(10, 11))) {
-  //         return false;
-  //     }
-  //     return true;
-  // }
 
   return (
     <>
@@ -137,7 +103,6 @@ function CadastroCliente() {
               placeholder="CPF"
               required
               {...register("cpf")}
-              // onBlur={validaCPF}
             />
             <InputField
               type="text"
