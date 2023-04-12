@@ -75,24 +75,24 @@ const CadastroVenda = () => {
 	function handleInput(cpf) {
 		const CpfParaVerificar = cpf.target.value;
 
-		axios.post(`ROTA/${CpfParaVerificar}`)
+		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`)
 		.then(response => {
 			const ResultadoDevolvido = response.data
-			if (ResultadoDevolvido.mensagem == 'Nenhum cliente foi encontrado'){
-				setError(true);
-			} else {
 				setError(false);
-				setNome(ResultadoDevolvido.nome);
+				setNome(ResultadoDevolvido.fullName);
 				setEmail(ResultadoDevolvido.email);
-				setTelefone(ResultadoDevolvido.telefone);
-				setDataNascimento(ResultadoDevolvido.dataNascimento);
-				setCep(ResultadoDevolvido.cep);
-			}
-
+				setTelefone(ResultadoDevolvido.telephone);
+				setDataNascimento(ResultadoDevolvido.birthDate);
+				setCep(ResultadoDevolvido.address.cep);
 		})
-		.catch(error => {});
-
-		console.log(ResultadoDevolvido);
+		.catch(error => {
+			setError(true);
+			setNome('')
+			setEmail('')
+			setTelefone('')
+			setDataNascimento('')
+			setCep('')
+		});
 	  }
 
 	////////////////////////////////////////////////////////////////
@@ -107,9 +107,9 @@ const CadastroVenda = () => {
 
 		const cpf = data.cpf
 
-		axios.get(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
+		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
 
-		.then(response => {console.log("Envio do Formulario deu Certo !")
+		.then(response => {
 
 			const ObjetoRetornadoPeloMetodoDaRota = response.data;
 			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
@@ -118,7 +118,6 @@ const CadastroVenda = () => {
 			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
 			.then((response) => {
 
-				console.log("Envio da Venda Criada deu Certo !");
 				window.alert("Cadastrado com sucesso!");
 				setRedirect(true)
 

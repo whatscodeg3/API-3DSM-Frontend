@@ -98,14 +98,10 @@ function ListaClienteUsuario(){
         } else if (event.field == "update"){
             let titleContent = 
                 <Title height='2rem' color="#696969">
-                    Informações de Venda
+                    Informações de {Client.fullName}
                 </Title>;
             setTitleContent(titleContent)
             let contentToModal = 
-                <DataTable 
-                    value={contentFormated}
-                    tableStyle={{ minWidth: '50rem' }}
-                >
                     <Column 
                         field="id" 
                         bodyStyle={{color:"#F18524"}}
@@ -113,7 +109,6 @@ function ListaClienteUsuario(){
                         header="Parcela" 
                         headerStyle={{color:'#696969'}}>
                     </Column>
-                </DataTable>;
             setModalContent(contentToModal)
         }
         setVisible(true)

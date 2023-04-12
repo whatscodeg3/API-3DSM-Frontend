@@ -16,7 +16,6 @@ export const Cards = styled.div`
     justify-content: space-evenly;
     align-items: center;
     gap: 100px;
-    border: 10.5px solid #333333;
     font-family: Ubuntu;
 `;
 
