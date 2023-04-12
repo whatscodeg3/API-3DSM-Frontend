@@ -7,7 +7,7 @@ interface SearchFieldProps {
   placeholder?: string;
 }
 
-function SearchField(props: SearchFieldProps) {
+const SearchField: React.FC = (props: SearchFieldProps) => {
   return (
     <div className="mb-3">
       <span className="p-input-icon-left">

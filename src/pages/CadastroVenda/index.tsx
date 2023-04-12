@@ -15,7 +15,7 @@ import { InputText } from 'primereact/inputtext';
 // Images
 import IconBack from '../../assets/img/IconBack.svg'
 
-const CadastroVenda = () => {
+const CadastroVenda: React.FC = () => {
 	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState<string>("");
 	const [valorOriginal, setValorOriginal] = useState<string>("");

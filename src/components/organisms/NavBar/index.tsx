@@ -7,7 +7,7 @@ import { Nav, ImgLogo, Name, NavLeft, ImgLogout } from "./defaultStyles"
 import Logo from "../../../assets/img/Logo.svg"
 import Logout from "../../../assets/img/IconLogout.svg"
 
-function NavBar() {
+const NavBar : React.FC = () => {
     return (
         <>
             <Nav>
