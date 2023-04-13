@@ -10,10 +10,14 @@ import {
   MainBlock,
   Fields,
   InputField,
+  InputFieldMask,
   Title,
   ImageBack,
   ButtonSubmit,
 } from "./defaultStyles";
+
+// Mask
+import InputMask from "react-input-mask"
 
 // Img
 import IconBack from "../../assets/img/IconBack.svg";
@@ -98,7 +102,8 @@ const CadastroCliente: React.FC = () => {
               required
               {...register("fullName")}
             />
-            <InputField
+            <InputFieldMask
+              mask="999.999.999-99"
               type="text"
               name="cpf"
               placeholder="CPF"
@@ -127,7 +132,8 @@ const CadastroCliente: React.FC = () => {
               {...register("birthDate")}
             />
 
-            <InputField
+            <InputFieldMask
+              mask="99999-999"
               type="text"
               name="cep"
               placeholder="CEP"
