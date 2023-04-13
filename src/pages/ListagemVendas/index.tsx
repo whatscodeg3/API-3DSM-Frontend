@@ -27,15 +27,15 @@ import { apiClient, apiPurchases } from '../../services/api';
 
 const ListagemVendas: React.FC = () => {
     const [loading, setLoading] = useState(true);
-    const [ purchases, setPurchases] = useState([]);
-    const [ clients, setClients] = useState([]);
+    const [purchases, setPurchases] = useState([]);
+    const [clients, setClients] = useState([]);
     const [installmentsPayed, setInstallmentsPayed] = useState(null);
     const [modalContent, setModalContent] = useState<string>();
     const [titleContent, setTitleContent] = useState<string>();
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    
+
     
     useEffect(() => {
         async function loadData() {
@@ -103,12 +103,14 @@ const ListagemVendas: React.FC = () => {
         let installmentsFromEvent = event.props.rowData.installment
         let contentFormated = installmentsFromEvent.map((installment, i) => {
             let installmentDueDate = installment.installmentDueDate.split("-")
-            let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.installmentDueDate.split("-")
+            let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.paymentDate.split("-")
+            let creditDate = installment.creditDate == null? installment.creditDate : installment.creditDate.split("-")
             return {
                 id: installment.id,
                 installmentNumber: i + 1,
                 installmentDueDate: `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`,
                 paymentDate: paymentDate == null?  '' :`${paymentDate[2]}/${paymentDate[1]}/${paymentDate[0]}`,
+                creditDate: creditDate == null?  '' :`${creditDate[2]}/${creditDate[1]}/${creditDate[0]}`,
                 installmentValue: installment.installmentValue,
                 isInstallmentPayed: installment.isInstallmentPayed 
             }
@@ -148,7 +150,14 @@ const ListagemVendas: React.FC = () => {
                         header="Data de Pagamento" 
                         headerStyle={{color:'#696969'}}>
                     </Column>
-                    {/* <Column 
+                    <Column 
+                        field="creditDate"
+                        bodyStyle={{color:"#F18524"}}
+                        align="center" 
+                        header="Data de Credito" 
+                        headerStyle={{color:'#696969'}}>
+                    </Column>
+                    <Column 
                         field="installmentValue"
                         body={priceBodyTemplate} 
                         align="center"
@@ -156,7 +165,7 @@ const ListagemVendas: React.FC = () => {
                         header="Valor da Parcela" 
                         headerStyle={{color:'#696969'}}>
                     </Column>
-                    <Column 
+                    {/* <Column 
                         field="isInstallmentPayed"
                         body=""
                         bodyStyle={{color:"#F18524"}}

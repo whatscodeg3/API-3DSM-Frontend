@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
 
 export const Container = styled.div`
     width: 100vw;
@@ -32,8 +33,9 @@ export const Cpf = styled.div`
     align-items: center;
     flex-direction: column;
     color: #F18524;
-    gap: 30px;
+    gap: 45px;
     font-family: Ubuntu;
+
 `;
 
 export const Center = styled.div`
@@ -51,6 +53,13 @@ export const Line = styled.div`
     border: 1.5px solid #333333;
     transform: rotate(90deg);
 `;
+
+export const StyledInputText = styled(InputText)`
+    color: ${props => props.inputColor ? props.inputColor : "#F35416"};
+    border: none;
+    font-size: 20px;
+    padding-left: 30px;
+`
 
 export const StyledParcelas = styled(InputNumber)`
   .p-inputnumber-button {
