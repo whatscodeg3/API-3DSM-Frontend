@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { renderToString } from "react-dom/server";
 import { Link } from "react-router-dom";
 
 // Styles
@@ -23,12 +24,11 @@ import IconBack from '../../assets/img/IconBack.svg'
 //API's
 import { apiClient, apiPurchases } from '../../services/api';
 
-
-function ListaClienteUsuario(){
+const ListaClienteUsuario: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [clients, setClients] = useState([]);
-    const [modalContent, setModalContent] = useState();
-    const [titleContent, setTitleContent] = useState();
+    const [modalContent, setModalContent] = useState<string>();
+    const [titleContent, setTitleContent] = useState<string>();
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -78,14 +78,16 @@ function ListaClienteUsuario(){
     const showModal = (event) =>{
 
         const Client = event.rowData
-        
+
         if (event.field == "delete"){
-            let titleContent = 
-                <Title height='2rem'>
+            let titleContent: JSX.Element = ( 
+                <Title height='2rem' color="#696969">
                     Tem certeza que deseja excluir {Client.fullName} ?
-                </Title>;
-            setTitleContent(titleContent)
-            let contentToModal = 
+                </Title>
+            );
+            const titleContentString = renderToString(titleContent);
+            setTitleContent(titleContentString);
+            let contentToModal: JSX.Element = (
                 <ContainerUserInfo>
                     <div>
                         <ButtonVerde onClick={() => {excluir(Client.id)}}>Confirmar</ButtonVerde>
@@ -93,23 +95,31 @@ function ListaClienteUsuario(){
                     <div>
                         <ButtonVermelho>Cancelar</ButtonVermelho>
                     </div>
-                </ContainerUserInfo>;
-            setModalContent(contentToModal)
+                </ContainerUserInfo>
+            );
+            const contentToModalString = renderToString(contentToModal);
+            setModalContent(contentToModalString)
+
         } else if (event.field == "update"){
-            let titleContent = 
-                <Title height='2rem' color="#696969">
+            let titleContent: JSX.Element = ( 
+                <Title height='2rem'>
                     Informações de {Client.fullName}
-                </Title>;
-            setTitleContent(titleContent)
-            let contentToModal = 
-                    <Column 
-                        field="id" 
-                        bodyStyle={{color:"#F18524"}}
-                        align="center" 
-                        header="Parcela" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column>
-            setModalContent(contentToModal)
+                </Title>
+            );
+            const titleContentString = renderToString(titleContent);
+            setTitleContent(titleContentString)
+
+            let contentToModal: JSX.Element = ( 
+                <Column 
+                    field="id" 
+                    bodyStyle={{color:"#F18524"}}
+                    align="center" 
+                    header="Parcela" 
+                    headerStyle={{color:'#696969'}}>
+                </Column>
+            );
+            const contentToModalString = renderToString(contentToModal);
+            setModalContent(contentToModalString)
         }
         setVisible(true)
 
