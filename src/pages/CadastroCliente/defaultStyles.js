@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import InputMask from 'react-input-mask';
 
 export const Container = styled.form`
     width: 100vw;
@@ -35,6 +36,22 @@ export const Fields = styled.div`
 `;
 
 export const InputField = styled.input`
+    width: 470px;
+    height: 50px;
+
+    padding-left: 30px;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    background: #F5F6FA;
+    border: none;
+    border-bottom: 4px solid #696969;
+    border-radius: 3px;
+    
+    outline: none;
+`;
+
+export const InputFieldMask = styled(InputMask)`
     width: 470px;
     height: 50px;
 
