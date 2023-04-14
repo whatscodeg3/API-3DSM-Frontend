@@ -101,7 +101,6 @@ const ListagemVendas: React.FC = () => {
 
     const showModal = (event: any) =>{
         let installmentsFromEvent = event.rowData.installment
-        console.log(installmentsFromEvent)
         let contentFormated = installmentsFromEvent.map((installment: any, i: number) => {
             let installmentDueDate = installment.installmentDueDate.split("-")
             let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.paymentDate.split("-")

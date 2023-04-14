@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import InputMask from 'react-input-mask';
 
 export const Container = styled.div`
     width: 100vw;
@@ -92,18 +93,18 @@ export const Label = styled.label`
     font-family: Ubuntu;
 `;
 
-export const InputCPF = styled.input`
+export const InputFieldMask = styled(InputMask)`
     width: 430px;
     height: 50px;
     padding-left: 30px;
     font-size: 20px;
-    font-family: Ubuntu;
     font-family: Ubuntu;
     background: #F5F6FA;
     border: none;
     border-bottom: 4px solid #696969;
     border-radius: 3px;
     outline: none;
+    borderBottom: 'transparent';
 `;
 
 export const ImageBack = styled.img`

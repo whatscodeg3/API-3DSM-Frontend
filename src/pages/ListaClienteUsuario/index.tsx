@@ -29,9 +29,6 @@ const ListaClienteUsuario: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    console.log("#########")
-    console.log(clients)
-    console.log("#########")
 
     useEffect(() => {
         async function loadData() {

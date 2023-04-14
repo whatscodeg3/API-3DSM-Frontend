@@ -5,7 +5,7 @@ import axios from 'axios';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Cards, StyledInputText, Line, Center, Card, InputCPF, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label, ImageBack} from "./defaultStyles"
+import { Container, Cards, StyledInputText, Line, Center, Card, InputFieldMask, Cpf, StyledParcelas, StyledBotaoCadastro, Titulo, StyledCpf, Label, ImageBack} from "./defaultStyles"
 
 // Component Primereact
 import { InputNumber } from 'primereact/inputnumber';
@@ -74,8 +74,9 @@ const CadastroVenda: React.FC = () => {
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
 		const CpfParaVerificar = cpf.target.value;
+		const RemovePontoETraco = CpfParaVerificar.replace(/[^\d]/g, '')
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`)
+		axios.get(`http://localhost:8080/client/queryFromCpf/${RemovePontoETraco}`)
 		.then(response => {
 			const ResultadoDevolvido = response.data
 				setError(false);
@@ -143,7 +144,8 @@ const CadastroVenda: React.FC = () => {
 						<Cpf>
 							<Center>
 
-								<InputCPF 
+								<InputFieldMask 
+									mask="999.999.999-99"
 									type="text" 
 									name="cpf" 
 									placeholder="Digite um CPF"
