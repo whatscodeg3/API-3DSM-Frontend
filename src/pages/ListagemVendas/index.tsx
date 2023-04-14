@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 import { Link } from "react-router-dom";
-import { renderToString } from "react-dom/server";
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
@@ -11,7 +10,7 @@ import { Container, Title, ContainerUserInfo, ImageBack } from "./defaultStyles"
 import SearchField from '../../components/organisms/SearchField';
 
 //Prime React Components
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner'
@@ -30,11 +29,11 @@ const ListagemVendas: React.FC = () => {
     const [purchases, setPurchases] = useState([]);
     const [clients, setClients] = useState([]);
     const [installmentsPayed, setInstallmentsPayed] = useState(null);
-    const [modalContent, setModalContent] = useState<string>();
-    const [titleContent, setTitleContent] = useState<string>();
+    const [modalContent, setModalContent] = useState<JSX.Element>();
+    const [titleContent, setTitleContent] = useState<JSX.Element>();
     const [visible, setVisible] = useState(false);
-    const [filters, setFilters] = useState({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
-    const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [filters, setFilters] = useState<DataTableFilterMeta>({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
+    const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
 
     
     useEffect(() => {
@@ -48,10 +47,11 @@ const ListagemVendas: React.FC = () => {
         setLoading(false);
     }, []);
     
-    const onGlobalFilterChange = (e) => {
+    const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+   
         
-        let _filters = { ...filters };
+        let _filters: any = { ...filters };
 
         _filters['client.cpf'].value = value;
 
@@ -83,8 +83,8 @@ const ListagemVendas: React.FC = () => {
                 setPurchases(purchasesUpdated.data)
             }
             confirmPayment()
-            setModalContent('')
-            setTitleContent('')
+            setModalContent(<></>)
+            setTitleContent(<></>)
             window.alert("Pagamento da parcela confirmado")
         }else{
             window.alert("Confirmação do pagamento cancelada")
@@ -99,9 +99,10 @@ const ListagemVendas: React.FC = () => {
     }
 
 
-    const showModal = (event) =>{
-        let installmentsFromEvent = event.props.rowData.installment
-        let contentFormated = installmentsFromEvent.map((installment, i) => {
+    const showModal = (event: any) =>{
+        let installmentsFromEvent = event.rowData.installment
+        console.log(installmentsFromEvent)
+        let contentFormated = installmentsFromEvent.map((installment: any, i: number) => {
             let installmentDueDate = installment.installmentDueDate.split("-")
             let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.paymentDate.split("-")
             let creditDate = installment.creditDate == null? installment.creditDate : installment.creditDate.split("-")
@@ -122,8 +123,8 @@ const ListagemVendas: React.FC = () => {
                     Informações de Venda
                 </Title>
             );
-            const titleContentString = renderToString(titleContent);
-            setTitleContent(titleContentString);
+
+            setTitleContent(titleContent);
             let contentToModal: JSX.Element = (
                 <DataTable 
                     value={contentFormated}
@@ -184,8 +185,7 @@ const ListagemVendas: React.FC = () => {
                     </Column>
                 </DataTable>
             );
-            const contentToModalString = renderToString(contentToModal);
-            setModalContent(contentToModalString)
+            setModalContent(contentToModal)
 
         } else if (event.field == "client.cpf"){
             let titleContent: JSX.Element = ( 
@@ -193,8 +193,7 @@ const ListagemVendas: React.FC = () => {
                     Informações de Cliente
                 </Title>
             );
-            const titleContentString = renderToString(titleContent);
-            setTitleContent(titleContentString)
+            setTitleContent(titleContent)
 
             let contentToModal: JSX.Element = ( 
                 <ContainerUserInfo>
@@ -220,8 +219,8 @@ const ListagemVendas: React.FC = () => {
                     </div>
                 </ContainerUserInfo>
             );
-            const contentToModalString = renderToString(contentToModal);
-            setModalContent(contentToModalString)
+
+            setModalContent(contentToModal)
         }
         setVisible(true)
 
@@ -277,7 +276,7 @@ const ListagemVendas: React.FC = () => {
                 }
                 <Dialog 
                     visible={visible} 
-                    onHide={() => {setVisible(false);setModalContent('');setTitleContent('')}} 
+                    onHide={() => {setVisible(false);setModalContent(<></>);setTitleContent(<></>)}} 
                     style={{ minWidth: '50vw' }}
                     header={titleContent}
                     headerStyle={{textAlign:"center"}}

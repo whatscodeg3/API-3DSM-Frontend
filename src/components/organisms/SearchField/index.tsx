@@ -2,12 +2,12 @@ import React, { ChangeEvent } from "react";
 import { Field } from "./defaultStyles";
 
 interface SearchFieldProps {
-  value: string;
+  value?: string ;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
 }
 
-const SearchField: React.FC = (props: SearchFieldProps) => {
+const SearchField: React.FC<SearchFieldProps> = (props) => {
   return (
     <div className="mb-3">
       <span className="p-input-icon-left">

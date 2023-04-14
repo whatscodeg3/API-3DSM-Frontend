@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { renderToString } from "react-dom/server";
+import { FilterMatchMode } from 'primereact/api';
 import { Link } from "react-router-dom";
 
 // Styles
@@ -15,8 +14,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner'
-import { Button } from 'primereact/button';
-
 
 // Images
 import IconBack from '../../assets/img/IconBack.svg'
@@ -27,8 +24,8 @@ import { apiClient, apiPurchases } from '../../services/api';
 const ListaClienteUsuario: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [clients, setClients] = useState([]);
-    const [modalContent, setModalContent] = useState<string>();
-    const [titleContent, setTitleContent] = useState<string>();
+    const [modalContent, setModalContent] = useState<JSX.Element>();
+    const [titleContent, setTitleContent] = useState<JSX.Element>();
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -60,7 +57,7 @@ const ListaClienteUsuario: React.FC = () => {
 
     const isCellSelectable = (event) => (event.data.field === 'cpf' || event.data.field === 'fullName' || event.data.field === 'email' || event.data.field === 'telephone' ? false : true);
 
-    const excluir = (clientID) => {
+    const excluir = (clientID: any) => {
 
         async function confirmDelete(){
             await apiClient.delete(`/client/delete/${clientID}`); 
@@ -68,14 +65,14 @@ const ListaClienteUsuario: React.FC = () => {
             setClients(clientUpdate.data)
         }
         confirmDelete()
-        setModalContent('')
-        setTitleContent('')
+        setModalContent(<></>)
+        setTitleContent(<></>)
         window.alert("Exclusão realizada")
 
         setVisible(false)
     }
 
-    const showModal = (event) =>{
+    const showModal = (event: any) =>{
 
         const Client = event.rowData
 
@@ -85,8 +82,8 @@ const ListaClienteUsuario: React.FC = () => {
                     Tem certeza que deseja excluir {Client.fullName} ?
                 </Title>
             );
-            const titleContentString = renderToString(titleContent);
-            setTitleContent(titleContentString);
+            setTitleContent(titleContent);
+
             let contentToModal: JSX.Element = (
                 <ContainerUserInfo>
                     <div>
@@ -97,8 +94,7 @@ const ListaClienteUsuario: React.FC = () => {
                     </div>
                 </ContainerUserInfo>
             );
-            const contentToModalString = renderToString(contentToModal);
-            setModalContent(contentToModalString)
+            setModalContent(contentToModal)
 
         } else if (event.field == "update"){
             let titleContent: JSX.Element = ( 
@@ -106,8 +102,7 @@ const ListaClienteUsuario: React.FC = () => {
                     Informações de {Client.fullName}
                 </Title>
             );
-            const titleContentString = renderToString(titleContent);
-            setTitleContent(titleContentString)
+            setTitleContent(titleContent)
 
             let contentToModal: JSX.Element = ( 
                 <Column 
@@ -118,8 +113,7 @@ const ListaClienteUsuario: React.FC = () => {
                     headerStyle={{color:'#696969'}}>
                 </Column>
             );
-            const contentToModalString = renderToString(contentToModal);
-            setModalContent(contentToModalString)
+            setModalContent(contentToModal)
         }
         setVisible(true)
 
@@ -187,7 +181,7 @@ const ListaClienteUsuario: React.FC = () => {
                 }
                 <Dialog 
                     visible={visible} 
-                    onHide={() => {setVisible(false);setModalContent('');setTitleContent('')}} 
+                    onHide={() => {setVisible(false);setModalContent(<></>);setTitleContent(<></>)}} 
                     style={{ minWidth: '50vw' }}
                     header={titleContent}
                     headerStyle={{textAlign:"center"}}
