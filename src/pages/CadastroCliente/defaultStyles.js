@@ -89,10 +89,12 @@ export const ButtonSubmit = styled.button`
 
 export const ImageBack = styled.img`
     position: fixed;
-    right: 10px;
+    top: -1%;
+    left: 0%;
+    transform: rotateY(180deg);
 
     :hover {
-        transform: scale(1.1);
+        transform: rotateY(180deg) scale(1.1);
         transition: all 0.5s;
     }
 `;

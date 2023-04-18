@@ -22,7 +22,7 @@ export const Title = styled.p`
 `;
 
 export const Cards = styled.div` 
-    height: 50%;
+    height: 30%;
 
     display: flex;
     justify-content: center;

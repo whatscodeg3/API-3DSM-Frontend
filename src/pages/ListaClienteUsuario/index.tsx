@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
-import { Container, Title, ContainerUserDelete, ContainerUserUpdate, InputField, InputFieldMask, StyledInput, ImageBack, ButtonVerde, ButtonVermelho } from "./defaultStyles"
+import { Container, Title, ContainerUserDelete, ContainerUserUpdate, ContainerUserInfo, InputField, InputFieldMask, StyledInput, ImageBack, ButtonVerde, ButtonVermelho, ButtonSubmit } from "./defaultStyles"
 
 //Self Components
 import SearchField from '../../components/organisms/SearchField';
@@ -31,7 +31,7 @@ const ListaClienteUsuario: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-
+    
     ////////////////////////////////////////////// Codigo ddo filto da tabela e isCell pra bloquear poder clicar nos lugares que nao deve
 
     useEffect(() => {
@@ -79,6 +79,8 @@ const ListaClienteUsuario: React.FC = () => {
 
     //////////////////////////////////////////////
 
+     ////////////////////////////////////////////// Função que faz o Update e traz o endereço baseado no Cep
+
     const onSubmit = async (value: any) => {
         let formatJson = {
           fullName: value["fullName"],
@@ -96,21 +98,22 @@ const ListaClienteUsuario: React.FC = () => {
           },
         }
         const Id = value["clientId"]
-        const response = await apiClient.get("/client/query")
-
         let valido = true
 
         try{
             if(valido == true){
-              await apiClient.put(`/client/update/${Id}`, formatJson)
-              window.alert("Atualizado com Sucesso!")
+                await apiClient.put(`/client/update/${Id}`, formatJson)
+                window.alert("Atualizado com Sucesso!")
+                setModalContent(<></>)
+                setTitleContent(<></>)
+                setVisible(false)
             }
         } catch(error) {
-          if(error.response.data["cpf"] == undefined){
-            window.alert("Email Inválido !")
-          }else{
-            window.alert("Cpf Inválido !")
-          }
+            if(error.response.data["cpf"] == undefined) {
+                    window.alert("Email Inválido !");
+                } else if (error.response.data["email"] == undefined) {
+                  window.alert("CPF Inválido !");
+                }
         }
     }
 
@@ -127,6 +130,10 @@ const ListaClienteUsuario: React.FC = () => {
         });
     };
 
+     //////////////////////////////////////////////
+
+      ////////////////////////////////////////////// Codigo do modal que aparece ao selecionar um campo, com os if e codigo dentro deles, determinando o que aparece em cada campo selecionado
+
     const showModal = (event: any) =>{
 
         const Client = event.rowData
@@ -134,7 +141,7 @@ const ListaClienteUsuario: React.FC = () => {
         if (event.field == "delete"){
             let titleContent: JSX.Element = ( 
                 <Title height='2rem' color="#696969">
-                    Tem certeza que deseja excluir {Client.fullName} ?
+                    Deseja excluir {Client.fullName} ?
                 </Title>
             );
             setTitleContent(titleContent);
@@ -142,10 +149,10 @@ const ListaClienteUsuario: React.FC = () => {
             let contentToModal: JSX.Element = (
                 <ContainerUserDelete>
                     <div>
-                        <ButtonVerde onClick={() => {excluir(Client.id)}}>Confirmar</ButtonVerde>
+                        <ButtonVerde onClick={() => {excluir(Client.id)}}>Sim</ButtonVerde>
                     </div>
                     <div>
-                        <ButtonVermelho>Cancelar</ButtonVermelho>
+                        <ButtonVermelho>Não</ButtonVermelho>
                     </div>
                 </ContainerUserDelete>
             );
@@ -160,32 +167,71 @@ const ListaClienteUsuario: React.FC = () => {
             setTitleContent(titleContent)
 
             let contentToModal: JSX.Element = ( 
-                <ContainerUserUpdate>
+                <ContainerUserUpdate onSubmit={handleSubmit(onSubmit)}>
                     <StyledInput>
-                        <InputField style={{ width: '400px' }} name="fullname" placeholder="Nome Completo" {...register("fullName")}/>
-                        <InputField style={{ width: '400px' }} name="email" placeholder="Email" {...register("email")}/>
-                        <InputField style={{ width: '400px' }} name="telephone" placeholder="Telefone" {...register("telephone")}/>
-                        <InputField style={{ width: '400px' }} type="date" name="birthDate" placeholder="Data de Nascimento" {...register("birthDate")}/>
-                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" placeholder="CEP" {...register("cep")} onBlur={checkCEP}/>
+                        <InputField style={{ width: '400px' }} name="fullname" placeholder={`${Client.fullName}`} required {...register("fullName")}/>
+                        <InputField style={{ width: '400px' }} name="email" placeholder={`${Client.email}`} required {...register("email")}/>
+                        <InputField style={{ width: '400px' }} name="telephone" placeholder={`${Client.telephone}`} required {...register("telephone")}/>
+                        <InputField style={{ width: '400px' }} type="date" name="birthDate" defaultValue={Client.birthDate} required {...register("birthDate")}/>
+                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" placeholder={`${Client.address.cep}`} required {...register("cep")} onBlur={checkCEP}/>
+                        <InputField style={{ width: '400px' }} name="publicPlace" placeholder={`${Client.address.publicPlace}`} required {...register("publicPlace")}/>
                     </StyledInput>
                     <div>
                     </div>
                     <StyledInput>
-                        <InputField style={{ width: '400px' }} name="publicPlace" placeholder="Logradouro(rua, avenida, ...)" {...register("publicPlace")}/>
-                        <InputField style={{ width: '400px' }} name="state" placeholder="Estado" {...register("state")}/>
-                        <InputField style={{ width: '400px' }} name="neighborhood" placeholder="Bairro" {...register("neighborhood")}/>
-                        <InputField style={{ width: '400px' }} name="city" placeholder="Cidade" {...register("city")}/>
-                        <InputField style={{ width: '400px' }} name="numero" placeholder="Número *" {...register("numero")}/>
-                        <InputField style={{ width: '400px' }} name="complement" placeholder="Complemento" {...register("complement")}/>
+                        <InputField style={{ width: '400px' }} name="state" placeholder={`${Client.address.state}`} required {...register("state")}/>
+                        <InputField style={{ width: '400px' }} name="neighborhood" placeholder={`${Client.address.neighborhood}`} required {...register("neighborhood")}/>
+                        <InputField style={{ width: '400px' }} name="city" placeholder={`${Client.address.city}`} required {...register("city")}/>
+                        <InputField style={{ width: '400px' }} name="numero" placeholder="Número *" required {...register("numero")}/>
+                        <InputField style={{ width: '400px' }} name="complement" placeholder={`${Client.address.complement}`} required {...register("complement")}/>
+                        <input type="hidden" name="clientId" value={Client.id} {...register("clientId")} />
+                        <input type="hidden" name="address" value={Client.address.id} {...register("addressId")} />
+                        <ButtonSubmit type="submit">Atualizar</ButtonSubmit>
                     </StyledInput>
-                    <input type="hidden" name="clientId" value={Client.id} {...register("clientId")} />
-                    <input type="hidden" name="address" value={Client.address.id} {...register("addressId")} />
-                    <button type="submit" onClick={handleSubmit(onSubmit)}>Cadastrar</button>
                 </ContainerUserUpdate>
             )
             setModalContent(contentToModal)
+
+        } else if (event.field == "address"){
+
+        let titleContent: JSX.Element = ( 
+            <Title height='2rem'>
+                Informações de {Client.fullName}
+            </Title>
+        );
+        setTitleContent(titleContent)
+
+        let contentToModal: JSX.Element = ( 
+            <ContainerUserInfo>
+                    <div>
+                        <label>Cep</label>
+                        <input type="text" value={Client.address.cep} disabled />
+                    </div>
+                    <div>
+                        <label>Logradouro</label>
+                        <input type="text" value={Client.address.publicPlace} disabled />
+                    </div>
+                    <div>
+                        <label>Estado</label>
+                        <input type="text" value={Client.address.state} disabled />
+                    </div>
+                    <div>
+                        <label>Bairro</label>
+                        <input type="text" value={Client.address.neighborhood} disabled />
+                    </div>
+                    <div>
+                        <label>Cidade</label>
+                        <input type="text" value={Client.address.city} disabled />
+                    </div>
+                    <div>
+                        <label>Complemento</label>
+                        <input type="text" value={Client.address.complement} disabled />
+                    </div>
+                </ContainerUserInfo>
+        )
+        setModalContent(contentToModal)
         }
-        setVisible(true)
+    setVisible(true)
 
     };
     
@@ -199,7 +245,7 @@ const ListaClienteUsuario: React.FC = () => {
                 {!loading && 
                     <DataTable
                         value={clients}
-                        paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
+                        paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
                         cellSelection 
                         selectionMode="single"
                         onCellSelect={showModal}
@@ -218,7 +264,7 @@ const ListaClienteUsuario: React.FC = () => {
                         <Column 
                             field="fullName"
                             align="center" 
-                            header="Nome Completo" 
+                            header=""
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
@@ -231,6 +277,13 @@ const ListaClienteUsuario: React.FC = () => {
                             field="telephone"
                             align="center" 
                             header="Telefone" 
+                            headerStyle={{color:'#F18524'}}
+                        ></Column>
+                        <Column 
+                            field="address"
+                            body="Endereço"
+                            align="center" 
+                            header="Endereço" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 

@@ -32,7 +32,7 @@ export const ContainerUserDelete = styled.div`
     }
 `;
 
-export const ContainerUserUpdate = styled.div`
+export const ContainerUserUpdate = styled.form`
     width: 100%;
     height: 100%;
     display: ${props => props.display ? props.display : "flex"};
@@ -44,6 +44,40 @@ export const ContainerUserUpdate = styled.div`
         margin-right: 10px;
     }
 
+`;
+
+export const ContainerUserInfo = styled.div`
+    width: 100%;
+    height: 100%;
+    display: ${props => props.display ? props.display : "flex"};
+    flex-direction: ${props => props.flexDirection ? props.flexDirection : "column"};
+    gap: 2px;
+    align-items: center;
+
+    div{
+        width: 90%;
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    input{
+        display: flex;
+        color: ${props => props.inputColor ? props.inputColor : "#F35416"};
+        background: ${props => props.background ? props.background : "#ECECEC"};
+        width: ${props => props.width ? props.width : "100%"};
+        height: ${props => props.height ? props.height : "50px"};
+        border: none;
+        font-size: 20px;
+        padding-left: 10px;
+    }
+
+    label{
+        color: ${props => props.labelColor ? props.labelColor : "#696969"};
+        padding-top: 20px;
+        padding-left: 10px;
+        font-size: 20px
+    }
 `;
 
 export const StyledInput = styled.div`
@@ -107,13 +141,34 @@ export const ButtonVermelho = styled(Button)`
     font-weight: 600;
 `;
 
-export const ImageBack = styled.img`
-    position: fixed;
-    top: 90%;
-    left: 95%;
+export const ButtonSubmit = styled.button`
+    width: 180px;
+    height: 50px;
 
+    color: #FFFFFF;
+    background: #F1841F;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border: none;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+
+    cursor: pointer;
     :hover {
         transform: scale(1.1);
+        transition: all 0.5s;
+    }
+`;
+
+export const ImageBack = styled.img`
+    position: fixed;
+    top: -1%;
+    left: 0%;
+    transform: rotateY(180deg);
+
+    :hover {
+        transform: rotateY(180deg) scale(1.1);
         transition: all 0.5s;
     }
 `;
