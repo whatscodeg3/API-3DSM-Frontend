@@ -75,11 +75,13 @@ const ListagemVendas: React.FC = () => {
     };
     const checkInstallmentAsPayed = (installmentId) => {
         const decision = window.confirm("Deseja confirmar o pagamento desta parcela?")
-        
         if(decision){
+            console.log("####")
             async function confirmPayment(){
                 await apiPurchases.patch(`/api/installments/${installmentId}`); 
+                //{'paymentDate': '2023/04/17', 'daysToCredit': '3'}
                 const purchasesUpdated = await apiPurchases.get(`/api/purchases`)
+                console.log(purchasesUpdated)
                 setPurchases(purchasesUpdated.data)
             }
             confirmPayment()

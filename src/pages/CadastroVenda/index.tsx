@@ -75,8 +75,9 @@ const CadastroVenda: React.FC = () => {
 	function handleInput(cpf: any) {
 		const CpfParaVerificar = cpf.target.value;
 		const RemovePontoETraco = CpfParaVerificar.replace(/[^\d]/g, '')
+		console.log(CpfParaVerificar)
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${RemovePontoETraco}`)
+		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`)
 		.then(response => {
 			const ResultadoDevolvido = response.data
 				setError(false);
@@ -103,8 +104,8 @@ const CadastroVenda: React.FC = () => {
 		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 
-
 		const cpf = data.cpf
+		const RemovePontoETraco = cpf.replace(/[^\d]/g, '')
 
 		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
 
