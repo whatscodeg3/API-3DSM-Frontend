@@ -18,7 +18,7 @@ const Rotas: React.FC = () => {
                 <Route path="/cadastro/venda" element={<CadastroVenda/>} />
                 <Route path="/listagem/venda" element={<ListagemVendas/>} />
                 <Route path="/listagem/cliente" element={<ListaClienteUsuario/>} />
-                <Route path="/relatorios" element={<HomeRelatorios/>} />
+                <Route path="/filtro/relatorios" element={<HomeRelatorios/>} />
             </Routes>
         </div>
     )

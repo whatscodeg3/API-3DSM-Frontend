@@ -7,7 +7,7 @@ export const GlobalStyle = createGlobalStyle`
         margin: 0%;
         padding: 0%;
         background-color: #F5F6FA;
-        overflow-x:hidden;
+        overflow: hidden;
         font-family: Ubuntu;
     }
 
