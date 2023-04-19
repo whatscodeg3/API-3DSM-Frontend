@@ -264,7 +264,7 @@ const ListaClienteUsuario: React.FC = () => {
                         <Column 
                             field="fullName"
                             align="center" 
-                            header=""
+                            header="Nome"
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 

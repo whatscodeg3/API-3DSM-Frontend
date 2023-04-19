@@ -85,7 +85,6 @@ const ListagemVendas: React.FC = () => {
             async function confirmPayment(){
                 await apiPurchases.patch(`/api/installments/${installmentId}`,{'paymentDate': formattedDate, 'daysToCredit': 3}); 
                 const purchasesUpdated = await apiPurchases.get(`/api/purchases`)
-                console.log(purchasesUpdated)
                 setPurchases(purchasesUpdated.data)
             }
             confirmPayment()
