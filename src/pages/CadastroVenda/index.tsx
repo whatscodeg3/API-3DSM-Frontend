@@ -39,7 +39,7 @@ const CadastroVenda: React.FC = () => {
 	const Concatenar = "R$ " + paymentValue;
 
 	//formata o valor para começar da direita para a esquerda, por se tratar de dinheiro
-  	const formatarValorParaComecarDaDireita = (valorSemFormatacao) => {
+  	const formatarValorParaComecarDaDireita = (valorSemFormatacao: any) => {
 	 	 // Remove todos os caracteres que não são digitos de 0 a 9, depois transforma em float e então string, ppara poder mudar os valores como um texto.
 	 	 let valorFormatado = parseFloat(valorSemFormatacao.replace(/[^\d]/g, "")).toString();
 	 	 // se for colocado apenas 1 caracter, adiciona 0 a esquerda
@@ -56,7 +56,7 @@ const CadastroVenda: React.FC = () => {
 	  return valorFormatado;
 	};
 
-	const onChangeValorInserido = (e) => {
+	const onChangeValorInserido = (e: any) => {
 	  	const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
 	  // Seta o novo valor pos formação usando o setState do useState
 	  	setpaymentValue(ValorInseridoPosFormatacao);
@@ -73,11 +73,10 @@ const CadastroVenda: React.FC = () => {
 	////////////////////////////////////////////////////////////////
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
-		const CpfParaVerificar = cpf.target.value;
-		const RemovePontoETraco = CpfParaVerificar.replace(/[^\d]/g, '')
-		console.log(CpfParaVerificar)
+		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
+		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`)
+		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`)
 		.then(response => {
 			const ResultadoDevolvido = response.data
 				setError(false);
@@ -105,7 +104,6 @@ const CadastroVenda: React.FC = () => {
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 
 		const cpf = data.cpf
-		const RemovePontoETraco = cpf.replace(/[^\d]/g, '')
 
 		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
 

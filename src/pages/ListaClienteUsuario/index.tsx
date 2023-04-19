@@ -31,8 +31,7 @@ const ListaClienteUsuario: React.FC = () => {
     const [visible, setVisible] = useState(false);
     const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    
-    ////////////////////////////////////////////// Codigo ddo filto da tabela e isCell pra bloquear poder clicar nos lugares que nao deve
+    ////////////////////////////////////////////// Codigo do filto da tabela e isCell pra bloquear poder clicar nos lugares que nao deve
 
     useEffect(() => {
         async function loadData() {
@@ -107,6 +106,7 @@ const ListaClienteUsuario: React.FC = () => {
                 setModalContent(<></>)
                 setTitleContent(<></>)
                 setVisible(false)
+                location.reload()
             }
         } catch(error) {
             if(error.response.data["cpf"] == undefined) {
