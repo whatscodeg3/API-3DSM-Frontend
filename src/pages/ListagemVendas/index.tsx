@@ -59,12 +59,12 @@ const ListagemVendas: React.FC = () => {
         setGlobalFilterValue(value);
     };
 
-    const isCellSelectable = (event) => (event.data.field === 'paymentValue' || event.data.field === 'installment.length' ? false : true);
+    const isCellSelectable = (event: any) => (event.data.field === 'paymentValue' || event.data.field === 'installment.length' ? false : true);
 
-    const formatCurrency = (value) => {
+    const formatCurrency = (value: any) => {
         return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     };
-    const priceBodyTemplate = (event) => {
+    const priceBodyTemplate = (event: any) => {
         if(event.paymentValue){
             return formatCurrency(event.paymentValue)
         }else if(event.installmentValue){
@@ -73,13 +73,19 @@ const ListagemVendas: React.FC = () => {
         }
         
     };
-    const checkInstallmentAsPayed = (installmentId) => {
+    const checkInstallmentAsPayed = (installmentId: any) => {
         const decision = window.confirm("Deseja confirmar o pagamento desta parcela?")
-        
         if(decision){
+            const today = new Date();
+            const day = today.getDate();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+            const formattedDate = `${year}-${month}-${day}`;
+
             async function confirmPayment(){
-                await apiPurchases.patch(`/api/installments/${installmentId}`); 
+                await apiPurchases.patch(`/api/installments/${installmentId}`,{'paymentDate': formattedDate, 'daysToCredit': 3}); 
                 const purchasesUpdated = await apiPurchases.get(`/api/purchases`)
+                console.log(purchasesUpdated)
                 setPurchases(purchasesUpdated.data)
             }
             confirmPayment()
@@ -92,7 +98,7 @@ const ListagemVendas: React.FC = () => {
         setVisible(false)
     }
     
-    const installmentCheck = (event) =>{
+    const installmentCheck = (event: any) =>{
         return event.isInstallmentPayed ?  
             "Parcela paga" : 
             <Button label="Confirmar" severity="success"  onClick={() => {checkInstallmentAsPayed(event.id)}}/>
@@ -137,13 +143,6 @@ const ListagemVendas: React.FC = () => {
                         headerStyle={{color:'#696969'}}>
                     </Column>
                     <Column 
-                        field="installmentDueDate"
-                        bodyStyle={{color:"#F18524"}}
-                        align="center" 
-                        header="Data de Vencimento" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column>
-                    <Column 
                         field="paymentDate"
                         bodyStyle={{color:"#F18524"}}
                         align="center" 
@@ -155,6 +154,13 @@ const ListagemVendas: React.FC = () => {
                         bodyStyle={{color:"#F18524"}}
                         align="center" 
                         header="Data de Credito" 
+                        headerStyle={{color:'#696969'}}>
+                    </Column>
+                    <Column 
+                        field="installmentDueDate"
+                        bodyStyle={{color:"#F18524"}}
+                        align="center" 
+                        header="Data de Vencimento" 
                         headerStyle={{color:'#696969'}}>
                     </Column>
                     <Column 

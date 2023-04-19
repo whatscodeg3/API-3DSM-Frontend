@@ -36,7 +36,7 @@ const CadastroCliente: React.FC = () => {
         birthDate: value["birthDate"],
         address: {
             cep: value["cep"],
-            publicPlace: value["publicPlace"] + value["numero"],
+            publicPlace: value["publicPlace"] + " " + value["numero"],
             neighborhood: value["neighborhood"],
             city: value["city"],
             state: value["state"],
