@@ -7,6 +7,7 @@ import ListagemVendas from "./pages/ListagemVendas";
 import CadastroVenda from "./pages/CadastroVenda/index";
 import CadastroCliente from "./pages/CadastroCliente";
 import ListaClienteUsuario from "./pages/ListaClienteUsuario";
+import Relatorios from "./pages/Relatorios";
 
 const Rotas: React.FC = () => {
     return (
@@ -17,6 +18,7 @@ const Rotas: React.FC = () => {
                 <Route path="/cadastro/venda" element={<CadastroVenda/>} />
                 <Route path="/listagem/venda" element={<ListagemVendas/>} />
                 <Route path="/listagem/cliente" element={<ListaClienteUsuario/>} />
+                <Route path="/relatorios" element={<Relatorios/>}/>
             </Routes>
         </div>
     )
