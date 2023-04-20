@@ -6,9 +6,12 @@ export const GlobalStyle = createGlobalStyle`
         height: 100vh;
         margin: 0%;
         padding: 0%;
-
-        overflow: hidden;
-        
         background-color: #F5F6FA;
+        overflow: hidden;
+        font-family: Ubuntu;
+    }
+
+    .shadow{
+        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
     }
 `;

@@ -49,10 +49,19 @@ const HomeComercial: React.FC = () => {
                         </Link>
                         {/* Card Listagem */}
                         <Link to={"/listagem/venda"} style={{ textDecoration: 'none' }}>
-                        <Card className="animate__animated animate__slideInRight">
+                        <Card className="animate__animated animate__slideInUp">
                             <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
                             <p>
                                 Listagem<br/>vendas
+                            </p>
+                        </Card>
+                        </Link>
+                        {/* Card Relatorios */}
+                        <Link to={"/filtro/relatorios"} style={{ textDecoration: 'none' }}>
+                        <Card className="animate__animated animate__slideInRight">
+                            <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
+                            <p>
+                                Relatórios
                             </p>
                         </Card>
                         </Link>
