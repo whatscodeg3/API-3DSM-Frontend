@@ -63,7 +63,7 @@ const CadastroCliente: React.FC = () => {
       try{
           if(valido == true){
             await apiClient.post("/client/create", formatJson)
-            navigate("/");
+            navigate("/home");
           }
       } catch(error) {
         if(error.response.data["cpf"] == undefined){
@@ -191,7 +191,7 @@ const CadastroCliente: React.FC = () => {
 
         <ButtonSubmit type="submit">Cadastrar</ButtonSubmit>
 
-        <Link to={"/"} style={{ textDecoration: "none" }}>
+        <Link to={"/home"} style={{ textDecoration: "none" }}>
           <ImageBack src={IconBack} alt="IconBack" />
         </Link>
       </Container>

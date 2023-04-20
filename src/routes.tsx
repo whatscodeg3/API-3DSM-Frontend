@@ -7,12 +7,14 @@ import ListagemVendas from "./pages/ListagemVendas";
 import CadastroVenda from "./pages/CadastroVenda/index";
 import CadastroCliente from "./pages/CadastroCliente";
 import ListaClienteUsuario from "./pages/ListaClienteUsuario";
+import Login from "./pages/Login";
 
 const Rotas: React.FC = () => {
     return (
         <div>
             <Routes>
-                <Route path="/" element={<HomeComercial/>} />
+                <Route path="/" element={<Login/>} />
+                <Route path="/home" element={<HomeComercial/>} />
                 <Route path="/cadastro/cliente" element={<CadastroCliente/>} />
                 <Route path="/cadastro/venda" element={<CadastroVenda/>} />
                 <Route path="/listagem/venda" element={<ListagemVendas/>} />

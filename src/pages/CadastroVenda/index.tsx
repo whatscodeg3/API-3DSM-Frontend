@@ -230,7 +230,7 @@ const CadastroVenda: React.FC = () => {
 
 						</Card>
 					</Cards>
-					<Link to={"/"} style={{ textDecoration: "none" }}>
+					<Link to={"/home"} style={{ textDecoration: "none" }}>
 						<ImageBack src={IconBack} alt="IconBack" />
 					</Link>
 				</Container>

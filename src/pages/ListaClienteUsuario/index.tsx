@@ -313,7 +313,7 @@ const ListaClienteUsuario: React.FC = () => {
                     <hr/>
                     {modalContent}
                 </Dialog>
-                <Link to={"/"} style={{ textDecoration: "none" }}>
+                <Link to={"/home"} style={{ textDecoration: "none" }}>
 					<ImageBack src={IconBack} alt="IconBack" />
 				</Link>
             </Container>
