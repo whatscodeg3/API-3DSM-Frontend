@@ -22,10 +22,15 @@ import { apiPurchases } from '../../services/api'
 
 // responseData:[], consult //isso entra como parâmetro na função
 
-import responseData from './mockResponse'
+// import responseData from './mockResponse'
 
+interface RelatoriosProps {
+    responseData?: [],
+    consult?: {}
+}
 
-const Relatorios: React.FC = () => {
+const Relatorios: React.FC<RelatoriosProps> = (props) => {
+    console.log(props.consult)
     const [loading, setLoading] = useState(true);
     const [installmentsFiltered, setInstallmentsFiltered] = useState<any[]>([])
     // const [modalContent, setModalContent] = useState<JSX.Element>();
@@ -38,7 +43,7 @@ const Relatorios: React.FC = () => {
         // // }
         // loadData();
 
-        setInstallmentsFiltered(responseData)
+        setInstallmentsFiltered(props.responseData)
         setLoading(false);
     }, []);
 

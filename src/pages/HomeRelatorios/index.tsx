@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { apiPurchases } from "../../services/api";
 // import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
 // import { locale, addLocale, updateLocaleOption, updateLocaleOptions, localeOption, localeOptions } from 'primereact/api';
@@ -12,10 +12,13 @@ import { Container, Title, ImageBack, ButtonSubmit, Calendar, Select } from "./d
 // Images
 import IconBack from "../../assets/img/IconBack.svg"
 
+// Components
+import Relatorios from "../Relatorios";
+
 // Configs
 import { config } from "./calendarConfigs";
 
-export default function HomeRelatorios() {
+const HomeRelatorios: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState();
     const [consult, setConsult] = useState();
@@ -23,8 +26,8 @@ export default function HomeRelatorios() {
     const [initialDate, setInitialDate] = useState(null);
     const [finalDate,  setFinalDate,] = useState(null);
     const [typeDate,  setTypeDate,] = useState(null);
-    const [valid, setValid] = useState(false)
-
+    const [valid, setValid] = useState(false);
+    
     // addLocale("pt", config);
     // locale("pt"); 
     
@@ -37,9 +40,8 @@ export default function HomeRelatorios() {
     const handleTypeDateChange = (event) => {
         setTypeDate(event.target.value);
     }
-
-    const navigate = useNavigate();
-    const onSubmit = async (value) => { 
+    
+    const onSubmit = async () => {
         if (initialDate > finalDate) {
             window.alert('A data inicial não pode ser maior que a data final.');
         } else if (finalDate < initialDate) {
@@ -53,7 +55,8 @@ export default function HomeRelatorios() {
             "finalDate": finalDate,
             "filterType": typeDate
         }
-        if(valid == true){
+
+        if(valid){
             const response:any = await apiPurchases.get("/api/report", formatJson)
             setConsult(formatJson)
             setData(response)
@@ -63,10 +66,10 @@ export default function HomeRelatorios() {
 
     return (
         <>
-            {loading ? <Relatorios data={data} consult={consult} > :
-                <>
+            {loading && 
+            <>
                     <GlobalStyle/>
-                    <Container onSubmit={onSubmit}>
+                    <Container>
                         <Title>
                             Filtro de Relatorio
                         </Title>
@@ -85,14 +88,17 @@ export default function HomeRelatorios() {
                             <option value={3}>Data de Crédito</option>
                         </Select>
 
-                        <ButtonSubmit type="submit">Buscar</ButtonSubmit>
+                        <ButtonSubmit onClick={onSubmit}>Buscar</ButtonSubmit>
 
                         <Link to={"/"} style={{ textDecoration: "none" }}>
                             <ImageBack src={IconBack} alt="IconBack" />
                         </Link>
                     </Container>
                 </>
-            }
+             } 
+             {!loading && <Relatorios responseData={data} consult={consult} />}
         </>
     )
 }
+
+export default HomeRelatorios

@@ -57,7 +57,7 @@ const HomeComercial: React.FC = () => {
                         </Card>
                         </Link>
                         {/* Card Relatorios */}
-                        <Link to={"/filtro/relatorios"} style={{ textDecoration: 'none' }}>
+                        <Link to={"/relatorios"} style={{ textDecoration: 'none' }}>
                         <Card className="animate__animated animate__slideInRight">
                             <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
                             <p>
