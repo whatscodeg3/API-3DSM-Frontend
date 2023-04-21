@@ -51,7 +51,6 @@ export const ButtonSubmit = styled.button`
 
     font-size: 20px;
     font-family: 'Ubuntu', sans-serif;
-
     cursor: pointer;
     :hover {
         transform: scale(1.1);

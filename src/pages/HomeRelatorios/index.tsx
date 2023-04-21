@@ -15,8 +15,7 @@ import IconBack from "../../assets/img/IconBack.svg"
 // Components
 import Relatorios from "../Relatorios";
 
-// Configs
-import { config } from "./calendarConfigs";
+import { AxiosResponse } from "axios";
 
 const HomeRelatorios: React.FC = () => {
     const [loading, setLoading] = useState(true);
@@ -26,7 +25,6 @@ const HomeRelatorios: React.FC = () => {
     const [initialDate, setInitialDate] = useState(null);
     const [finalDate,  setFinalDate,] = useState(null);
     const [typeDate,  setTypeDate,] = useState(null);
-    const [valid, setValid] = useState(false);
     
     // addLocale("pt", config);
     // locale("pt"); 
@@ -38,36 +36,34 @@ const HomeRelatorios: React.FC = () => {
         setFinalDate(event.target.value);
     }
     const handleTypeDateChange = (event) => {
-        setTypeDate(event.target.value);
+        setTypeDate(Number(event.target.value));
     }
     
-    const onSubmit = async () => {
+    const onSubmit = () => {
+
         if (initialDate > finalDate) {
             window.alert('A data inicial não pode ser maior que a data final.');
-        } else if (finalDate < initialDate) {
-            window.alert('A data final não pode ser menor que a data inicial.');
         } else {
-            setValid(true)
-        }
+            const reportModel:any = {
+                "initalDate": new Date(initialDate.replace("-"," ")).toISOString(),
+                "finalDate": new Date(finalDate.replace("-"," ")).toISOString(),
+                "filterType": typeDate
+            }
 
-        const formatJson:any = {
-            "initalDate": initialDate,
-            "finalDate": finalDate,
-            "filterType": typeDate
-        }
-
-        if(valid){
-            const response:any = await apiPurchases.get("/api/report", formatJson)
-            setConsult(formatJson)
-            setData(response)
+            async function response () {
+                const reportReturned : any =  await apiPurchases.get("/api/report", reportModel)
+                setData(reportReturned)
+            }
+            response()
+            setConsult(reportModel)
             setLoading(false)
         }
     }
 
     return (
         <>
-            {loading && 
-            <>
+            {loading ? 
+                <>
                     <GlobalStyle/>
                     <Container>
                         <Title>
@@ -83,20 +79,27 @@ const HomeRelatorios: React.FC = () => {
                         </div>
 
                         <Select onChange={handleTypeDateChange}>
+                            <option>Selecione</option>
                             <option value={1}>Data de Vencimento</option>
                             <option value={2}>Data de Pagamento</option>
                             <option value={3}>Data de Crédito</option>
                         </Select>
 
-                        <ButtonSubmit onClick={onSubmit}>Buscar</ButtonSubmit>
+                        {initialDate && finalDate && typeDate? 
+                            <ButtonSubmit onClick={onSubmit}>Buscar</ButtonSubmit>
+                            : 
+                            <div className="flex justify-content-center align-items-center disabledButton">
+                                Buscar
+                            </div>
+                        }
 
                         <Link to={"/"} style={{ textDecoration: "none" }}>
                             <ImageBack src={IconBack} alt="IconBack" />
                         </Link>
                     </Container>
                 </>
-             } 
-             {!loading && <Relatorios responseData={data} consult={consult} />}
+             
+             : <Relatorios reportData={data} reportConsultModel={consult} />}
         </>
     )
 }
