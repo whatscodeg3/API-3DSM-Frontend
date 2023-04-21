@@ -131,7 +131,7 @@ const CadastroVenda: React.FC = () => {
 
 	useEffect(() => {
 		if (ValueRedirect) {
-			navigate('/');
+			navigate('/home');
 		}
 	  }, [ValueRedirect, navigate]);
 

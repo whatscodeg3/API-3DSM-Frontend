@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext  } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/auth';
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
@@ -12,12 +13,9 @@ import EyeOpen from "../../assets/img/eye-fill.svg"
 import EyeClosed from "../../assets/img/eye-slash-fill.svg"
 
 const Login: React.FC = () => {
-	const [ValueRedirect, setRedirect] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState("");
     const { register, handleSubmit } = useForm();
-
-    const navigate = useNavigate();
 
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
@@ -27,20 +25,22 @@ const Login: React.FC = () => {
         setShowPassword(!showPassword);
     };
 
+    interface AuthContextData {
+        authenticated: boolean;
+        login: (Cpf: number, Password: number) => Promise<void>;
+      }
+
+    const { authenticated, login } = useContext<AuthContextData>(AuthContext);
+
+
     const onSubmit = async (data : any) => {
 
-        const ObjetoComSenha: any = { Cpf : data.Cpf}
-        ObjetoComSenha.Password = password
-
-        setRedirect(true)
+        const Cpf = Number(data.Cpf)
+        const Password = Number(password);
+        await login(Cpf, Password);
+        
         window.alert("Login realizado com sucesso !")
     }
-
-    useEffect(() => {
-		if (ValueRedirect) {
-			navigate('/home');
-		}
-	  }, [ValueRedirect, navigate]);
 
     return (
         <>
