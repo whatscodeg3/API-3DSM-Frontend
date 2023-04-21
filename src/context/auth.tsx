@@ -7,7 +7,7 @@ interface AuthContextData {
   authenticated: boolean;
   user: any;
   loading: boolean;
-  login: (Cpf: number, Password: number) => Promise<void>;
+  login: (Cpf: string, Password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -25,38 +25,22 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [])
 
-  const login = async (email: any, senha: any) => {
-    const response = await createSession(email, senha);
+  const login = async (Cpf: any, Password: any) => {
+    const response = await createSession(Cpf, Password);
     console.log(response.data);
 
 
-    const loggedUser = response.data;
-    const token = response.data.token;
+    const token = response.data;
 
-    delete loggedUser.token;
-
-    console.log(loggedUser);
-    console.log(JSON.stringify(loggedUser))
+    console.log(JSON.stringify(token))
 
     apiClient.defaults.headers.Authorization = `Bearer ${token}`
-
-
-    localStorage.setItem("user", JSON.stringify(loggedUser));
     localStorage.setItem("token", token);
-
-    setUser(loggedUser);
-    const adminVerification = 'admin' || 'administrador' || 'adm';
-    if (loggedUser.nome.toLowerCase() === adminVerification) {
-      navigate("/home");
-    }
-    else {
-      navigate(`${loggedUser.id}`);
-    }
+    
   };
 
   const logout = () => {
 
-    localStorage.removeItem('user');
     localStorage.removeItem('token');
     apiClient.defaults.headers.Authorization = null;
     setUser(null);

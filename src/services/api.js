@@ -14,6 +14,7 @@ export const apiPurchases = axios.create({
   baseURL: "http://localhost:8081"
 })
 
-export const createSession = async (email, senha) => {
-  return api.post('/login', { email, senha });
+export const createSession = async (Cpf, Password) => {
+  const Autenticação = { login: `${Cpf}`, password: `${Password}` }
+  return apiClient.post('/login', Autenticação );
 }

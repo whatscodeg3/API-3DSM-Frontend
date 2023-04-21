@@ -27,16 +27,14 @@ const Login: React.FC = () => {
 
     interface AuthContextData {
         authenticated: boolean;
-        login: (Cpf: number, Password: number) => Promise<void>;
+        login: (Cpf: string, Password: string) => Promise<void>;
       }
 
     const { authenticated, login } = useContext<AuthContextData>(AuthContext);
 
-
     const onSubmit = async (data : any) => {
-
-        const Cpf = Number(data.Cpf)
-        const Password = Number(password);
+        const Cpf = String(data.Cpf)
+        const Password = String(password);
         await login(Cpf, Password);
         
         window.alert("Login realizado com sucesso !")
