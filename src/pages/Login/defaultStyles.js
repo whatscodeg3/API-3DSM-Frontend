@@ -35,8 +35,21 @@ export const Title = styled.div`
     color: #333333;
 `
 
-export const Inputs = styled(InputMask)`
+export const InputCpf = styled(InputMask)`
     margin-top: 10%;
+    margin-bottom: 10%;
+    width: 270px;
+    height: 40px;
+
+    border: none;
+    background: #F5F6FA;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    outline: none;
+    padding-left: 15px;
+`
+
+export const InputPassword = styled(InputMask)`
     width: 270px;
     height: 40px;
 
@@ -69,5 +82,20 @@ export const ButtonStyled = styled.button`
         transition: all 0.5s;
     }
 `;
+
+export const PasswordStyled = styled.div`
+    display: flex;
+    align-items: center;
+    position: relative;
+`
+
+export const Teste = styled.img`
+    position: absolute;
+    cursor: pointer;
+    height: 50%;
+    width: auto;
+    right: 0;
+    margin-right: 5px;
+`
 
 
