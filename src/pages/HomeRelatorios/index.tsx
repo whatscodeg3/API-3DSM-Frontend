@@ -18,8 +18,10 @@ import Relatorios from "../Relatorios";
 import { AxiosResponse } from "axios";
 
 const HomeRelatorios: React.FC = () => {
+    const tokenClient = localStorage.getItem("tokenClient");
+    const tokenPurchases = localStorage.getItem("tokenPurchases");
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState();
+    const [data, setData] = useState<AxiosResponse>();
     const [consult, setConsult] = useState();
 
     const [initialDate, setInitialDate] = useState(null);
@@ -45,17 +47,22 @@ const HomeRelatorios: React.FC = () => {
             window.alert('A data inicial não pode ser maior que a data final.');
         } else {
             const reportModel:any = {
-                "initalDate": new Date(initialDate.replace("-"," ")).toISOString(),
-                "finalDate": new Date(finalDate.replace("-"," ")).toISOString(),
-                "filterType": typeDate
+                body:{
+                    "initalDate": initialDate,
+                    "finalDate": finalDate,
+                    "filterType": typeDate
+                },
+                headers:{ 
+                    Authorization: `Bearer ${tokenPurchases}`
+                }
             }
 
             async function response () {
-                const reportReturned : any =  await apiPurchases.get("/api/report", reportModel)
+                const reportReturned : AxiosResponse =  await apiPurchases.get('/api/report', reportModel)
                 setData(reportReturned)
             }
             response()
-            setConsult(reportModel)
+            setConsult(reportModel['body'])
             setLoading(false)
         }
     }

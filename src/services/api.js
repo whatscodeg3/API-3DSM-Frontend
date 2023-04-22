@@ -24,6 +24,6 @@ export const createSessionClient = async (Cpf, Password) => {
 export const createSessionPurchases = async (Cpf, Password) => {
   const Autenticação = { login: `${Cpf}`, password: `${Password}` }
   console.log(Autenticação)
-  return apiClient.post('/login', Autenticação );
+  return apiPurchases.post('/login', Autenticação );
   //return apiPurchases.post('/login', Autenticação );
 }

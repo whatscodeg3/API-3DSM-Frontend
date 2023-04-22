@@ -47,16 +47,16 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
     };
     
     useEffect(() => {
-        // setInstallmentsFiltered(props.reportData)
-        if(props.reportConsultModel['filterType'] === "vencimento"){
-            setInstallmentsFiltered(mockResponse[0])
-        } else if(props.reportConsultModel['filterType'] === "pagamento"){
-            setInstallmentsFiltered(mockResponse[1])
+        setInstallmentsFiltered(props.reportData)
+        // if(props.reportConsultModel['filterType'] === "vencimento"){
+        //     setInstallmentsFiltered(mockResponse[0])
+        // } else if(props.reportConsultModel['filterType'] === "pagamento"){
+        //     setInstallmentsFiltered(mockResponse[1])
 
-        } else {
-            setInstallmentsFiltered(mockResponse[2])
-            // console.log(getCustomers(mockResponse[2]))
-        }
+        // } else {
+        //     setInstallmentsFiltered(mockResponse[2])
+        //     // console.log(getCustomers(mockResponse[2]))
+        // }
         setLoading(false);
     }, []);
 
