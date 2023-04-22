@@ -16,15 +16,7 @@ export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const recoveredUser = localStorage.getItem("user");
-
-    if (recoveredUser) setUser(JSON.parse(recoveredUser));
-
-    setLoading(false);
-  }, [])
+  const [loading, setLoading] = useState(false);
 
   const login = async (Cpf: any, Password: any) => {
 
@@ -34,20 +26,23 @@ export const AuthProvider = ({ children }) => {
     const tokenClient = responseClient.data;
     const tokenPurchases = responsePurchases.data;
 
-    console.log(tokenClient)
-    console.log(tokenPurchases)
+    //console.log(`Client: ${tokenClient}`)
+    //console.log(`Purchases: ${tokenPurchases}`)
 
     localStorage.setItem("tokenClient", tokenClient);
     localStorage.setItem("tokenPurchases", tokenPurchases);
+    apiClient.defaults.headers.Authorization = `Bearer ${tokenClient}`
 
     navigate('/home')
-    
+
   };
 
   const logout = () => {
 
     localStorage.removeItem('tokenClient');
     localStorage.removeItem('tokenPurchases');
+    apiClient.defaults.headers.Authorization = undefined
+    apiPurchases.defaults.headers.Authorization = undefined
     navigate('/');
   };
   return (

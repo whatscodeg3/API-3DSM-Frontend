@@ -1,13 +1,22 @@
 import React from "react";
+import { useContext } from 'react';
+import { AuthContext } from '../../../context/auth';
 
 // Styles
-import { Nav, ImgLogo, Name, NavLeft, ImgLogout } from "./defaultStyles"
+import { Nav, ImgLogo, Name, NavLeft, ImgLogout} from "./defaultStyles"
 
 // Img
 import Logo from "../../../assets/img/Logo.svg"
 import Logout from "../../../assets/img/IconLogout.svg"
 
 const NavBar : React.FC = () => {
+    const { logout } = useContext(AuthContext);
+  
+    const handleLogoutClick = () => {
+      logout();
+    }
+
+
     return (
         <>
             <Nav>
@@ -19,7 +28,7 @@ const NavBar : React.FC = () => {
                         Matheus Oliveira dos Santos
                     </Name>
                 </NavLeft>
-                <ImgLogout src={Logout} alt="" />
+                <ImgLogout src={Logout} alt="" onClick={handleLogoutClick} />
             </Nav>
         </>
     )

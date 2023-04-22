@@ -40,7 +40,7 @@ const ListaClienteUsuario: React.FC = () => {
         async function loadData() {
             const clientResponse = await apiClient.get("/client/query", {
                 headers: {
-                    Authorization: `Bearer ${tokenClient}`,
+                    Authorization: `Bearer ${tokenClient}`
                 },
             });
 
