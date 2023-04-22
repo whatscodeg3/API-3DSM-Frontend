@@ -46,9 +46,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
 
-    localStorage.removeItem('token');
-    apiClient.defaults.headers.Authorization = null;
-    setUser(null);
+    localStorage.removeItem('tokenClient');
+    localStorage.removeItem('tokenPurchases');
     navigate('/');
   };
   return (
