@@ -25,6 +25,8 @@ import { apiClient, apiPurchases } from '../../services/api';
 
 
 const ListagemVendas: React.FC = () => {
+    const tokenClient = localStorage.getItem("tokenClient");
+    const tokenPurchases = localStorage.getItem("tokenPurchases");
     const [loading, setLoading] = useState(true);
     const [purchases, setPurchases] = useState([]);
     const [clients, setClients] = useState([]);
@@ -39,7 +41,11 @@ const ListagemVendas: React.FC = () => {
     useEffect(() => {
         async function loadData() {
             // const clientResponse = await apiClient.get("/client/query");
-            const purchasesResponse = await apiPurchases.get(`/api/purchases`);
+            const purchasesResponse = await apiPurchases.get(`/api/purchases`, {
+                headers: {
+                    Authorization: `Bearer ${tokenPurchases}`,
+                },
+            });
             setPurchases(purchasesResponse.data);
             // setClients(clientResponse.data);
         }
@@ -83,8 +89,16 @@ const ListagemVendas: React.FC = () => {
             const formattedDate = `${year}-${month}-${day}`;
 
             async function confirmPayment(){
-                await apiPurchases.patch(`/api/installments/${installmentId}`,{'paymentDate': formattedDate, 'daysToCredit': 3}); 
-                const purchasesUpdated = await apiPurchases.get(`/api/purchases`)
+                await apiPurchases.patch(`/api/installments/${installmentId}`,{'paymentDate': formattedDate, 'daysToCredit': 3}, {
+                    headers: {
+                        Authorization: `Bearer ${tokenPurchases}`,
+                    },
+                }); 
+                const purchasesUpdated = await apiPurchases.get(`/api/purchases`, {
+                    headers: {
+                        Authorization: `Bearer ${tokenPurchases}`,
+                    },
+                })
                 setPurchases(purchasesUpdated.data)
             }
             confirmPayment()

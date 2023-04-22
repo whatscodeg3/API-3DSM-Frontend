@@ -15,6 +15,8 @@ import { InputText } from 'primereact/inputtext';
 import IconBack from '../../assets/img/IconBack.svg'
 
 const CadastroVenda: React.FC = () => {
+    const tokenClient = localStorage.getItem("tokenClient");
+    const tokenPurchases = localStorage.getItem("tokenPurchases");
 	// UseState da verificação de cpf
 	const [nome, setNome] = useState('');
 	const [email, setEmail] = useState('');
@@ -76,7 +78,11 @@ const CadastroVenda: React.FC = () => {
 		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
 		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`)
+		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`, {
+			headers: {
+				Authorization: `Bearer ${tokenPurchases}`,
+			},
+		})
 		.then(response => {
 			const ResultadoDevolvido = response.data
 				setError(false);
@@ -105,7 +111,11 @@ const CadastroVenda: React.FC = () => {
 
 		const cpf = data.cpf
 
-		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
+		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
+			headers: {
+				Authorization: `Bearer ${tokenPurchases}`,
+			},
+		})
 
 		.then(response => {
 
@@ -113,7 +123,11 @@ const CadastroVenda: React.FC = () => {
 			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
 	
 
-			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
+			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal, {
+                headers: {
+                    Authorization: `Bearer ${tokenPurchases}`,
+                },
+            })
 			.then((response) => {
 
 				window.alert("Cadastrado com sucesso!");

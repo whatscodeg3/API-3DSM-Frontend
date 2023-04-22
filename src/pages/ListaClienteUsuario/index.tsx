@@ -23,6 +23,8 @@ import IconBack from '../../assets/img/IconBack.svg'
 import { apiClient, apiPurchases } from '../../services/api';
 
 const ListaClienteUsuario: React.FC = () => {
+    const tokenClient = localStorage.getItem("tokenClient");
+    const tokenPurchases = localStorage.getItem("tokenPurchases");
     const { register, handleSubmit, setValue, setFocus} = useForm();
     const [loading, setLoading] = useState(true);
     const [clients, setClients] = useState([]);
@@ -32,10 +34,16 @@ const ListaClienteUsuario: React.FC = () => {
     const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     ////////////////////////////////////////////// Codigo do filto da tabela e isCell pra bloquear poder clicar nos lugares que nao deve
-
     useEffect(() => {
+
+
         async function loadData() {
-            const clientResponse = await apiClient.get("/client/query");
+            const clientResponse = await apiClient.get("/client/query", {
+                headers: {
+                    Authorization: `Bearer ${tokenClient}`,
+                },
+            });
+
             //const purchasesResponse = await apiPurchases.get(`/api/purchases`);
             //setPurchases(purchasesResponse.data);
             setClients(clientResponse.data);
@@ -64,8 +72,16 @@ const ListaClienteUsuario: React.FC = () => {
     const excluir = (clientID: any) => {
 
         async function confirmDelete(){
-            await apiClient.delete(`/client/delete/${clientID}`); 
-            const clientUpdate = await apiClient.get("/client/query");
+            await apiClient.delete(`/client/delete/${clientID}`, {
+                headers: {
+                    Authorization: `Bearer ${tokenClient}`,
+                },
+            }); 
+            const clientUpdate = await apiClient.get("/client/query", {
+                headers: {
+                    Authorization: `Bearer ${tokenClient}`,
+                },
+            });
             setClients(clientUpdate.data)
         }
         confirmDelete()
@@ -101,7 +117,11 @@ const ListaClienteUsuario: React.FC = () => {
 
         try{
             if(valido == true){
-                await apiClient.put(`/client/update/${Id}`, formatJson)
+                await apiClient.put(`/client/update/${Id}`, formatJson,{
+                    headers: {
+                        Authorization: `Bearer ${tokenClient}`,
+                    },
+                })
                 window.alert("Atualizado com Sucesso!")
                 setModalContent(<></>)
                 setTitleContent(<></>)

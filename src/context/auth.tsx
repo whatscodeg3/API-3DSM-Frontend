@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from 'react';
 
 import { useNavigate } from 'react-router-dom'
-import { apiClient, apiPurchases, createSession } from '../services/api'
+import { apiClient, apiPurchases, createSessionClient, createSessionPurchases } from '../services/api'
 
 interface AuthContextData {
   authenticated: boolean;
@@ -12,6 +12,7 @@ interface AuthContextData {
 }
 
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -26,16 +27,20 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const login = async (Cpf: any, Password: any) => {
-    const response = await createSession(Cpf, Password);
-    console.log(response.data);
 
+    const responseClient = await createSessionClient(Cpf, Password);
+    const responsePurchases = await createSessionPurchases(Cpf, Password);
 
-    const token = response.data;
+    const tokenClient = responseClient.data;
+    const tokenPurchases = responsePurchases.data;
 
-    console.log(JSON.stringify(token))
+    console.log(tokenClient)
+    console.log(tokenPurchases)
 
-    apiClient.defaults.headers.Authorization = `Bearer ${token}`
-    localStorage.setItem("token", token);
+    localStorage.setItem("tokenClient", tokenClient);
+    localStorage.setItem("tokenPurchases", tokenPurchases);
+
+    navigate('/home')
     
   };
 
