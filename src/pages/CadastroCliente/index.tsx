@@ -24,6 +24,8 @@ import IconBack from "../../assets/img/IconBack.svg";
 
 
 const CadastroCliente: React.FC = () => {
+  const tokenClient = localStorage.getItem("tokenClient");
+  const tokenPurchases = localStorage.getItem("tokenPurchases");
     const { register, handleSubmit, setValue, setFocus } = useForm();
     
     const navigate = useNavigate();
@@ -36,7 +38,7 @@ const CadastroCliente: React.FC = () => {
         birthDate: value["birthDate"],
         address: {
             cep: value["cep"],
-            publicPlace: value["publicPlace"] + value["numero"],
+            publicPlace: value["publicPlace"] + " " + value["numero"],
             neighborhood: value["neighborhood"],
             city: value["city"],
             state: value["state"],
@@ -44,7 +46,11 @@ const CadastroCliente: React.FC = () => {
         },
       };
           
-      const response = await apiClient.get("/client/query")
+      const response = await apiClient.get("/client/query", {
+        headers: {
+            Authorization: `Bearer ${tokenClient}`,
+        },
+    });
       let data = response.data
       let valido = false
 
@@ -62,8 +68,12 @@ const CadastroCliente: React.FC = () => {
       
       try{
           if(valido == true){
-            await apiClient.post("/client/create", formatJson)
-            navigate("/");
+            await apiClient.post("/client/create", formatJson, {
+              headers: {
+                  Authorization: `Bearer ${tokenClient}`,
+              },
+          })
+            navigate("/home");
           }
       } catch(error) {
         if(error.response.data["cpf"] == undefined){
@@ -191,7 +201,7 @@ const CadastroCliente: React.FC = () => {
 
         <ButtonSubmit type="submit">Cadastrar</ButtonSubmit>
 
-        <Link to={"/"} style={{ textDecoration: "none" }}>
+        <Link to={"/home"} style={{ textDecoration: "none" }}>
           <ImageBack src={IconBack} alt="IconBack" />
         </Link>
       </Container>

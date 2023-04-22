@@ -15,6 +15,8 @@ import { InputText } from 'primereact/inputtext';
 import IconBack from '../../assets/img/IconBack.svg'
 
 const CadastroVenda: React.FC = () => {
+    const tokenClient = localStorage.getItem("tokenClient");
+    const tokenPurchases = localStorage.getItem("tokenPurchases");
 	// UseState da verificação de cpf
 	const [nome, setNome] = useState('');
 	const [email, setEmail] = useState('');
@@ -39,7 +41,7 @@ const CadastroVenda: React.FC = () => {
 	const Concatenar = "R$ " + paymentValue;
 
 	//formata o valor para começar da direita para a esquerda, por se tratar de dinheiro
-  	const formatarValorParaComecarDaDireita = (valorSemFormatacao) => {
+  	const formatarValorParaComecarDaDireita = (valorSemFormatacao: any) => {
 	 	 // Remove todos os caracteres que não são digitos de 0 a 9, depois transforma em float e então string, ppara poder mudar os valores como um texto.
 	 	 let valorFormatado = parseFloat(valorSemFormatacao.replace(/[^\d]/g, "")).toString();
 	 	 // se for colocado apenas 1 caracter, adiciona 0 a esquerda
@@ -56,7 +58,7 @@ const CadastroVenda: React.FC = () => {
 	  return valorFormatado;
 	};
 
-	const onChangeValorInserido = (e) => {
+	const onChangeValorInserido = (e: any) => {
 	  	const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
 	  // Seta o novo valor pos formação usando o setState do useState
 	  	setpaymentValue(ValorInseridoPosFormatacao);
@@ -73,10 +75,14 @@ const CadastroVenda: React.FC = () => {
 	////////////////////////////////////////////////////////////////
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
-		const CpfParaVerificar = cpf.target.value;
-		const RemovePontoETraco = CpfParaVerificar.replace(/[^\d]/g, '')
+		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
+		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${RemovePontoETraco}`)
+		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`, {
+			headers: {
+				Authorization: `Bearer ${tokenPurchases}`,
+			},
+		})
 		.then(response => {
 			const ResultadoDevolvido = response.data
 				setError(false);
@@ -103,10 +109,13 @@ const CadastroVenda: React.FC = () => {
 		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 
-
 		const cpf = data.cpf
 
-		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente)
+		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
+			headers: {
+				Authorization: `Bearer ${tokenPurchases}`,
+			},
+		})
 
 		.then(response => {
 
@@ -114,7 +123,11 @@ const CadastroVenda: React.FC = () => {
 			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
 	
 
-			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal)
+			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal, {
+                headers: {
+                    Authorization: `Bearer ${tokenPurchases}`,
+                },
+            })
 			.then((response) => {
 
 				window.alert("Cadastrado com sucesso!");
@@ -132,7 +145,7 @@ const CadastroVenda: React.FC = () => {
 
 	useEffect(() => {
 		if (ValueRedirect) {
-			navigate('/');
+			navigate('/home');
 		}
 	  }, [ValueRedirect, navigate]);
 
@@ -231,7 +244,7 @@ const CadastroVenda: React.FC = () => {
 
 						</Card>
 					</Cards>
-					<Link to={"/"} style={{ textDecoration: "none" }}>
+					<Link to={"/home"} style={{ textDecoration: "none" }}>
 						<ImageBack src={IconBack} alt="IconBack" />
 					</Link>
 				</Container>
