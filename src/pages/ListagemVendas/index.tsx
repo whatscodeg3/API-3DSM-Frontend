@@ -250,8 +250,7 @@ const ListagemVendas: React.FC = () => {
             <Container>     
                 <Title color='#F18524'>Listagem de Vendas</Title>
                 <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
-                {loading && <ProgressSpinner/>}
-                {!loading && 
+                {loading? <ProgressSpinner/>: 
                     <DataTable
                         value={purchases}
                         paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 

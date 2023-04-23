@@ -6,7 +6,6 @@ import { BrowserRouter } from "react-router-dom";
 
 //animations
 import "animate.css/animate.min.css"
-
 //theme
 import "primereact/resources/themes/lara-light-indigo/theme.css";  
 //core
