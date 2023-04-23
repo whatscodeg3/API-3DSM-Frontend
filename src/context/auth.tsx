@@ -23,15 +23,19 @@ export const AuthProvider = ({ children }) => {
     const responseClient = await createSessionClient(Cpf, Password);
     const responsePurchases = await createSessionPurchases(Cpf, Password);
 
+    console.log(responseClient)
+    console.log(responsePurchases)
+
     const tokenClient = responseClient.data;
     const tokenPurchases = responsePurchases.data;
 
-    //console.log(`Client: ${tokenClient}`)
-    //console.log(`Purchases: ${tokenPurchases}`)
+    console.log(`Client: ${tokenClient}`)
+    console.log(`Purcheses: ${tokenPurchases}`)
 
     localStorage.setItem("tokenClient", tokenClient);
     localStorage.setItem("tokenPurchases", tokenPurchases);
     apiClient.defaults.headers.Authorization = `Bearer ${tokenClient}`
+    setUser(tokenClient)
 
     navigate('/home')
 
@@ -43,6 +47,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('tokenPurchases');
     apiClient.defaults.headers.Authorization = undefined
     apiPurchases.defaults.headers.Authorization = undefined
+    setUser(null);
     navigate('/');
   };
   return (
