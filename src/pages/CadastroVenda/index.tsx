@@ -80,7 +80,7 @@ const CadastroVenda: React.FC = () => {
 
 		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`, {
 			headers: {
-				Authorization: `Bearer ${tokenPurchases}`,
+				Authorization: `Bearer ${tokenClient}`,
 			},
 		})
 		.then(response => {
@@ -114,7 +114,8 @@ const CadastroVenda: React.FC = () => {
 		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
 			headers: {
 				Authorization: `Bearer ${tokenPurchases}`,
-			},
+				//Authorization2: `Bearer ${tokenClient}`
+			  }
 		})
 
 		.then(response => {

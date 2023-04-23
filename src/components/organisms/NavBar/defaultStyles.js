@@ -23,7 +23,7 @@ export const ImgLogo = styled.img`
 `;
 
 export const ImgLogout = styled.img`
-    display: none; // Próximas Sprints
+    display: flex;
     padding: 20px;
     cursor: pointer;
 `;
