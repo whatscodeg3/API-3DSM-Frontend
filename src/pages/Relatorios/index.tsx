@@ -29,38 +29,33 @@ interface RelatoriosProps {
 }
 
 const Relatorios: React.FC<RelatoriosProps> = (props) => {
-    console.log(props.reportConsultModel)
-    const [loading, setLoading] = useState(true);
-    const [installmentsFiltered, setInstallmentsFiltered] = useState<any[]>([])
 
-    const getCustomers = (data) => {
-        const today = new Date()
-        const newer = data.map((d) => {
-            const creditDate = new Date(d.creditDate.replace('-',' '))
-            if(creditDate > today ){
-                console.log("menor")
-                return d
-            }
+    const [loading, setLoading] = useState(false);
+    const [installmentsFiltered, setInstallmentsFiltered] = useState([])
+    const [isMounted, setIsMounted] = useState(false);
 
-        });
-        return newer
-    };
+
+     useEffect(() => {
+         if (!isMounted) {
+             setInstallmentsFiltered(props.reportData)
+             console.log(props.reportData)
+         } else {
+             setIsMounted(true);
+             setLoading(false)
+         }
+                 // if(props.reportConsultModel['filterType'] === "vencimento"){
+                 //     setInstallmentsFiltered(mockResponse[0])
+                 // } else if(props.reportConsultModel['filterType'] === "pagamento"){
+                 //     setInstallmentsFiltered(mockResponse[1])
+        
+    //             // } else {
+    //             //     setInstallmentsFiltered(mockResponse[2])
+    //             //     // console.log(getCustomers(mockResponse[2]))
+    //             // }
+                
+     }, [props.reportData, isMounted]);
+        
     
-    useEffect(() => {
-        setInstallmentsFiltered(props.reportData)
-        // if(props.reportConsultModel['filterType'] === "vencimento"){
-        //     setInstallmentsFiltered(mockResponse[0])
-        // } else if(props.reportConsultModel['filterType'] === "pagamento"){
-        //     setInstallmentsFiltered(mockResponse[1])
-
-        // } else {
-        //     setInstallmentsFiltered(mockResponse[2])
-        //     // console.log(getCustomers(mockResponse[2]))
-        // }
-        setLoading(false);
-    }, []);
-
-
     const formatCurrency = (price: number) => {
         return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     };
@@ -228,7 +223,7 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                         ></Column>
                     </DataTable>
                 }
-                <Link to={"/"} style={{ textDecoration: "none" }}>
+                <Link to={"/home"} style={{ textDecoration: "none" }}>
 					<ImageBack src={IconBack} alt="IconBack" />
 				</Link>
             </Container>

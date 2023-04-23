@@ -18,19 +18,6 @@ const Rotas: React.FC = () => {
     return authenticated ? children : <Navigate to='/' />
   }
 
-    const Private = ({ children }) => {
-      const { authenticated, loading } = useContext(AuthContext);
-      const isPageInLoading = loading;
-  
-      if (isPageInLoading) {
-        return <div className="loading"> Carregando...</div>
-      }
-  
-      return authenticated
-        ? children
-        : navigate('/')
-    }
-
   return (
     <div>
         <AuthProvider>
