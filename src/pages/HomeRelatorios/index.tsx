@@ -52,7 +52,7 @@ const HomeRelatorios: React.FC = () => {
             async function response () {
                 const reportReturned: any =  await apiPurchases.get('/api/report', {
                     headers: { 
-                        'Authorization': `Bearer ${tokenClient}`
+                        'Authorization': `Bearer ${tokenPurchases}`
                     },
                     params: {
                         initalDate: initialDate,
