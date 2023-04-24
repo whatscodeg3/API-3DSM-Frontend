@@ -78,11 +78,13 @@ const CadastroVenda: React.FC = () => {
 		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
 		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`, {
+		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`
+		, {
 			headers: {
-				Authorization: `Bearer ${tokenClient}`,
+				Authorization: `Bearer ${tokenPurchases}`,
 			},
-		})
+		}
+		)
 		.then(response => {
 			const ResultadoDevolvido = response.data
 				setError(false);

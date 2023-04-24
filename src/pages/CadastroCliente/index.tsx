@@ -32,7 +32,7 @@ const CadastroCliente: React.FC = () => {
     const onSubmit = async (value) => {
       let formatJson = {
         fullName: value["fullName"],
-        cpf: value["cpf"],
+        cpf: value["cpf"].replace(/\D/g, ""),
         email: value["email"],
         telephone: value["telephone"],
         birthDate: value["birthDate"],
