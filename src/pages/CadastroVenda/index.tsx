@@ -33,7 +33,7 @@ const CadastroVenda: React.FC = () => {
 	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState<string>("");
 	const [valorOriginal, setValorOriginal] = useState<string>("");
-	const [ValueRedirect, setRedirect] = useState(true)
+	const [ValueRedirect, setRedirect] = useState(false)
 
 	// Syntaxe do UseForm
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
@@ -111,12 +111,20 @@ const CadastroVenda: React.FC = () => {
 	////////////////////////////////////////////////////////////////
 
 	const onSubmit = (data : any) => {
+		const today = new Date();
+		const day = today.getDate();
+		const month = String(today.getMonth() + 1).padStart(2, '0');
+		const year = today.getFullYear();
+		const formattedDate = `${year}-${month}-${day}`;
+
 
 		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
+		ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
 
+		console.log(ObjetoSoComValorTotaleIdCliente)
 		const cpf = data.cpf.replace(/\D/g, '');
-		console.log(data.cpf)	
+		// console.log(data.cpf)	
 
 		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
 			headers: {
