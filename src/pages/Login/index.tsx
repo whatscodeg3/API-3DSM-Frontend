@@ -1,7 +1,9 @@
-import React, { useState, useContext  } from "react";
+import React, { useState, useContext, useRef  } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
+import { Toast } from 'primereact/toast';
+
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
@@ -16,6 +18,8 @@ const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState("");
     const { register, handleSubmit } = useForm();
+    const toast = useRef(null);
+
 
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
@@ -35,14 +39,21 @@ const Login: React.FC = () => {
     const onSubmit = async (data : any) => {
         const Cpf = String(data.Cpf)
         const Password = String(password);
-        await login(Cpf, Password);
+        try{
+            await login(Cpf, Password);
+            // window.alert("Login realizado com sucesso !")
+
+        }catch{
+            toast.current.show({severity:'error', summary: 'Erro', detail:'Credencial inserida inválida', life: 3000});
+            // window.alert("Credencial inserida inválida")
+        }
         
-        window.alert("Login realizado com sucesso !")
     }
 
     return (
         <>
             <GlobalStyle />
+            <Toast ref={toast} />
 
             <Container>
                 <Cards onSubmit={handleSubmit(onSubmit)}>

@@ -1,7 +1,9 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useRef, createContext } from 'react';
 
 import { useNavigate } from 'react-router-dom'
 import { apiClient, apiPurchases, createSessionClient, createSessionPurchases } from '../services/api'
+import { Toast } from 'primereact/toast';
+
 
 interface AuthContextData {
   authenticated: boolean;
@@ -17,6 +19,8 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const toast = useRef(null);
+
 
   const login = async (Cpf: any, Password: any) => {
 
@@ -24,19 +28,20 @@ export const AuthProvider = ({ children }) => {
     const responsePurchases = await createSessionPurchases(Cpf, Password);
 
     // console.log(responseClient)
-    console.log(responsePurchases)
+    // console.log(responsePurchases)
 
     // const tokenClient = responseClient.data;
     const tokenPurchases = responsePurchases.data;
 
     // console.log(`Client: ${tokenClient}`)
-    console.log(`Purcheses: ${tokenPurchases}`)
+    // console.log(`Purcheses: ${tokenPurchases}`)
 
     // localStorage.setItem("tokenClient", tokenClient);
     localStorage.setItem("tokenPurchases", tokenPurchases);
     apiClient.defaults.headers.Authorization = `Bearer ${tokenPurchases}`
     setUser(tokenPurchases)
-
+    
+    toast.current.show({severity:'success', summary: 'Successo', detail:'Login realizado com sucesso', life: 3000});
     navigate('/home')
 
   };
@@ -52,6 +57,7 @@ export const AuthProvider = ({ children }) => {
   };
   return (
     <AuthContext.Provider value={{ authenticated: !!user, user, loading, login, logout }}>
+      <Toast ref={toast} />
       {children}
     </ AuthContext.Provider>
   )
