@@ -89,7 +89,7 @@ export const ButtonSubmit = styled.button`
 
 export const ImageBack = styled.img`
     position: fixed;
-    top: -1%;
+    top: 0%;
     left: 0%;
     transform: rotateY(180deg);
 
