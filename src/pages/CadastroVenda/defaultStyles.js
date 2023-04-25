@@ -8,6 +8,7 @@ export const Container = styled.div`
     width: 100vw;
     height: 100vh;
     font-family: "Ubuntu";
+    overflow-x: hidden;
 `;
 
 export const Cards = styled.div`
@@ -18,6 +19,12 @@ export const Cards = styled.div`
     align-items: center;
     gap: 100px;
     font-family: Ubuntu;
+
+    @media(max-width: 1200px){
+        flex-direction: column;
+        justify-content: space-between;
+        margin-top: 100px;
+    }       
 `;
 
 export const Card = styled.div`
@@ -53,6 +60,10 @@ export const Line = styled.div`
     height: 0%;
     border: 1.5px solid #333333;
     transform: rotate(90deg);
+
+    @media(max-width: 1200px){
+        display: none;
+    }
 `;
 
 export const StyledInputText = styled(InputText)`
