@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import {useForm, Controller } from "react-hook-form";
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -13,10 +13,14 @@ import { InputText } from 'primereact/inputtext';
 
 // Images
 import IconBack from '../../assets/img/IconBack.svg'
+import { Toast } from "primereact/toast";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 const CadastroVenda: React.FC = () => {
     const tokenClient = localStorage.getItem("tokenClient");
     const tokenPurchases = localStorage.getItem("tokenPurchases");
+	const toast = useRef(null);
+
 	// UseState da verificação de cpf
 	const [nome, setNome] = useState('');
 	const [email, setEmail] = useState('');
@@ -29,7 +33,7 @@ const CadastroVenda: React.FC = () => {
 	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState<string>("");
 	const [valorOriginal, setValorOriginal] = useState<string>("");
-	const [ValueRedirect, setRedirect] = useState(false)
+	const [ValueRedirect, setRedirect] = useState(true)
 
 	// Syntaxe do UseForm
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
@@ -75,10 +79,10 @@ const CadastroVenda: React.FC = () => {
 	////////////////////////////////////////////////////////////////
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
-		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
+		const CpfParaVerificar = cpf.value.replace(/\D/g, '');
 		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`
+		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
 		, {
 			headers: {
 				Authorization: `Bearer ${tokenPurchases}`,
@@ -111,7 +115,8 @@ const CadastroVenda: React.FC = () => {
 		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 
-		const cpf = data.cpf
+		const cpf = data.cpf.replace(/\D/g, '');
+		console.log(data.cpf)	
 
 		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
 			headers: {
@@ -132,47 +137,56 @@ const CadastroVenda: React.FC = () => {
                 },
             })
 			.then((response) => {
-
-				window.alert("Cadastrado com sucesso!");
 				setRedirect(true)
+
+				// window.alert("Cadastrado com sucesso!");
 
 			  })
 
 			.catch((error) => {
-				window.alert("Erro na Criação de Parcelas !");});
-			})
-		.catch(error => 
-			window.alert("Erro ao Cadastrar a Venda!"))
+				toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro na Criação de Parcelas !', life: 3000});
+
+				// window.alert("Erro na Criação de Parcelas !");
+			});
+		})
+		.catch(error => {
+			toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro ao Cadastrar a Venda!', life: 3000});
+
+			// window.alert("Erro ao Cadastrar a Venda!")
+		})
 		
 	}
 
 	useEffect(() => {
 		if (ValueRedirect) {
-			navigate('/home');
+			toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Venda cadastrada com sucesso!', life: 3000})
+			setTimeout(() => navigate('/home'),3000)
 		}
 	  }, [ValueRedirect, navigate]);
 
 	return (
 		<>
 			<GlobalStyle /> 
+			<Toast ref={toast} />
+			{!ValueRedirect?
 			<Container>
 					<Cards>
 						<Cpf>
 							<Center>
 
-								<InputFieldMask 
+								<InputFieldMask
 									mask="999.999.999-99"
 									type="text" 
 									name="cpf" 
 									placeholder="Digite um CPF"
 									{...register("cpf", { required: "Precisa que seja inserido o CPF do cliente"})}
-									onInput={handleInput}
+									// onBlur={handleInput}
 								/>
 								{errors?.cpf?.type == "required" && (<p className="error-message">CPF Necessário</p>)}
 								{error && <p className="error-message">CPF Não foi encontrado</p>}
 								
 							</Center>
-
+							<StyledBotaoCadastro onClick={()=> handleInput(document.getElementsByName("cpf")[0])}>Procurar</StyledBotaoCadastro>
 							<Center>
 								<StyledInputText style={{ width: '400px' }} value={nome} name="nome" disabled/>
 							</Center>
@@ -251,6 +265,7 @@ const CadastroVenda: React.FC = () => {
 						<ImageBack src={IconBack} alt="IconBack" />
 					</Link>
 				</Container>
+				: <ProgressSpinner className="mt-8 flex"></ProgressSpinner>}  
 		</>
 	)
 
