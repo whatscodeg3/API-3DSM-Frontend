@@ -2,13 +2,13 @@ import styled from "styled-components"
 import InputMask from 'react-input-mask';
 
 export const Container = styled.form`
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center; 
 `;
 
 export const Title = styled.p`
@@ -27,6 +27,10 @@ export const MainBlock = styled.div`
     justify-content: center;
     align-items: center;
     gap: 200px;
+
+    /* @media(max-width: 1200px){
+        flex-direction: column;
+    } */
 `;
 
 export const Fields = styled.div`
