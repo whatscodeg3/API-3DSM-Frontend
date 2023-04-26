@@ -30,9 +30,10 @@ const CadastroCliente: React.FC = () => {
     
     const navigate = useNavigate();
     const onSubmit = async (value) => {
+      let cpf = value["cpf"].replace(/\D/g, "")
       let formatJson = {
         fullName: value["fullName"],
-        cpf: value["cpf"].replace(/\D/g, ""),
+        cpf: cpf,
         email: value["email"],
         telephone: value["telephone"],
         birthDate: value["birthDate"],
@@ -56,9 +57,9 @@ const CadastroCliente: React.FC = () => {
 
       if(data.length != 0){
         await data.forEach(e => {
-          if(value["cpf"] == e["cpf"]){
+          if(cpf == e["cpf"]){
               window.alert("Este CPF já está cadastrado!")
-          }else if(value["cpf"] != e["cpf"]){
+          }else if(cpf != e["cpf"]){
             valido = true
           }
         });
