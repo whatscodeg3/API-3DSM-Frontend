@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from "react";
 import { AuthProvider, AuthContext } from './context/auth'
 import { Route, Routes, Router, Navigate, useNavigate } from "react-router-dom";
-import {Toast} from 'primereact/toast'
+
 
 // Pages
 import HomeComercial from "./pages/HomeComercial/index";
@@ -58,10 +58,10 @@ const Rotas: React.FC = () => {
 
   return (
     <div>
-        <AuthProvider>
+        <AuthProvider children={Routes}>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/home" element={<Private><RoleComercial children={<HomeComercial />}/></Private>} />
+                <Route path="/home" element={<Private children={<RoleComercial children={<HomeComercial />}/>}></Private>} />
                 <Route path="/cadastro/cliente" element={<Private><RoleComercial children={<CadastroCliente />}/></Private>} /> 
                 <Route path="/cadastro/venda" element={<Private><RoleComercial children={<CadastroVenda />}/></Private>} />
                 <Route path="/listagem/venda" element={<Private><RoleFinanceiro children={<ListagemVendas />}/></Private>} />
