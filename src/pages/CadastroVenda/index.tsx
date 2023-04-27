@@ -63,11 +63,15 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 	};
 
 	const onChangeValorInserido = (e: any) => {
+		// console.log(e.target.value.slice(2).replace(",","").replace(".",""))
+		const valor = Number(parseFloat(e.target.value.slice(2).replace(/[^\d]/g, "")))
+		console.log(valor)
 		setFormCorrect(false)
-		if (Number(e.target.value.slice(2).replace(",",".")) > 0.00){
+		if (valor >= 100){
 			setFormCorrect(true)
 		}
 	  	const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
+	
 	  // Seta o novo valor pos formação usando o setState do useState
 	  	setpaymentValue(ValorInseridoPosFormatacao);
 	};
