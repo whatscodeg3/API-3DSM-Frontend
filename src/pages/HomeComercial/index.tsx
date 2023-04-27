@@ -14,6 +14,10 @@ import IconBag from "../../assets/img/IconBag.svg"
 import IconPerson from "../../assets/img/IconPerson.svg"
 import IconDocument from "../../assets/img/IconDocument.svg"
 
+
+// permissions
+import PermissionGate from "../../context/permission-gate";
+
 const HomeComercial: React.FC = () => {
     return (
         <>
@@ -27,8 +31,11 @@ const HomeComercial: React.FC = () => {
                         Página Inicial
                     </Title>
 
+                    
                     <Cards>
                         {/* Card Cliente */}
+
+                        <PermissionGate permissions={['admin', 'comercial']}>
                         <Link to={"/cadastro/cliente"} style={{ textDecoration: 'none' }}>
                             <Card className="animate__animated animate__slideInLeft">
                                 <img src={IconPerson} style={{ width: "4vw" }} alt="IconPerson" />
@@ -37,6 +44,8 @@ const HomeComercial: React.FC = () => {
                                 </p>
                             </Card>
                         </Link>
+                        </PermissionGate>
+                       
 
                         {/* Card Compra */}
                         <Link to={"/cadastro/venda"} style={{ textDecoration: 'none' }}>
