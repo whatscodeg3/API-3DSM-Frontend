@@ -1,8 +1,7 @@
 import React, { useState, useContext, useRef  } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
-import { Toast } from 'primereact/toast';
+// import { Toast } from 'primereact/toast';
 
 
 // Styles
@@ -13,8 +12,11 @@ import { Container, Cards, Title, InputCpf, InputPassword, ButtonStyled, Passwor
 import Logo from "../../assets/img/Logo.svg"
 import EyeOpen from "../../assets/img/eye-fill.svg"
 import EyeClosed from "../../assets/img/eye-slash-fill.svg"
+import ToastProps from "../../interfaces/selfInterfaces";
 
-const Login: React.FC = () => {
+
+
+const Login: React.FC<ToastProps> = (props) => {
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState("");
     const { register, handleSubmit } = useForm();
@@ -41,10 +43,12 @@ const Login: React.FC = () => {
         const Password = String(password);
         try{
             await login(Cpf, Password);
+            props.toastContent({severity:'success', summary: 'Successo', detail:'Login realizado com sucesso', life: 3000})
+
             // window.alert("Login realizado com sucesso !")
 
         }catch{
-            toast.current.show({severity:'error', summary: 'Erro', detail:'Credencial inserida inválida', life: 3000});
+            props.toastContent({severity:'error', summary: 'Erro', detail:'Credencial inserida inválida', life: 3000});
             // window.alert("Credencial inserida inválida")
         }
         
@@ -53,8 +57,6 @@ const Login: React.FC = () => {
     return (
         <>
             <GlobalStyle />
-            <Toast ref={toast} />
-
             <Container>
                 <Cards onSubmit={handleSubmit(onSubmit)}>
                         <Title>
