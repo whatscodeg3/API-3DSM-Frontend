@@ -23,12 +23,12 @@ const Rotas: React.FC = () => {
         <AuthProvider>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/home" element={<HomeComercial />} />
-                <Route path="/cadastro/cliente" element={<CadastroCliente />} />
-                <Route path="/cadastro/venda" element={<CadastroVenda />} />
-                <Route path="/listagem/venda" element={<ListagemVendas />} />
-                <Route path="/listagem/cliente" element={<ListaClienteUsuario/>} />
-                <Route path="/relatorios" element={<HomeRelatorios/>} />
+                <Route path="/home" element={<Private><HomeComercial /></Private>} />
+                <Route path="/cadastro/cliente" element={<Private><CadastroCliente /></Private>} />
+                <Route path="/cadastro/venda" element={<Private><CadastroVenda /></Private>} />
+                <Route path="/listagem/venda" element={<Private><ListagemVendas /></Private>} />
+                <Route path="/listagem/cliente" element={<Private><ListaClienteUsuario/></Private>} />
+                <Route path="/relatorios" element={<Private><HomeRelatorios/></Private>} />
             </Routes>
         </AuthProvider>
     </div>
