@@ -29,12 +29,13 @@ const ListagemVendas: React.FC = () => {
     const tokenPurchases = localStorage.getItem("tokenPurchases");
     const [loading, setLoading] = useState(true);
     const [purchases, setPurchases] = useState([]);
-    const [clients, setClients] = useState([]);
-    const [installmentsPayed, setInstallmentsPayed] = useState(null);
     const [modalContent, setModalContent] = useState<JSX.Element>();
     const [titleContent, setTitleContent] = useState<JSX.Element>();
     const [visible, setVisible] = useState(false);
-    const [filters, setFilters] = useState<DataTableFilterMeta>({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
+    const [filters, setFilters] = useState<DataTableFilterMeta>({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+
+    });
     const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
 
     
@@ -47,10 +48,11 @@ const ListagemVendas: React.FC = () => {
                 },
             });
             setPurchases(purchasesResponse.data);
+            setLoading(false);
             // setClients(clientResponse.data);
         }
         loadData(); 
-        setLoading(false);
+        
     }, []);
     
     const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,13 +61,19 @@ const ListagemVendas: React.FC = () => {
         
         let _filters: any = { ...filters };
 
-        _filters['client.cpf'].value = value;
+        _filters['global'].value = value;
 
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
 
-    const isCellSelectable = (event: any) => (event.data.field === 'paymentValue' || event.data.field === 'installment.length' ? false : true);
+    const isCellSelectable = (event: any) => (
+        event.data.field === 'paymentValue' || 
+        event.data.field === 'installment.length' ||
+        event.data.field === 'client.cpf'
+
+        ? false : true
+    );
 
     const formatCurrency = (value: any) => {
         return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -79,6 +87,12 @@ const ListagemVendas: React.FC = () => {
         }
         
     };
+
+    const cpfBodyTemplate  = (event: any) =>{
+        const cpf = event.client.cpf
+        return `${cpf.slice(0,3)}.${cpf.slice(3,6)}.${cpf.slice(6,9)}-${cpf.slice(9)}`
+    }
+
     const checkInstallmentAsPayed = (installmentId: any) => {
         const decision = window.confirm("Deseja confirmar o pagamento desta parcela?")
         if(decision){
@@ -205,7 +219,7 @@ const ListagemVendas: React.FC = () => {
             );
             setModalContent(contentToModal)
 
-        } else if (event.field == "client.cpf"){
+        } else if (event.field == "client.fullName"){
             let titleContent: JSX.Element = ( 
                 <Title height='2rem'>
                     Informações de Cliente
@@ -249,7 +263,7 @@ const ListagemVendas: React.FC = () => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>Listagem de Vendas</Title>
-                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
+                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Pesquisa por Cliente, CPF ou Valor Total'/>
                 {loading? <ProgressSpinner/>: 
                     <DataTable
                         value={purchases}
@@ -262,16 +276,17 @@ const ListagemVendas: React.FC = () => {
                         emptyMessage='Sem informações'
                         style={{width:'90%', margin:'auto'}}
                         className='shadow'
+                        stripedRows 
                     >
                         <Column 
-                            field="id"
-                            body="Clique Aqui" 
+                            field="client.fullName"
                             align="center" 
-                            header="Ver mais" 
+                            header="Cliente" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
                             field="client.cpf"
+                            body={cpfBodyTemplate}
                             align="center" 
                             header="CPF" 
                             headerStyle={{color:'#F18524'}}
@@ -284,9 +299,10 @@ const ListagemVendas: React.FC = () => {
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
-                            field="installment.length"
+                            field="id"
+                            body="Clique Aqui" 
                             align="center" 
-                            header="Parcelas" 
+                            header="Ver mais" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                     </DataTable>

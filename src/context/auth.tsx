@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const toast = useRef(null);
 
 
   const login = async (Cpf: any, Password: any) => {
@@ -41,7 +40,6 @@ export const AuthProvider = ({ children }) => {
     apiClient.defaults.headers.Authorization = `Bearer ${tokenPurchases}`
     setUser(tokenPurchases)
     
-    toast.current.show({severity:'success', summary: 'Successo', detail:'Login realizado com sucesso', life: 3000});
     navigate('/home')
 
   };
@@ -57,7 +55,6 @@ export const AuthProvider = ({ children }) => {
   };
   return (
     <AuthContext.Provider value={{ authenticated: !!user, user, loading, login, logout }}>
-      <Toast ref={toast} />
       {children}
     </ AuthContext.Provider>
   )
