@@ -63,11 +63,10 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 	};
 
 	const onChangeValorInserido = (e: any) => {
-		// console.log(e.target.value.slice(2).replace(",","").replace(".",""))
 		const valor = Number(parseFloat(e.target.value.slice(2).replace(/[^\d]/g, "")))
 		console.log(valor)
 		setFormCorrect(false)
-		if (valor >= 100){
+		if (valor > 0){
 			setFormCorrect(true)
 		}
 	  	const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
@@ -88,7 +87,9 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
 		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
-		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");	
+		
+		if(CpfParaVerificar.length == 11){
 
 		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
 		, {
@@ -115,6 +116,7 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 			setCep('')
 		});
 	  }
+	}
 
 	////////////////////////////////////////////////////////////////
 
@@ -192,7 +194,7 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 									name="cpf" 
 									placeholder="Digite um CPF"
 									{...register("cpf", { required: "Precisa que seja inserido o CPF do cliente"})}
-									onBlur={handleInput}
+									onInput={handleInput}
 								/>
 								{errors?.cpf?.type == "required" && (<p className="error-message">CPF Necessário</p>)}
 								{error && <p className="error-message">CPF Não foi encontrado</p>}
