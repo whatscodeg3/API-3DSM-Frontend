@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { apiClient } from "../../services/api";
 
 // Styles
@@ -10,7 +10,9 @@ import {
   MainBlock,
   Fields,
   InputField,
+  InputFieldError,
   InputFieldMask,
+  InputFieldMaskError,
   Title,
   ImageBack,
   ButtonSubmit,
@@ -24,8 +26,14 @@ import IconBack from "../../assets/img/IconBack.svg";
 
 
 const CadastroCliente: React.FC = () => {
-  const tokenClient = localStorage.getItem("tokenClient");
-  const tokenPurchases = localStorage.getItem("tokenPurchases");
+    const tokenClient = localStorage.getItem("tokenClient");
+    const tokenPurchases = localStorage.getItem("tokenPurchases");
+
+    const [cpfExistsError, setCpfError] = useState(false);
+    const [emailExistsError, setEmailError] = useState(false);
+    const [invalidCpfError, setInvalidCpfError] = useState(false);
+    const [invalidEmailError, setInvalidEmailError] = useState(false);
+
     const { register, handleSubmit, setValue, setFocus } = useForm();
     
     const navigate = useNavigate();
@@ -46,29 +54,14 @@ const CadastroCliente: React.FC = () => {
             complement: value["complement"],
         },
       };
-          
-      const response = await apiClient.get("/client/query", {
-        headers: {
-            Authorization: `Bearer ${tokenClient}`,
-        },
-    });
-      let data = response.data
-      let valido = false
 
-      if(data.length != 0){
-        await data.forEach(e => {
-          if(cpf == e["cpf"]){
-              window.alert("Este CPF já está cadastrado!")
-          }else if(cpf != e["cpf"]){
-            valido = true
-          }
-        });
-      }else{
-        valido = true
-      }
-      
       try{
-          if(valido == true){
+          if(
+            cpfExistsError === false && 
+            invalidCpfError === false && 
+            emailExistsError === false && 
+            invalidEmailError === false 
+            ){
             await apiClient.post("/client/create", formatJson, {
               headers: {
                   Authorization: `Bearer ${tokenClient}`,
@@ -78,9 +71,9 @@ const CadastroCliente: React.FC = () => {
           }
       } catch(error) {
         if(error.response.data["cpf"] == undefined){
-          window.alert(error.response.data["email"])
+          setInvalidEmailError(true)
         }else{
-          window.alert(error.response.data["cpf"])
+          setInvalidCpfError(true)
         }
       }
     };
@@ -97,6 +90,63 @@ const CadastroCliente: React.FC = () => {
         setFocus("numero");
       });
   };
+  
+  const checkCpf = async (event) => {
+    const response = await apiClient.get("/client/query", {
+      headers: {
+          Authorization: `Bearer ${tokenClient}`,
+      },
+    });
+    
+    let data = response.data
+    let value = event.target.value
+    let cpf = value.replace(/\D/g, "")
+    
+    let setter = false
+    if(data.length){
+      data.forEach(e => {
+        if(cpf == e["cpf"]){
+          setter = true
+        } else if(cpf != e["cpf"]){
+          setCpfError(false)
+        }
+      });
+      if(setter){
+        setCpfError(true)
+      }
+    }else{
+      setCpfError(false)
+    }
+  }
+
+  
+
+  const checkEmail = async (event) => {
+    const response = await apiClient.get("/client/query", {
+      headers: {
+          Authorization: `Bearer ${tokenClient}`,
+      },
+    });
+    
+    let data = response.data
+    let value = event.target.value
+    
+    let setter = false
+    if(data.length){
+      data.forEach(e => {
+        if(value == e["email"]){
+          setter = true
+        } else if(value != e["email"]){
+          setEmailError(false)
+        }
+      });
+      if(setter){
+        setEmailError(true)
+      }
+    }else{
+      setEmailError(false)
+    }
+  }
 
   return (
     <>
@@ -113,6 +163,27 @@ const CadastroCliente: React.FC = () => {
               required
               {...register("fullName")}
             />
+            {cpfExistsError || invalidCpfError ? 
+            <>
+              <InputFieldMaskError
+                mask="999.999.999-99"
+                type="text"
+                name="cpf"
+                placeholder="CPF"
+                required
+                {...register("cpf")}
+                onBlur={checkCpf}
+                onClick={() => { setCpfError(false), setInvalidCpfError(false) }}
+              />
+              <p style={{
+                  margin: "0px", 
+                  padding: "0px",
+                  color: "red",
+                  fontFamily: "Ubuntu, sans-serif" 
+                }}>{cpfExistsError ? "CPF já cadastrado" : invalidCpfError ? "CPF inválido" : null}
+              </p>
+            </>
+            :
             <InputFieldMask
               mask="999.999.999-99"
               type="text"
@@ -120,17 +191,41 @@ const CadastroCliente: React.FC = () => {
               placeholder="CPF"
               required
               {...register("cpf")}
-            />
-            <InputField
-              type="text"
-              name="email"
-              placeholder="Email"
-              required
-              {...register("email")}
-            />
-            <InputField
+              onBlur={checkCpf}
+            /> }
+            {emailExistsError || invalidEmailError ? 
+              <>
+                <InputFieldError
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  required
+                  {...register("email")}
+                  onBlur={checkEmail}
+                  onClick={() => { setEmailError(false), setInvalidEmailError(false) }}
+                />
+                <p style={{
+                      margin: "0px", 
+                      padding: "0px",
+                      color: "red",
+                      fontFamily: "Ubuntu, sans-serif"
+                  }}>{emailExistsError ? "Email já cadastrado" : invalidEmailError ? "Email inválido" : null}
+                </p>
+              </>
+            :
+              <InputField
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  required
+                  {...register("email")}
+                  onBlur={checkEmail}
+              />
+            }
+            <InputFieldMask
               type="text"
               name="telefone"
+              mask="(99) 99999-9999"
               placeholder="Telefone"
               required
               {...register("telephone")}
@@ -194,7 +289,6 @@ const CadastroCliente: React.FC = () => {
               type="text"
               name="complemento"
               placeholder="Complemento"
-              required
               {...register("complement")}
             />
           </Fields>
