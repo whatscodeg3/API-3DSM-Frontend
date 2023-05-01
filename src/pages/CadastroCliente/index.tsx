@@ -193,7 +193,6 @@ const CadastroCliente: React.FC = () => {
               type="text"
               name="complemento"
               placeholder="Complemento"
-              required
               {...register("complement")}
             />
           </Fields>

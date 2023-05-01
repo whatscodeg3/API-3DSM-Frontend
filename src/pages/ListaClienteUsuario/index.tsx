@@ -152,13 +152,46 @@ const ListaClienteUsuario: React.FC = () => {
 
      //////////////////////////////////////////////
 
-      ////////////////////////////////////////////// Codigo do modal que aparece ao selecionar um campo, com os if e codigo dentro deles, determinando o que aparece em cada campo selecionado
+    ////////////////////////////////////////////// Codigo do modal que aparece ao selecionar um campo, com os if e codigo dentro deles, determinando o que aparece em cada campo selecionado
 
     const showModal = (event: any) =>{
-
         const Client = event.rowData
 
-        if (event.field == "delete"){
+         if (event.field == "update"){
+            let titleContent: JSX.Element = ( 
+                <Title height='2rem'>
+                    Informações de {Client.fullName}
+                </Title>
+            );
+            setTitleContent(titleContent)
+
+            let contentToModal: JSX.Element = ( 
+                <ContainerUserUpdate onSubmit={handleSubmit(onSubmit)}>
+                    <StyledInput>
+                        <InputField style={{ width: '400px' }} id="myInput" name="fullname" defaultValue={`${Client.fullName}`} placeholder={`Nome completo: ${Client.fullName}`} required {...register("fullName")}/>
+                        <InputField style={{ width: '400px' }} name="email" defaultValue={`${Client.email}`} placeholder={`Email: ${Client.email}`} required {...register("email")}/>
+                        <InputField style={{ width: '400px' }} name="telephone" defaultValue={`${Client.telephone}`} placeholder={`Telefone: ${Client.telephone}`} required {...register("telephone")}/>
+                        <InputField style={{ width: '400px' }} type="date" name="birthDate" defaultValue={Client.birthDate} required {...register("birthDate")}/>
+                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" defaultValue={`${Client.address.cep}`} placeholder={`Cep: ${Client.address.cep}`} required {...register("cep")} onBlur={checkCEP}/>
+                        <InputField style={{ width: '400px' }} name="publicPlace" defaultValue={`${Client.address.publicPlace}`} placeholder={`Logradouro: ${Client.address.publicPlace}`} required {...register("publicPlace")}/>
+                    </StyledInput>
+                    <div>
+                    </div>
+                    <StyledInput>
+                        <InputField style={{ width: '400px' }} name="state" defaultValue={`${Client.address.state}`} placeholder={`Estado: ${Client.address.state}`} required {...register("state")}/>
+                        <InputField style={{ width: '400px' }} name="neighborhood" defaultValue={`${Client.address.neighborhood}`} placeholder={`Bairro: ${Client.address.neighborhood}`} required {...register("neighborhood")}/>
+                        <InputField style={{ width: '400px' }} name="city" defaultValue={`${Client.address.city}`} placeholder={`Cidade: ${Client.address.city}`} required {...register("city")}/>
+                        <InputField style={{ width: '400px' }} name="numero" placeholder="Número *" {...register("numero")}/>
+                        <InputField style={{ width: '400px' }} name="complement" defaultValue={`${Client.address.complement}`} placeholder={`Complemento: ${Client.address.complement}`} {...register("complement")}/>
+                        <input type="hidden" name="clientId" value={Client.id} {...register("clientId")} />
+                        <input type="hidden" name="address" value={Client.address.id} {...register("addressId")} />
+                        <ButtonSubmit type="submit">Atualizar</ButtonSubmit>
+                    </StyledInput>
+                </ContainerUserUpdate>
+            )
+            setModalContent(contentToModal)
+
+        } else if (event.field == "delete"){
             let titleContent: JSX.Element = ( 
                 <Title height='2rem' color="#696969">
                     Deseja excluir {Client.fullName} ?
@@ -176,40 +209,6 @@ const ListaClienteUsuario: React.FC = () => {
                     </div>
                 </ContainerUserDelete>
             );
-            setModalContent(contentToModal)
-
-        } else if (event.field == "update"){
-            let titleContent: JSX.Element = ( 
-                <Title height='2rem'>
-                    Informações de {Client.fullName}
-                </Title>
-            );
-            setTitleContent(titleContent)
-
-            let contentToModal: JSX.Element = ( 
-                <ContainerUserUpdate onSubmit={handleSubmit(onSubmit)}>
-                    <StyledInput>
-                        <InputField style={{ width: '400px' }} name="fullname" placeholder={`${Client.fullName}`} required {...register("fullName")}/>
-                        <InputField style={{ width: '400px' }} name="email" placeholder={`${Client.email}`} required {...register("email")}/>
-                        <InputField style={{ width: '400px' }} name="telephone" placeholder={`${Client.telephone}`} required {...register("telephone")}/>
-                        <InputField style={{ width: '400px' }} type="date" name="birthDate" defaultValue={Client.birthDate} required {...register("birthDate")}/>
-                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" placeholder={`${Client.address.cep}`} required {...register("cep")} onBlur={checkCEP}/>
-                        <InputField style={{ width: '400px' }} name="publicPlace" placeholder={`${Client.address.publicPlace}`} required {...register("publicPlace")}/>
-                    </StyledInput>
-                    <div>
-                    </div>
-                    <StyledInput>
-                        <InputField style={{ width: '400px' }} name="state" placeholder={`${Client.address.state}`} required {...register("state")}/>
-                        <InputField style={{ width: '400px' }} name="neighborhood" placeholder={`${Client.address.neighborhood}`} required {...register("neighborhood")}/>
-                        <InputField style={{ width: '400px' }} name="city" placeholder={`${Client.address.city}`} required {...register("city")}/>
-                        <InputField style={{ width: '400px' }} name="numero" placeholder="Número *" required {...register("numero")}/>
-                        <InputField style={{ width: '400px' }} name="complement" placeholder={`${Client.address.complement}`} required {...register("complement")}/>
-                        <input type="hidden" name="clientId" value={Client.id} {...register("clientId")} />
-                        <input type="hidden" name="address" value={Client.address.id} {...register("addressId")} />
-                        <ButtonSubmit type="submit">Atualizar</ButtonSubmit>
-                    </StyledInput>
-                </ContainerUserUpdate>
-            )
             setModalContent(contentToModal)
 
         } else if (event.field == "address"){

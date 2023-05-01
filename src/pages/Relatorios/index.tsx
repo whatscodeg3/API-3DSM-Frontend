@@ -21,7 +21,6 @@ interface RelatoriosProps {
 
 
 const Relatorios: React.FC<RelatoriosProps> = (props) => {
-    console.log(props.reportData)
     const installmentsFiltered = props.reportData        
     
     const formatCurrency = (price: number) => {
