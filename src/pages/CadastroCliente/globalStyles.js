@@ -8,5 +8,14 @@ export const GlobalStyle = createGlobalStyle`
         padding: 0%;
 
         background-color: #F5F6FA;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        @media(max-width: 1230px){
+            width: 100%;
+            height: 100%;
+
+            padding-top: 100px;
+        }
     }
 `;
