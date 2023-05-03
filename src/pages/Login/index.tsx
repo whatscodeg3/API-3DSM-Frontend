@@ -33,7 +33,7 @@ const Login: React.FC = () => {
     const { authenticated, login } = useContext<AuthContextData>(AuthContext);
 
     const onSubmit = async (data : any) => {
-        const Cpf = String(data.Cpf)
+        const Cpf = String(data.Cpf).replace(/\D/g, "")
         const Password = String(password);
         await login(Cpf, Password);
         
