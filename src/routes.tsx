@@ -12,24 +12,24 @@ import ListaClienteUsuario from "./pages/ListaClienteUsuario";
 import HomeRelatorios from "./pages/HomeRelatorios";
 import Login from "./pages/Login";
 
+
+// Permissions
+import { PermissionGateRoutes } from "./context/permission-gate";
+
 const Rotas: React.FC = () => {
   const navigate = useNavigate();
-
-  const ROLES = {
-    COMERCIAL: 'Comercial User',
-    FINANCEIRO: 'Financeiro User',
-    ADMIN: 'ADMIN User'
-  }
-  const CURRENT_USER_ROLE =  ROLES.COMERCIAL;
-  
   
   
 
-  const Private = ({ children }) => {
+
+  const Private = ({ children, permissions }) => {
     const { authenticated } = useContext(AuthContext);
+    const hasPermission = PermissionGateRoutes(permissions)
+  
+    
 
-    // return authenticated ? children : <Navigate to='/' />
-    return children
+    return authenticated && hasPermission ? children : <Navigate to='/' />
+   
   }
 
 
@@ -38,12 +38,12 @@ const Rotas: React.FC = () => {
         <AuthProvider>
             <Routes>
                 <Route path="/" element={<Login />} /> 
-                <Route path="/home" element={<Private><HomeComercial /></Private>} />
-                <Route path="/cadastro/cliente" element={<Private><CadastroCliente /></Private>} />
-                <Route path="/cadastro/venda" element={<Private><CadastroVenda /></Private>} />
-                <Route path="/listagem/venda" element={<Private><ListagemVendas /></Private>} />
-                <Route path="/listagem/cliente" element={<Private><ListaClienteUsuario/></Private>} />
-                <Route path="/relatorios" element={<Private><HomeRelatorios/></Private>} />
+                <Route path="/home" element={<Private permissions={['admin', 'comercial', 'financeiro']}><HomeComercial /></Private>} />
+                <Route path="/cadastro/cliente" element={<Private permissions={['admin', 'comercial']}><CadastroCliente /></Private>} />
+                <Route path="/cadastro/venda" element={<Private permissions={['admin', 'comercial']}><CadastroVenda /></Private>} />
+                <Route path="/listagem/venda" element={<Private permissions={['admin', 'comercial']}><ListagemVendas /></Private>} />
+                <Route path="/listagem/cliente" element={<Private permissions={['admin', 'comercial']}><ListaClienteUsuario/></Private>} />
+                <Route path="/relatorios" element={<Private permissions={['admin', 'comercial']}><HomeRelatorios/></Private>} />
             </Routes>
         </AuthProvider>
     </div>

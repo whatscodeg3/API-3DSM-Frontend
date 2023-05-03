@@ -1,27 +1,48 @@
 
 const useGetUserPermissions = () => {
     // logica pegar permissions
-    return ['admin']
+    return ['financeiro']
 }
 
 
-const PermissionGate = ({children, permissions}) => {
+export const PermissionGateRender = ({children, permissions}) => {
     const userPermissions = useGetUserPermissions()
+
    
-    console.log(typeof(permissions))
-    // eu to dando um some no userPermissions, porém o ideial seria dar um some no 'permissions' que vem de parametro, pois o userpermission vai ter uma permissao só (admin ou comercial ou financeiro), ja o permissions q vem em parametros pode ter duas pois o admin tem acesso a tudo, seria admin + fnanceiro ou comercial
-    const userHasPermission = userPermissions.some(item => {
-        if(permissions == item) {
+    // vendo se as permissões recebidas pela função existem nas permissões do usuario
+    const userHasPermissionToRender = permissions.some(item => {
+        if(item == userPermissions) {
             return true
         }
     })
 
-    if(userHasPermission == true) {
+    // se existirem, retornar o elemento
+    if(userHasPermissionToRender == true) {
         return children
     } 
-
     return null
 }
 
 
-export default PermissionGate
+
+
+
+export const PermissionGateRoutes = (permissions) => {
+    const userPermissions = useGetUserPermissions()
+   
+
+    const userHasPermissionToAcessRoute = permissions.some(item => {
+        if(item == userPermissions){
+            return true
+        } 
+    })  
+
+    if (userHasPermissionToAcessRoute == true) {
+        return true
+    }
+
+    return false
+}
+
+
+
