@@ -18,6 +18,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+
+
   const login = async (Cpf: any, Password: any) => {
 
     // const responseClient = await createSessionClient(Cpf, Password);
@@ -37,6 +39,8 @@ export const AuthProvider = ({ children }) => {
     apiClient.defaults.headers.Authorization = `Bearer ${tokenPurchases}`
     setUser(tokenPurchases)
 
+    
+    console.log('vai chamar o nav')
     navigate('/home')
 
   };

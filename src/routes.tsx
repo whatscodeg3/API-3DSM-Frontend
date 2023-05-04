@@ -16,19 +16,22 @@ import Login from "./pages/Login";
 // Permissions
 import { PermissionGateRoutes } from "./context/permission-gate";
 
-const Rotas: React.FC = () => {
-  const navigate = useNavigate();
-  
-  
+const Rotas: React.FC = () => {  
 
 
   const Private = ({ children, permissions }) => {
     const { authenticated } = useContext(AuthContext);
     const hasPermission = PermissionGateRoutes(permissions)
-  
-    
 
-    return hasPermission ? children : <Navigate to='/' />
+
+    //esqueminha pra não resetar rotas depois de logado (ele verifica se tem um token criado)
+    if(localStorage.getItem("tokenPurchases") != null) {
+      console.log('tem um token, esta logado!')
+      return hasPermission ? children : <Navigate to='/home' />
+    }
+  
+    console.log('não tem um token !')
+    return <Navigate to='/' />
    
   }
 
