@@ -40,7 +40,7 @@ const Rotas: React.FC = () => {
     <div>
         <AuthProvider>
             <Routes>
-                <Route path="/" element={<Login />} /> 
+                <Route path="/" element={<Login />}/> 
                 <Route path="/home" element={<Private permissions={['admin', 'comercial', 'financeiro']}><HomeComercial /></Private>} />
                 <Route path="/cadastro/cliente" element={<Private permissions={['admin', 'comercial']}><CadastroCliente /></Private>} />
                 <Route path="/cadastro/venda" element={<Private permissions={['admin', 'comercial']}><CadastroVenda /></Private>} />
