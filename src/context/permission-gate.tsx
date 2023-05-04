@@ -1,7 +1,7 @@
 
 const useGetUserPermissions = () => {
     // logica pegar permissions
-    return ['financeiro']
+    return ['comercial']
 }
 
 

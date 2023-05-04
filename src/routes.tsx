@@ -28,7 +28,7 @@ const Rotas: React.FC = () => {
   
     
 
-    return authenticated && hasPermission ? children : <Navigate to='/' />
+    return hasPermission ? children : <Navigate to='/' />
    
   }
 
@@ -41,9 +41,9 @@ const Rotas: React.FC = () => {
                 <Route path="/home" element={<Private permissions={['admin', 'comercial', 'financeiro']}><HomeComercial /></Private>} />
                 <Route path="/cadastro/cliente" element={<Private permissions={['admin', 'comercial']}><CadastroCliente /></Private>} />
                 <Route path="/cadastro/venda" element={<Private permissions={['admin', 'comercial']}><CadastroVenda /></Private>} />
-                <Route path="/listagem/venda" element={<Private permissions={['admin', 'comercial']}><ListagemVendas /></Private>} />
+                <Route path="/listagem/venda" element={<Private permissions={['admin', 'comercial', 'financeiro']}><ListagemVendas /></Private>} />
                 <Route path="/listagem/cliente" element={<Private permissions={['admin', 'comercial']}><ListaClienteUsuario/></Private>} />
-                <Route path="/relatorios" element={<Private permissions={['admin', 'comercial']}><HomeRelatorios/></Private>} />
+                <Route path="/relatorios" element={<Private permissions={['admin', 'financeiro']}><HomeRelatorios/></Private>} />
             </Routes>
         </AuthProvider>
     </div>

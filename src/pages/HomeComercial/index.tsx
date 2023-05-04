@@ -60,7 +60,7 @@ const HomeComercial: React.FC = () => {
 
 
                         {/* Card Listagem */}
-                        <PermissionGateRender permissions={['admin', 'comercial']}>
+                        <PermissionGateRender permissions={['admin', 'comercial', 'financeiro']}>
                         <Link to={"/listagem/venda"} style={{ textDecoration: 'none' }}>
                         <Card className="animate__animated animate__slideInUp">
                             <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
@@ -73,7 +73,7 @@ const HomeComercial: React.FC = () => {
 
 
                         {/* Card Relatorios */}
-                        <PermissionGateRender permissions={['admin', 'comercial']}>
+                        <PermissionGateRender permissions={['admin', 'financeiro']}>
                         <Link to={"/relatorios"} style={{ textDecoration: 'none' }}>
                         <Card className="animate__animated animate__slideInRight">
                             <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
