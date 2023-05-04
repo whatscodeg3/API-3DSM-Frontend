@@ -78,10 +78,10 @@ const CadastroVenda: React.FC = () => {
 		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
 		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`
+		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
 		, {
 			headers: {
-				Authorization: `Bearer ${tokenPurchases}`,
+				Authorization: `Bearer ${tokenClient}`,
 			},
 		}
 		)
@@ -111,9 +111,9 @@ const CadastroVenda: React.FC = () => {
 		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 
-		const cpf = data.cpf
+		const cpf = data.cpf.replace(/\D/g, '')
 
-		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
+		axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
 			headers: {
 				Authorization: `Bearer ${tokenPurchases}`,
 				//Authorization2: `Bearer ${tokenClient}`
