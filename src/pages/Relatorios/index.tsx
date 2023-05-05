@@ -98,7 +98,7 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                 </div>
             )
         } else{
-            return <div style={{width:'20rem'}}></div>
+            return <div style={{width:'20rem'}}>testeeeeeeeeeee</div>
         }
     }
 
@@ -110,7 +110,12 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>
-                    Relatório das datas de {props.reportConsultModel['filterType']}
+                    Relatório das datas de {props.reportConsultModel['filterType'] === 1 
+                        ? 'Vencimento'
+                        : props.reportConsultModel['filterType'] === 2
+                        ? 'Pagamento'
+                        : 'Crédito'
+                    }
                 </Title>
                 <DataTable
                     value={installmentsFiltered}
