@@ -23,19 +23,19 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (Cpf: any, Password: any) => {
 
-    // const responseClient = await createSessionClient(Cpf, Password);
+    const responseClient = await createSessionClient(Cpf, Password);
     const responsePurchases = await createSessionPurchases(Cpf, Password);
 
-    // console.log(responseClient)
-    // console.log(responsePurchases)
+    console.log(responseClient)
+    console.log(responsePurchases)
 
-    // const tokenClient = responseClient.data;
+    const tokenClient = responseClient.data;
     const tokenPurchases = responsePurchases.data;
 
-    // console.log(`Client: ${tokenClient}`)
-    // console.log(`Purcheses: ${tokenPurchases}`)
+    console.log(`Client: ${tokenClient}`)
+    console.log(`Purcheses: ${tokenPurchases}`)
 
-    // localStorage.setItem("tokenClient", tokenClient);
+    localStorage.setItem("tokenClient", tokenClient);
     localStorage.setItem("tokenPurchases", tokenPurchases);
     apiClient.defaults.headers.Authorization = `Bearer ${tokenPurchases}`
     setUser(tokenPurchases)
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
 
-    // localStorage.removeItem('tokenClient');
+    localStorage.removeItem('tokenClient');
     localStorage.removeItem('tokenPurchases');
     apiClient.defaults.headers.Authorization = undefined
     apiPurchases.defaults.headers.Authorization = undefined

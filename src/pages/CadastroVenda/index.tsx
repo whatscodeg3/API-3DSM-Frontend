@@ -94,7 +94,7 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
 		, {
 			headers: {
-				Authorization: `Bearer ${tokenPurchases}`,
+				Authorization: `Bearer ${tokenClient}`,
 			},
 		}
 		)
@@ -125,7 +125,12 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 		const day = today.getDate();
 		const month = String(today.getMonth() + 1).padStart(2, '0');
 		const year = today.getFullYear();
-		const formattedDate = `${year}-${month}-${day}`;
+		var formattedDate = ``
+		if(day < 10){
+			formattedDate = `${year}-${month}-0${day}`;
+		} else {
+			formattedDate = `${year}-${month}-${day}`;
+		}
 
 
 		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
@@ -133,9 +138,8 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 		ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
 
 		const cpf = data.cpf.replace(/\D/g, '');
-		// console.log(data.cpf)	
-
-		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
+		
+		axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
 			headers: {
 				Authorization: `Bearer ${tokenPurchases}`,
 				//Authorization2: `Bearer ${tokenClient}`
