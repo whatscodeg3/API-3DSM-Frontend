@@ -1,7 +1,8 @@
-import React, { useState, useContext  } from "react";
+import React, { useState, useContext, useRef  } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
+// import { Toast } from 'primereact/toast';
+
 
 // Styles
 import { GlobalStyle } from "./globalStyles"
@@ -11,11 +12,16 @@ import { Container, Cards, Title, InputCpf, InputPassword, ButtonStyled, Passwor
 import Logo from "../../assets/img/Logo.svg"
 import EyeOpen from "../../assets/img/eye-fill.svg"
 import EyeClosed from "../../assets/img/eye-slash-fill.svg"
+import ToastProps from "../../interfaces/selfInterfaces";
 
-const Login: React.FC = () => {
+
+
+const Login: React.FC<ToastProps> = (props) => {
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState("");
     const { register, handleSubmit } = useForm();
+    const toast = useRef(null);
+
 
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
@@ -35,15 +41,22 @@ const Login: React.FC = () => {
     const onSubmit = async (data : any) => {
         const Cpf = String(data.Cpf).replace(/\D/g, "")
         const Password = String(password);
-        await login(Cpf, Password);
+        try{
+            await login(Cpf, Password);
+            props.toastContent({severity:'success', summary: 'Successo', detail:'Login realizado com sucesso', life: 3000})
+
+            // window.alert("Login realizado com sucesso !")
+
+        }catch{
+            props.toastContent({severity:'error', summary: 'Erro', detail:'Credencial inserida inválida', life: 3000});
+            // window.alert("Credencial inserida inválida")
+        }
         
-        window.alert("Login realizado com sucesso !")
     }
 
     return (
         <>
             <GlobalStyle />
-
             <Container>
                 <Cards onSubmit={handleSubmit(onSubmit)}>
                         <Title>

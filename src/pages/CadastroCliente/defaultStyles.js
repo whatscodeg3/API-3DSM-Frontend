@@ -62,6 +62,22 @@ export const InputField = styled.input`
     outline: none;
 `;
 
+export const InputFieldError = styled.input`
+    width: 470px;
+    height: 50px;
+
+    padding-left: 30px;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    background: #F5F6FA;
+    border: none;
+    border-bottom: 4px solid red;
+    border-radius: 3px;
+    
+    outline: none;
+`;
+
 export const InputFieldMask = styled(InputMask)`
     width: 470px;
     height: 50px;
@@ -73,6 +89,22 @@ export const InputFieldMask = styled(InputMask)`
     background: #F5F6FA;
     border: none;
     border-bottom: 4px solid #696969;
+    border-radius: 3px;
+    
+    outline: none;
+`;
+
+export const InputFieldMaskError = styled(InputMask)`
+    width: 470px;
+    height: 50px;
+
+    padding-left: 30px;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    background: #F5F6FA;
+    border: none;
+    border-bottom: 4px solid red;
     border-radius: 3px;
     
     outline: none;

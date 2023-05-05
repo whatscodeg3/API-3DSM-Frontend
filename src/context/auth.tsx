@@ -1,7 +1,9 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useRef, createContext } from 'react';
 
 import { useNavigate } from 'react-router-dom'
 import { apiClient, apiPurchases, createSessionClient, createSessionPurchases } from '../services/api'
+import { Toast } from 'primereact/toast';
+
 
 interface AuthContextData {
   authenticated: boolean;
@@ -17,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+
 
   const login = async (Cpf: any, Password: any) => {
 
@@ -36,7 +39,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("tokenPurchases", tokenPurchases);
     apiClient.defaults.headers.Authorization = `Bearer ${tokenPurchases}`
     setUser(tokenPurchases)
-
+    
     navigate('/home')
 
   };
