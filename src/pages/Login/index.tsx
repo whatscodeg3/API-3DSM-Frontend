@@ -39,7 +39,8 @@ const Login: React.FC<ToastProps> = (props) => {
     const { authenticated, login } = useContext<AuthContextData>(AuthContext);
 
     const onSubmit = async (data : any) => {
-        const Cpf = String(data.Cpf).replace(/\D/g, "")
+        const Cpf = String(data.Cpf)
+        console.log(Cpf)
         const Password = String(password);
         try{
             await login(Cpf, Password);
