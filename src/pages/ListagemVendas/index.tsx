@@ -34,7 +34,7 @@ const ListagemVendas: React.FC = () => {
     const [modalContent, setModalContent] = useState<JSX.Element>();
     const [titleContent, setTitleContent] = useState<JSX.Element>();
     const [visible, setVisible] = useState(false);
-    const [filters, setFilters] = useState<DataTableFilterMeta>({'client.cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
+    const [filters, setFilters] = useState<DataTableFilterMeta>({'client.fullName': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
 
     
@@ -59,7 +59,7 @@ const ListagemVendas: React.FC = () => {
         
         let _filters: any = { ...filters };
 
-        _filters['client.cpf'].value = value;
+        _filters['client.fullName'].value = value;
 
         setFilters(_filters);
         setGlobalFilterValue(value);
@@ -86,7 +86,12 @@ const ListagemVendas: React.FC = () => {
             const day = today.getDate();
             const month = String(today.getMonth() + 1).padStart(2, '0');
             const year = today.getFullYear();
-            const formattedDate = `${year}-${month}-${day}`;
+            var formattedDate = ``
+            if(day < 10){
+                formattedDate = `${year}-${month}-0${day}`;
+            } else {
+                formattedDate = `${year}-${month}-${day}`;
+            }
 
             async function confirmPayment(){
                 await apiPurchases.patch(`/api/installments/${installmentId}`,{'paymentDate': formattedDate, 'daysToCredit': 3}, {
@@ -205,7 +210,7 @@ const ListagemVendas: React.FC = () => {
             );
             setModalContent(contentToModal)
 
-        } else if (event.field == "client.cpf"){
+        } else if (event.field == "client.fullName"){
             let titleContent: JSX.Element = ( 
                 <Title height='2rem'>
                     Informações de Cliente
@@ -253,7 +258,7 @@ const ListagemVendas: React.FC = () => {
                 {loading? <ProgressSpinner/>: 
                     <DataTable
                         value={purchases}
-                        paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
+                        paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
                         cellSelection 
                         selectionMode="single"
                         onCellSelect={showModal}
@@ -264,16 +269,9 @@ const ListagemVendas: React.FC = () => {
                         className='shadow'
                     >
                         <Column 
-                            field="id"
-                            body="Clique Aqui" 
+                            field="client.fullName"
                             align="center" 
-                            header="Ver mais" 
-                            headerStyle={{color:'#F18524'}}
-                        ></Column>
-                        <Column 
-                            field="client.cpf"
-                            align="center" 
-                            header="CPF" 
+                            header="Nome" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                         <Column 
@@ -287,6 +285,13 @@ const ListagemVendas: React.FC = () => {
                             field="installment.length"
                             align="center" 
                             header="Parcelas" 
+                            headerStyle={{color:'#F18524'}}
+                        ></Column>
+                        <Column 
+                            field="id"
+                            body="Clique Aqui" 
+                            align="center" 
+                            header="Ver mais" 
                             headerStyle={{color:'#F18524'}}
                         ></Column>
                     </DataTable>

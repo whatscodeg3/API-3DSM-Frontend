@@ -51,11 +51,12 @@ export const ContainerUserInfo = styled.div`
 
 export const ImageBack = styled.img`
     position: fixed;
-    top: 90%;
-    left: 95%;
+    top: 0%;
+    left: 0%;
+    transform: rotateY(180deg);
 
     :hover {
-        transform: scale(1.1);
+        transform: rotateY(180deg) scale(1.1);
         transition: all 0.5s;
     }
 `;

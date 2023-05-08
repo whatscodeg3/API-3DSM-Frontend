@@ -21,7 +21,6 @@ interface RelatoriosProps {
 
 
 const Relatorios: React.FC<RelatoriosProps> = (props) => {
-    console.log(props.reportData)
     const installmentsFiltered = props.reportData        
     
     const formatCurrency = (price: number) => {
@@ -99,7 +98,7 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                 </div>
             )
         } else{
-            return <div style={{width:'20rem'}}></div>
+            return <div style={{width:'20rem'}}>testeeeeeeeeeee</div>
         }
     }
 
@@ -111,11 +110,16 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>
-                    Relatório das datas de {props.reportConsultModel['filterType']}
+                    Relatório das datas de {props.reportConsultModel['filterType'] === 1 
+                        ? 'Vencimento'
+                        : props.reportConsultModel['filterType'] === 2
+                        ? 'Pagamento'
+                        : 'Crédito'
+                    }
                 </Title>
                 <DataTable
                     value={installmentsFiltered}
-                    paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
+                    paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
                     emptyMessage='Sem informações'
                     style={{width:'90%', margin:'auto'}}
                     className='shadow'

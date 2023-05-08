@@ -2,13 +2,19 @@ import styled from "styled-components"
 import InputMask from 'react-input-mask';
 
 export const Container = styled.form`
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    gap: 4vw;
+    @media(max-width: 1230px){
+        gap: 50px;
+    }
+    @media(max-height: 730px){
+        gap: 20px;
+    }
 `;
 
 export const Title = styled.p`
@@ -20,13 +26,18 @@ export const Title = styled.p`
 `;
 
 export const MainBlock = styled.div`
-    width: 100vw;
-    height: 70vh;
+    width: 100%;
+    height: 70%;
 
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 200px;
+
+    @media(max-width: 1230px){
+        flex-direction: column;
+        gap: 30px;
+    }
 `;
 
 export const Fields = styled.div`
@@ -36,7 +47,7 @@ export const Fields = styled.div`
 `;
 
 export const InputField = styled.input`
-    width: 470px;
+    min-width: 470px;
     height: 50px;
 
     padding-left: 30px;
@@ -46,6 +57,22 @@ export const InputField = styled.input`
     background: #F5F6FA;
     border: none;
     border-bottom: 4px solid #696969;
+    border-radius: 3px;
+    
+    outline: none;
+`;
+
+export const InputFieldError = styled.input`
+    width: 470px;
+    height: 50px;
+
+    padding-left: 30px;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    background: #F5F6FA;
+    border: none;
+    border-bottom: 4px solid red;
     border-radius: 3px;
     
     outline: none;
@@ -62,6 +89,22 @@ export const InputFieldMask = styled(InputMask)`
     background: #F5F6FA;
     border: none;
     border-bottom: 4px solid #696969;
+    border-radius: 3px;
+    
+    outline: none;
+`;
+
+export const InputFieldMaskError = styled(InputMask)`
+    width: 470px;
+    height: 50px;
+
+    padding-left: 30px;
+
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    background: #F5F6FA;
+    border: none;
+    border-bottom: 4px solid red;
     border-radius: 3px;
     
     outline: none;
@@ -89,7 +132,7 @@ export const ButtonSubmit = styled.button`
 
 export const ImageBack = styled.img`
     position: fixed;
-    top: -1%;
+    top: 0%;
     left: 0%;
     transform: rotateY(180deg);
 
