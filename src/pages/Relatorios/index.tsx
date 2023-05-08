@@ -119,7 +119,7 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                 </Title>
                 <DataTable
                     value={installmentsFiltered}
-                    paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
+                    paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
                     emptyMessage='Sem informações'
                     style={{width:'90%', margin:'auto'}}
                     className='shadow'

@@ -86,7 +86,12 @@ const ListagemVendas: React.FC = () => {
             const day = today.getDate();
             const month = String(today.getMonth() + 1).padStart(2, '0');
             const year = today.getFullYear();
-            const formattedDate = `${year}-${month}-${day}`;
+            var formattedDate = ``
+            if(day < 10){
+                formattedDate = `${year}-${month}-0${day}`;
+            } else {
+                formattedDate = `${year}-${month}-${day}`;
+            }
 
             async function confirmPayment(){
                 await apiPurchases.patch(`/api/installments/${installmentId}`,{'paymentDate': formattedDate, 'daysToCredit': 3}, {
@@ -253,7 +258,7 @@ const ListagemVendas: React.FC = () => {
                 {loading? <ProgressSpinner/>: 
                     <DataTable
                         value={purchases}
-                        paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} 
+                        paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
                         cellSelection 
                         selectionMode="single"
                         onCellSelect={showModal}

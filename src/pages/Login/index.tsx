@@ -39,11 +39,10 @@ const Login: React.FC<ToastProps> = (props) => {
     const { authenticated, login } = useContext<AuthContextData>(AuthContext);
 
     const onSubmit = async (data : any) => {
-        const Cpf = String(data.Cpf)
-        console.log(Cpf)
+        const CpfParaVerificar = String(data.Cpf.replace(/\D/g, ''));
         const Password = String(password);
         try{
-            await login(Cpf, Password);
+            await login(CpfParaVerificar, Password);
             props.toastContent({severity:'success', summary: 'Successo', detail:'Login realizado com sucesso', life: 3000})
 
             // window.alert("Login realizado com sucesso !")

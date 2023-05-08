@@ -64,7 +64,6 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 
 	const onChangeValorInserido = (e: any) => {
 		const valor = Number(parseFloat(e.target.value.slice(2).replace(/[^\d]/g, "")))
-		console.log(valor)
 		setFormCorrect(false)
 		if (valor > 0){
 			setFormCorrect(true)
@@ -88,10 +87,10 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 	function handleInput(cpf: any) {
 		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
 		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");	
-		
+
 		if(CpfParaVerificar.length == 11){
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
+		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`
 		, {
 			headers: {
 				Authorization: `Bearer ${tokenClient}`,
@@ -137,12 +136,12 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 		ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
 
-		const cpf = data.cpf.replace(/\D/g, '');
+		const cpf = data.cpf;
+		console.log(cpf)
 		
 		axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
 			headers: {
-				Authorization: `Bearer ${tokenPurchases}`,
-				//Authorization2: `Bearer ${tokenClient}`
+				Authorization: `Bearer ${tokenPurchases}`
 			  }
 		})
 

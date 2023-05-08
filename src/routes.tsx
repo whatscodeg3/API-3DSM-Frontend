@@ -7,7 +7,7 @@ import HomeComercial from "./pages/HomeComercial/index";
 import ListagemVendas from "./pages/ListagemVendas";
 import CadastroVenda from "./pages/CadastroVenda/index";
 import CadastroCliente from "./pages/CadastroCliente";
-import ListaClienteUsuario from "./pages/ListaClienteUsuario";
+import ListaClienteUsuario from "./pages/ListagemCliente";
 import HomeRelatorios from "./pages/HomeRelatorios";
 import Login from "./pages/Login";
 import { Toast } from "primereact/toast";
