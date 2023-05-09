@@ -90,7 +90,7 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 
 		if(CpfParaVerificar.length == 11){
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`
+		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
 		, {
 			headers: {
 				Authorization: `Bearer ${tokenClient}`,
@@ -136,7 +136,7 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 		ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
 
-		const cpf = data.cpf;
+		const cpf = data.cpf.replace(/\D/g, '');
 		console.log(cpf)
 		
 		axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
