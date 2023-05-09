@@ -98,7 +98,9 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                 </div>
             )
         } else{
-            return <div style={{width:'20rem'}}>testeeeeeeeeeee</div>
+            return <div style={{width:'20rem'}}>
+                
+            </div>
         }
     }
 
