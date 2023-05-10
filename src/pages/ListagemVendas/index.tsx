@@ -124,13 +124,13 @@ const ListagemVendas: React.FC = () => {
 
 
     const showModal = (event: any) =>{
-        let installmentsFromEvent = event.rowData.installment
+        let installmentsFromEvent = event.rowData.installment.reverse()
         let contentFormated = installmentsFromEvent.map((installment: any, i: number) => {
             let installmentDueDate = installment.installmentDueDate.split("-")
             let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.paymentDate.split("-")
             let creditDate = installment.creditDate == null? installment.creditDate : installment.creditDate.split("-")
             return {
-                id: installment.id,
+                idInstallment: installment.id,
                 installmentNumber: i + 1,
                 installmentDueDate: `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`,
                 paymentDate: paymentDate == null?  '' :`${paymentDate[2]}/${paymentDate[1]}/${paymentDate[0]}`,
@@ -176,6 +176,8 @@ const ListagemVendas: React.FC = () => {
                     </Column>
                     <Column 
                         field="installmentDueDate"
+                        filter 
+                        filterElement="idInstallment"
                         bodyStyle={{color:"#F18524"}}
                         align="center" 
                         header="Data de Vencimento" 
@@ -254,7 +256,7 @@ const ListagemVendas: React.FC = () => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>Listagem de Vendas</Title>
-                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
+                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um Nome'/>
                 {loading? <ProgressSpinner/>: 
                     <DataTable
                         value={purchases}

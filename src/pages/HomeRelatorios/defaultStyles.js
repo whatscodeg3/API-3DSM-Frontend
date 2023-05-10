@@ -64,6 +64,7 @@ export const Calendar = styled.input`
     width: 200px;
     font-size: 17px;
     justify-content: center;
+    text-align: center;
     align-items: center;
 
     appearance: none;

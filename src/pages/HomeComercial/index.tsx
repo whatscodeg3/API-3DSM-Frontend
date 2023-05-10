@@ -31,8 +31,9 @@ const HomeComercial: React.FC = () => {
                         Página Inicial
                     </Title>
 
-                    
+
                     <Cards>
+
                         {/* Card Cliente */}
                         <PermissionGateRender permissions={['admin', 'comercial']}>
                         <Link to={"/cadastro/cliente"} style={{ textDecoration: 'none' }}>
@@ -58,6 +59,18 @@ const HomeComercial: React.FC = () => {
                         </Link>
                         </PermissionGateRender>
 
+                        {/* Card funcionario */}
+                        <Link to={"/cadastro/funcionario"} style={{ textDecoration: 'none' }}>
+                            <Card className="animate__animated animate__slideInUp">
+                                <img src={IconBag} style={{ width: "4vw" }} alt="IconBag" />
+                                <p>
+                                    Cadastrar<br/>funcionario
+                                </p>
+                            </Card>
+                        </Link>
+
+                    </Cards>
+                    <Cards>
 
                         {/* Card Listagem */}
                         <PermissionGateRender permissions={['admin', 'comercial', 'financeiro']}>
@@ -66,6 +79,19 @@ const HomeComercial: React.FC = () => {
                             <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
                             <p>
                                 Listagem<br/>vendas
+                            </p>
+                        </Card>
+                        </Link>
+                        </PermissionGateRender>
+                        
+
+                        {/* Card Listagem Cliente */}
+                        <PermissionGateRender permissions={['admin', 'comercial']}>
+                        <Link to={"/listagem/cliente"} style={{ textDecoration: 'none' }}>
+                        <Card className="animate__animated animate__slideInRight">
+                            <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
+                            <p>
+                                Listagem<br/>clientes
                             </p>
                         </Card>
                         </Link>
@@ -87,17 +113,7 @@ const HomeComercial: React.FC = () => {
                     <Cards>
 
 
-                        {/* Card Listagem Cliente */}
-                        <PermissionGateRender permissions={['admin', 'comercial']}>
-                        <Link to={"/listagem/cliente"} style={{ textDecoration: 'none' }}>
-                        <Card className="animate__animated animate__slideInRight">
-                            <img src={IconDocument} style={{ width: "4vw" }} alt="IconBag" />
-                            <p>
-                                Listagem<br/>clientes
-                            </p>
-                        </Card>
-                        </Link>
-                        </PermissionGateRender>
+                    
                     </Cards>
                 </MainBlock>
             </Container>

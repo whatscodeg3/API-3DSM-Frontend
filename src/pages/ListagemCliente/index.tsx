@@ -11,7 +11,7 @@ import { Container, Title, ContainerUserDelete, ContainerUserUpdate, ContainerUs
 import SearchField from '../../components/organisms/SearchField';
 
 //Prime React Components
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner'
@@ -31,7 +31,7 @@ const ListaClienteUsuario: React.FC = () => {
     const [modalContent, setModalContent] = useState<JSX.Element>();
     const [titleContent, setTitleContent] = useState<JSX.Element>();
     const [visible, setVisible] = useState(false);
-    const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
+    const [filters, setFilters] = useState<DataTableFilterMeta>({'fullName': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     ////////////////////////////////////////////// Codigo do filto da tabela e isCell pra bloquear poder clicar nos lugares que nao deve
     useEffect(() => {
@@ -52,12 +52,13 @@ const ListaClienteUsuario: React.FC = () => {
         setLoading(false);
     }, []);
     
-    const onGlobalFilterChange = (e) => {
+    const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+   
         
-        let _filters = { ...filters };
+        let _filters: any = { ...filters };
 
-        _filters['cpf'].value = value;
+        _filters['fullName'].value = value;
 
         setFilters(_filters);
         setGlobalFilterValue(value);
@@ -259,7 +260,7 @@ const ListaClienteUsuario: React.FC = () => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>Listagem de Clientes</Title>
-                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
+                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um Nome'/>
                 {loading && <ProgressSpinner/>}
                 {!loading && 
                     <DataTable

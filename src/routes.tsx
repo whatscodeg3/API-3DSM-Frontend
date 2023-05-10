@@ -7,10 +7,12 @@ import {Toast} from 'primereact/toast'
 import HomeComercial from "./pages/HomeComercial/index";
 import ListagemVendas from "./pages/ListagemVendas";
 import CadastroVenda from "./pages/CadastroVenda/index";
-import CadastroCliente from "./pages/CadastroCliente";
+import CadastroCliente from "./pages/CadastroCliente"; 
+import CadastroFuncionario from "./pages/CadastroFuncionario";
 import ListaClienteUsuario from "./pages/ListagemCliente";
 import HomeRelatorios from "./pages/HomeRelatorios";
 import Login from "./pages/Login";
+
 
 
 
@@ -47,6 +49,7 @@ const Rotas: React.FC = () => {
                 <Route path="/" element={<Login toastContent={setToastContent}/>}/> 
                 <Route path="/home" element={<Private permissions={['admin', 'comercial', 'financeiro']}><HomeComercial /></Private>} />
                 <Route path="/cadastro/cliente" element={<Private permissions={['admin', 'comercial']}><CadastroCliente /></Private>} />
+                <Route path="/cadastro/funcionario" element={<Private permissions={['admin']}><CadastroFuncionario/></Private>} />
                 <Route path="/cadastro/venda" element={<Private permissions={['admin', 'comercial']}><CadastroVenda toastContent={setToastContent} /></Private>} />
                 <Route path="/listagem/venda" element={<Private permissions={['admin', 'comercial', 'financeiro']}><ListagemVendas /></Private>} />
                 <Route path="/listagem/cliente" element={<Private permissions={['admin', 'comercial']}><ListaClienteUsuario/></Private>} />
