@@ -136,21 +136,19 @@ const ListagemVendas: React.FC = () => {
             let data = []
             let count = 0
             item.data.installment.map(item => {
+
+                // contador para numerar as parcelas (PRECISA REVER)
                 count += 1
                 item.count = count
-                console.log(item)
-                console.log(typeof(item))
-                item.sort(function(a,b) {
-                    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-                })
-                console.log(item)
 
-                // data.push(item)
-                console.log(data)
+                // formatando data
+                let date = item.installmentDueDate.split("-")
+                let formatedDate = `${date[2]}/${date[1]}/${date[0]}`
+                item.installmentDueDate = formatedDate
 
-
-                // installmentDueDate: `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`,
+                data.push(item)
                 
+
                 if (event.field == "id"){
                     let titleContent: JSX.Element = ( 
                         <Title height='2rem' color="#696969">
@@ -161,8 +159,10 @@ const ListagemVendas: React.FC = () => {
                     setTitleContent(titleContent);
                     let contentToModal: JSX.Element = (
                         <DataTable 
-                        value={data}
+                            value={data}
                             tableStyle={{ minWidth: '50rem' }}
+                            sortField="id" 
+                            sortOrder={1} 
                         >
                             <Column 
                                 field="count" 
@@ -180,7 +180,9 @@ const ListagemVendas: React.FC = () => {
                                 headerStyle={{color:'#696969'}}>
                             </Column>
                             <Column 
+                                sortable
                                 field="installmentDueDate"
+                                sortField="installmentDueDate"
                                 bodyStyle={{color:"#F18524"}}
                                 align="center" 
                                 header="Data de Vencimento" 
