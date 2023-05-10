@@ -85,12 +85,11 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 	////////////////////////////////////////////////////////////////
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
-		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
-		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");	
+		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');	
 
 		if(CpfParaVerificar.length == 11){
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`
+		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
 		, {
 			headers: {
 				Authorization: `Bearer ${tokenClient}`,
@@ -136,8 +135,7 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
 		ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
 
-		const cpf = data.cpf;
-		console.log(cpf)
+		const cpf = data.cpf.replace(/\D/g, '');
 		
 		axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
 			headers: {

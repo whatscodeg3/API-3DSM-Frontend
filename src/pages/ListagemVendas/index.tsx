@@ -254,7 +254,7 @@ const ListagemVendas: React.FC = () => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>Listagem de Vendas</Title>
-                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
+                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um nome'/>
                 {loading? <ProgressSpinner/>: 
                     <DataTable
                         value={purchases}
