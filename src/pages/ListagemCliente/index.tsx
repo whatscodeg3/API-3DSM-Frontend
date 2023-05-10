@@ -260,7 +260,7 @@ const ListaClienteUsuario: React.FC = () => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>Listagem de Clientes</Title>
-                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um nome'/>
+                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um Nome'/>
                 {loading && <ProgressSpinner/>}
                 {!loading && 
                     <DataTable
