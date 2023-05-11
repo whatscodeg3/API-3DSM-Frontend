@@ -99,6 +99,7 @@ const ListagemVendas: React.FC = () => {
                         Authorization: `Bearer ${tokenPurchases}`,
                     },
                 }); 
+                
                 const purchasesUpdated = await apiPurchases.get(`/api/purchases`, {
                     headers: {
                         Authorization: `Bearer ${tokenPurchases}`,
@@ -119,7 +120,7 @@ const ListagemVendas: React.FC = () => {
     const installmentCheck = (event: any) =>{
         return event.isInstallmentPayed ?  
             "Parcela paga" : 
-            <Button label="Confirmar" severity="success"  onClick={() => {checkInstallmentAsPayed(event.idInstallment)}}/>
+            <Button label="Confirmar" severity="success"  onClick={() => {checkInstallmentAsPayed(event.id)}}/>
     }
 
 
@@ -136,18 +137,31 @@ const ListagemVendas: React.FC = () => {
             let data = []
             let count = 0
             item.data.installment.map(item => {
-
-                // contador para numerar as parcelas (PRECISA REVER)
+                
                 count += 1
                 item.count = count
 
                 // formatando data
-                let date = item.installmentDueDate.split("-")
-                let formatedDate = `${date[2]}/${date[1]}/${date[0]}`
-                item.installmentDueDate = formatedDate
+
+                // installmentDueDate
+                let installmentDueDate = item.installmentDueDate.split("-")
+                let formatInstallmentDueDate = `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`
+                item.installmentDueDate = formatInstallmentDueDate
+
+                if(item.paymentDate !== null){
+                    // paymentDate
+                    let paymentDate = item.paymentDate.split("-")
+                    let formatedPaymentDate = `${paymentDate[2]}/${paymentDate[1]}/${paymentDate[0]}`
+                    item.paymentDate = formatedPaymentDate
+    
+                    // creditDate
+                    let creditDate = item.creditDate.split("-")
+                    let formatedCreditDate = `${creditDate[2]}/${creditDate[1]}/${creditDate[0]}`
+                    item.creditDate = formatedCreditDate
+                }
 
                 data.push(item)
-                
+                console.log(data)
 
                 if (event.field == "id"){
                     let titleContent: JSX.Element = ( 
@@ -162,15 +176,16 @@ const ListagemVendas: React.FC = () => {
                             value={data}
                             tableStyle={{ minWidth: '50rem' }}
                             sortField="id" 
-                            sortOrder={1} 
+                            sortOrder={1}
                         >
-                            <Column 
-                                field="count" 
+                            {/* <Column 
+                                field="count"
+                                sortable
                                 bodyStyle={{color:"#F18524"}}
                                 align="center" 
                                 header="Parcela" 
                                 headerStyle={{color:'#696969'}}>
-                            </Column>
+                            </Column> */}
                             <Column 
                                 field="installmentValue"
                                 body={priceBodyTemplate} 
@@ -182,7 +197,6 @@ const ListagemVendas: React.FC = () => {
                             <Column 
                                 sortable
                                 field="installmentDueDate"
-                                sortField="installmentDueDate"
                                 bodyStyle={{color:"#F18524"}}
                                 align="center" 
                                 header="Data de Vencimento" 
