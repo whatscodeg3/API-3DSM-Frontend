@@ -21,7 +21,7 @@ interface RelatoriosProps {
 
 
 const Relatorios: React.FC<RelatoriosProps> = (props) => {
-    const installmentsFiltered = props.reportData        
+    const installmentsFiltered = props.reportData
     
     const formatCurrency = (price: number) => {
         return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -40,11 +40,11 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
     };
 
     const status = (dates) =>{
-        const today = new Date().toLocaleDateString()
-        const installmentDueDate = new Date(dates.installmentDueDate.replace('-',' ')).toLocaleDateString()
-        const creditDate = dates.creditDate? new Date(dates.creditDate.replace('-',' ')).toLocaleDateString() : false
-        const paymentDate = dates.paymentDate? new Date(dates.paymentDate.replace('-',' ')).toLocaleDateString() : false
-        
+        const today = new Date()
+        const installmentDueDate = new Date(dates.installmentDueDate.replace('-',' '))
+        const creditDate = dates.creditDate? new Date(dates.creditDate.replace('-',' ')) : false
+        const paymentDate = dates.paymentDate? new Date(dates.paymentDate.replace('-',' ')) : false
+
         if(installmentDueDate >= today && !paymentDate && !creditDate) {
             return <div className="text-bluegray-600 font-bold">Aguardando pagamento</div>
         }
@@ -57,13 +57,38 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
             }
             return <div className="text-blue-300 font-bold">Paga</div>
         }
-        else{
-            return <div>{today}</div>
-        }
     }
     
 
     const reportTotals = (props) => {
+        
+
+        console.log(installmentsFiltered)
+
+        let totalAtrasado = 0
+        let totalCreditado = 0
+        let totalPago = 0
+        let totalReceber = 0
+
+        if(installmentsFiltered){
+            for (let item of installmentsFiltered) {
+                const today = new Date()
+                const installmentDueDate = new Date(item.installmentDueDate.replace('-',' '))
+                const creditDate = item.creditDate? new Date(item.creditDate.replace('-',' ')) : false
+                const paymentDate = item.paymentDate? new Date(item.paymentDate.replace('-',' ')) : false
+
+                if(installmentDueDate < today && !paymentDate){
+                    totalAtrasado += item.installmentValue
+                } else if(creditDate && creditDate <= today){
+                    totalCreditado += item.installmentValue
+                } else if(paymentDate && creditDate >= today){
+                    totalPago += item.installmentValue
+                } else {
+                    totalReceber += item.installmentValue
+                }
+            }
+        }
+
         let totalOfAll: number = 0
         let totalOfPage: number = 0
         let startRange: number = props.first
@@ -78,22 +103,39 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
             }
             return (
                 <div className="flex flex-column gap-2" style={{width:'20rem'}}>
-                     {props.totalRecords > props.rows &&
                     <div 
-                        className="flex justify-content-between gap-5 font-bold" 
+                        className="flex justify-content-between gap-10 font-bold" 
                         style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524', color:'white'}}
                     >
-                        <div>Total da página</div>
-                        {priceBodyTemplate(totalOfPage)}
-                    </div>}
+                        <div>Parcelas em Atraso</div>
+                        {formatCurrency(totalAtrasado)}
+                    </div>
                    
                     <div 
-                        className="flex flex justify-content-between gap-5 font-bold" 
+                        className="flex flex justify-content-between gap-10 font-bold" 
                        style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
                        color:'white'}}
                     >
-                        <div>Total</div>
-                        {priceBodyTemplate(totalOfAll)}
+                        <div>Parcelas Creditadas</div>
+                        {priceBodyTemplate(totalCreditado)}
+                    </div>
+
+                    <div 
+                        className="flex flex justify-content-between gap-10 font-bold" 
+                       style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                       color:'white'}}
+                    >
+                        <div>Parcelas Pagas</div>
+                        {priceBodyTemplate(totalPago)}
+                    </div>
+
+                    <div 
+                        className="flex flex justify-content-between gap-10 font-bold" 
+                       style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                       color:'white'}}
+                    >
+                        <div>Parcelas a receber</div>
+                        {priceBodyTemplate(totalReceber)}
                     </div>
                 </div>
             )
@@ -110,89 +152,259 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
     return(
         <>
             <GlobalStyle/>
-            <Container>     
-                <Title color='#F18524'>
-                    Relatório das datas de {props.reportConsultModel['filterType'] === 1 
-                        ? 'Vencimento'
-                        : props.reportConsultModel['filterType'] === 2
-                        ? 'Pagamento'
-                        : 'Crédito'
+            <Container>
+                {props.reportConsultModel['filterType'] === 1 
+                    ?
+                    <>
+                        <Title color='#F18524'>
+                            Relatório das datas de Vencimento
+                        </Title>
+                        <DataTable
+                            value={installmentsFiltered}
+                            paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
+                            emptyMessage='Sem informações'
+                            style={{width:'90%', margin:'auto'}}
+                            className='shadow'
+                            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                            currentPageReportTemplate="{first} à {last} de {totalRecords}" 
+                            paginatorLeft={reportTotals}
+                            paginatorRight={rightResolver}
+                            stripedRows 
+                            sortField="installmentDueDate" 
+                            sortOrder={1}
+                        >
+                            <Column 
+                                field="cpf"
+                                // body={cpfBodyTemplate}
+                                align="center" 
+                                header="CPF" 
+                                headerStyle={{color:'#F18524'}}
+                            ></Column>
+                            <Column 
+                                field="fullName"
+                                align="center"
+                                header="Nome" 
+                                headerStyle={{color:'#F18524'}}
+                            ></Column>
+                            {/* <Column 
+                                field="purchaseDate"
+                                align="center" 
+                                header="Data da venda" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.purchaseDate)}
+                            ></Column>
+                            <Column 
+                                field="paymentValue"
+                                align="center" 
+                                header="Total da venda" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => priceBodyTemplate(rowData.paymentValue)}
+                            ></Column> */}
+                            <Column 
+                                sortable
+                                field="installmentValue"
+                                align="center" 
+                                header="Valor da parcela" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => priceBodyTemplate(rowData.installmentValue)}
+                            ></Column>
+                            <Column 
+                                field="installmentDueDate"
+                                align="center" 
+                                header="Data vencimento " 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.installmentDueDate)}
+                            ></Column>
+                            <Column 
+                                field="paymentDate"
+                                align="center" 
+                                header="Data de pagamento" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.paymentDate)}
+                            ></Column>
+                            <Column 
+                                field="creditDate"
+                                align="center" 
+                                header="Data de crédito" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.creditDate)}
+                            ></Column>
+                            <Column 
+                                align="center" 
+                                header="Status" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => status(rowData)}
+                            ></Column>
+                        </DataTable>
+                    </>
+                    : props.reportConsultModel['filterType'] === 2
+                    ? 
+                    <>
+                        <Title color='#F18524'>
+                            Relatório das datas de Pagamento
+                        </Title>
+                        <DataTable
+                            value={installmentsFiltered}
+                            paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
+                            emptyMessage='Sem informações'
+                            style={{width:'90%', margin:'auto'}}
+                            className='shadow'
+                            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                            currentPageReportTemplate="{first} à {last} de {totalRecords}" 
+                            paginatorLeft={reportTotals}
+                            paginatorRight={rightResolver}
+                            stripedRows 
+                            sortField="paymentDate" 
+                            sortOrder={1}
+                        >
+                            <Column 
+                                field="cpf"
+                                // body={cpfBodyTemplate}
+                                align="center" 
+                                header="CPF" 
+                                headerStyle={{color:'#F18524'}}
+                            ></Column>
+                            <Column 
+                                field="fullName"
+                                align="center"
+                                header="Nome" 
+                                headerStyle={{color:'#F18524'}}
+                            ></Column>
+                            {/* <Column 
+                                field="purchaseDate"
+                                align="center" 
+                                header="Data da venda" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.purchaseDate)}
+                            ></Column>
+                            <Column 
+                                field="paymentValue"
+                                align="center" 
+                                header="Total da venda" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => priceBodyTemplate(rowData.paymentValue)}
+                            ></Column> */}
+                            <Column 
+                                sortable
+                                field="installmentValue"
+                                align="center" 
+                                header="Valor da parcela" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => priceBodyTemplate(rowData.installmentValue)}
+                            ></Column>
+                            <Column 
+                                field="installmentDueDate"
+                                align="center" 
+                                header="Data vencimento " 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.installmentDueDate)}
+                            ></Column>
+                            <Column 
+                                field="paymentDate"
+                                align="center" 
+                                header="Data de pagamento" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.paymentDate)}
+                            ></Column>
+                            <Column 
+                                field="creditDate"
+                                align="center" 
+                                header="Data de crédito" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.creditDate)}
+                            ></Column>
+                            <Column 
+                                align="center" 
+                                header="Status" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => status(rowData)}
+                            ></Column>
+                        </DataTable>
+                    </>
+                    : 
+                    <>
+                        <Title color='#F18524'>
+                            Relatório das datas de Credito
+                        </Title>
+                        <DataTable
+                            value={installmentsFiltered}
+                            paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
+                            emptyMessage='Sem informações'
+                            style={{width:'90%', margin:'auto'}}
+                            className='shadow'
+                            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                            currentPageReportTemplate="{first} à {last} de {totalRecords}" 
+                            paginatorLeft={reportTotals}
+                            paginatorRight={rightResolver}
+                            stripedRows 
+                            sortField="creditDate" 
+                            sortOrder={1}
+                        >
+                            <Column 
+                                field="cpf"
+                                // body={cpfBodyTemplate}
+                                align="center" 
+                                header="CPF" 
+                                headerStyle={{color:'#F18524'}}
+                            ></Column>
+                            <Column 
+                                field="fullName"
+                                align="center"
+                                header="Nome" 
+                                headerStyle={{color:'#F18524'}}
+                            ></Column>
+                            {/* <Column 
+                                field="purchaseDate"
+                                align="center" 
+                                header="Data da venda" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.purchaseDate)}
+                            ></Column>
+                            <Column 
+                                field="paymentValue"
+                                align="center" 
+                                header="Total da venda" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => priceBodyTemplate(rowData.paymentValue)}
+                            ></Column> */}
+                            <Column 
+                                sortable
+                                field="installmentValue"
+                                align="center" 
+                                header="Valor da parcela" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => priceBodyTemplate(rowData.installmentValue)}
+                            ></Column>
+                            <Column 
+                                field="installmentDueDate"
+                                align="center" 
+                                header="Data vencimento " 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.installmentDueDate)}
+                            ></Column>
+                            <Column 
+                                field="paymentDate"
+                                align="center" 
+                                header="Data de pagamento" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.paymentDate)}
+                            ></Column>
+                            <Column 
+                                field="creditDate"
+                                align="center" 
+                                header="Data de crédito" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => dateBodyTemplate(rowData.creditDate)}
+                            ></Column>
+                            <Column 
+                                align="center" 
+                                header="Status" 
+                                headerStyle={{color:'#F18524'}}
+                                body={(rowData) => status(rowData)}
+                            ></Column>
+                        </DataTable>
+                    </>                
                     }
-                </Title>
-                <DataTable
-                    value={installmentsFiltered}
-                    paginator rows={25} rowsPerPageOptions={[25, 50, 100]} 
-                    emptyMessage='Sem informações'
-                    style={{width:'90%', margin:'auto'}}
-                    className='shadow'
-                    paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-                    currentPageReportTemplate="{first} à {last} de {totalRecords}" 
-                    paginatorLeft={reportTotals}
-                    paginatorRight={rightResolver}
-                    stripedRows 
-                >
-                    <Column 
-                        field="cpf"
-                        // body={cpfBodyTemplate}
-                        align="center" 
-                        header="CPF" 
-                        headerStyle={{color:'#F18524'}}
-                    ></Column>
-                    <Column 
-                        field="fullName"
-                        align="center"
-                        header="Nome" 
-                        headerStyle={{color:'#F18524'}}
-                    ></Column>
-                    {/* <Column 
-                        field="purchaseDate"
-                        align="center" 
-                        header="Data da venda" 
-                        headerStyle={{color:'#F18524'}}
-                        body={(rowData) => dateBodyTemplate(rowData.purchaseDate)}
-                    ></Column>
-                    <Column 
-                        field="paymentValue"
-                        align="center" 
-                        header="Total da venda" 
-                        headerStyle={{color:'#F18524'}}
-                        body={(rowData) => priceBodyTemplate(rowData.paymentValue)}
-                    ></Column> */}
-                    <Column 
-                        field="installmentValue"
-                        align="center" 
-                        header="Valor da parcela" 
-                        headerStyle={{color:'#F18524'}}
-                        body={(rowData) => priceBodyTemplate(rowData.installmentValue)}
-                    ></Column>
-                    <Column 
-                        field="installmentDueDate"
-                        align="center" 
-                        header="Data vencimento " 
-                        headerStyle={{color:'#F18524'}}
-                        body={(rowData) => dateBodyTemplate(rowData.installmentDueDate)}
-                    ></Column>
-                    <Column 
-                        field="paymentDate"
-                        align="center" 
-                        header="Data de pagamento" 
-                        headerStyle={{color:'#F18524'}}
-                        body={(rowData) => dateBodyTemplate(rowData.paymentDate)}
-                    ></Column>
-                    <Column 
-                        field="creditDate"
-                        align="center" 
-                        header="Data de crédito" 
-                        headerStyle={{color:'#F18524'}}
-                        body={(rowData) => dateBodyTemplate(rowData.creditDate)}
-                    ></Column>
-                    <Column 
-                        align="center" 
-                        header="Status" 
-                        headerStyle={{color:'#F18524'}}
-                        body={(rowData) => status(rowData)}
-                    ></Column>
-                </DataTable>
                 <Link to={"/home"} style={{ textDecoration: "none" }}>
                     <ImageBack src={IconBack} alt="IconBack" />
                 </Link>
