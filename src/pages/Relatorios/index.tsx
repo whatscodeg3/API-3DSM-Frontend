@@ -22,6 +22,7 @@ interface RelatoriosProps {
 
 const Relatorios: React.FC<RelatoriosProps> = (props) => {
     const installmentsFiltered = props.reportData
+    const filtroSelecionado = props.reportConsultModel['filterType']
     
     const formatCurrency = (price: number) => {
         return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -101,44 +102,112 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
             for (let i = startRange; i < endRange; i++){
                 totalOfPage += installmentsFiltered[i].installmentValue
             }
-            return (
-                <div className="flex flex-column gap-2" style={{width:'20rem'}}>
-                    <div 
-                        className="flex justify-content-between gap-10 font-bold" 
-                        style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524', color:'white'}}
-                    >
-                        <div>Parcelas em Atraso</div>
-                        {formatCurrency(totalAtrasado)}
-                    </div>
-                   
-                    <div 
-                        className="flex flex justify-content-between gap-10 font-bold" 
-                       style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
-                       color:'white'}}
-                    >
-                        <div>Parcelas Creditadas</div>
-                        {priceBodyTemplate(totalCreditado)}
-                    </div>
 
-                    <div 
-                        className="flex flex justify-content-between gap-10 font-bold" 
-                       style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
-                       color:'white'}}
-                    >
-                        <div>Parcelas Pagas</div>
-                        {priceBodyTemplate(totalPago)}
-                    </div>
 
-                    <div 
-                        className="flex flex justify-content-between gap-10 font-bold" 
-                       style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
-                       color:'white'}}
-                    >
-                        <div>Parcelas a receber</div>
-                        {priceBodyTemplate(totalReceber)}
+            
+            if(filtroSelecionado === 1 ){
+                return (
+                    <div className="flex flex-column gap-2" style={{width:'20rem'}}>
+                        <div 
+                            className="flex justify-content-between gap-10 font-bold" 
+                            style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524', color:'white'}}
+                        >
+                            <div>Parcelas em Atraso</div>
+                            {formatCurrency(totalAtrasado)}
+                        </div>
+                       
+    
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas Pagas</div>
+                            {priceBodyTemplate(totalPago)}
+                        </div>
+    
+    
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas Creditadas</div>
+                            {priceBodyTemplate(totalCreditado)}
+                        </div>
+    
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas a receber</div>
+                            {priceBodyTemplate(totalReceber)}
+                        </div>
                     </div>
-                </div>
-            )
+                )
+            } else if(filtroSelecionado === 2) {
+
+                return (
+                    <div className="flex flex-column gap-2" style={{width:'20rem'}}>
+                     
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas Pagas</div>
+                            {priceBodyTemplate(totalPago)}
+                        </div>
+    
+    
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas Creditadas</div>
+                            {priceBodyTemplate(totalCreditado)}
+                        </div>
+
+                    </div>
+                )
+
+            } else if (filtroSelecionado === 3) {
+                return (
+                    <div className="flex flex-column gap-2" style={{width:'20rem'}}>
+                
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas Pagas</div>
+                            {priceBodyTemplate(totalPago)}
+                        </div>
+    
+    
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas Creditadas</div>
+                            {priceBodyTemplate(totalCreditado)}
+                        </div>
+    
+                        <div 
+                            className="flex flex justify-content-between gap-10 font-bold" 
+                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
+                           color:'white'}}
+                        >
+                            <div>Parcelas a receber</div>
+                            {priceBodyTemplate(totalReceber)}
+                        </div>
+                    </div>
+                )
+            }
+        
         } else{
             return <div style={{width:'20rem'}}>
                 
