@@ -99,6 +99,7 @@ const ListagemVendas: React.FC = () => {
                         Authorization: `Bearer ${tokenPurchases}`,
                     },
                 }); 
+                
                 const purchasesUpdated = await apiPurchases.get(`/api/purchases`, {
                     headers: {
                         Authorization: `Bearer ${tokenPurchases}`,
@@ -124,131 +125,155 @@ const ListagemVendas: React.FC = () => {
 
 
     const showModal = (event: any) =>{
-        let installmentsFromEvent = event.rowData.installment.reverse()
-        let contentFormated = installmentsFromEvent.map((installment: any, i: number) => {
-            let installmentDueDate = installment.installmentDueDate.split("-")
-            let paymentDate = installment.paymentDate == null? installment.paymentDate : installment.paymentDate.split("-")
-            let creditDate = installment.creditDate == null? installment.creditDate : installment.creditDate.split("-")
-            return {
-                idInstallment: installment.id,
-                installmentNumber: i + 1,
-                installmentDueDate: `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`,
-                paymentDate: paymentDate == null?  '' :`${paymentDate[2]}/${paymentDate[1]}/${paymentDate[0]}`,
-                creditDate: creditDate == null?  '' :`${creditDate[2]}/${creditDate[1]}/${creditDate[0]}`,
-                installmentValue: installment.installmentValue,
-                isInstallmentPayed: installment.isInstallmentPayed 
-            }
+        let id = event.value
+
+        const purchasesResponse = apiPurchases.get(`/api/purchases/${id}`, {
+            headers: {
+                Authorization: `Bearer ${tokenPurchases}`,
+            },
+        });
+
+        purchasesResponse.then(item => {
+            let data = []
+            let count = 0
+            item.data.installment.map(item => {
+                
+                count += 1
+                item.count = count
+
+                // formatando data
+
+                // installmentDueDate
+                let installmentDueDate = item.installmentDueDate.split("-")
+                let formatInstallmentDueDate = `${installmentDueDate[2]}/${installmentDueDate[1]}/${installmentDueDate[0]}`
+                item.installmentDueDate = formatInstallmentDueDate
+
+                if(item.paymentDate !== null){
+                    // paymentDate
+                    let paymentDate = item.paymentDate.split("-")
+                    let formatedPaymentDate = `${paymentDate[2]}/${paymentDate[1]}/${paymentDate[0]}`
+                    item.paymentDate = formatedPaymentDate
+    
+                    // creditDate
+                    let creditDate = item.creditDate.split("-")
+                    let formatedCreditDate = `${creditDate[2]}/${creditDate[1]}/${creditDate[0]}`
+                    item.creditDate = formatedCreditDate
+                }
+
+                data.push(item)
+                console.log(data)
+
+                if (event.field == "id"){
+                    let titleContent: JSX.Element = ( 
+                        <Title height='2rem' color="#696969">
+                            Informações de Venda
+                        </Title>
+                    );
+
+                    setTitleContent(titleContent);
+                    let contentToModal: JSX.Element = (
+                        <DataTable 
+                            value={data}
+                            tableStyle={{ minWidth: '50rem' }}
+                            sortField="id" 
+                            sortOrder={1}
+                        >
+                            {/* <Column 
+                                field="count"
+                                sortable
+                                bodyStyle={{color:"#F18524"}}
+                                align="center" 
+                                header="Parcela" 
+                                headerStyle={{color:'#696969'}}>
+                            </Column> */}
+                            <Column 
+                                field="installmentValue"
+                                body={priceBodyTemplate} 
+                                align="center"
+                                bodyStyle={{color:"#F18524" }}
+                                header="Valor da Parcela" 
+                                headerStyle={{color:'#696969'}}>
+                            </Column>
+                            <Column 
+                                sortable
+                                field="installmentDueDate"
+                                bodyStyle={{color:"#F18524"}}
+                                align="center" 
+                                header="Data de Vencimento" 
+                                headerStyle={{color:'#696969'}}>
+                            </Column>
+                            <Column 
+                                field="paymentDate"
+                                bodyStyle={{color:"#F18524"}}
+                                align="center" 
+                                header="Data de Pagamento" 
+                                headerStyle={{color:'#696969'}}>
+                            </Column>
+                            <Column 
+                                field="creditDate"
+                                bodyStyle={{color:"#F18524"}}
+                                align="center" 
+                                header="Data de Credito" 
+                                headerStyle={{color:'#696969'}}>
+                            </Column>
+                            {/* <Column 
+                                field="isInstallmentPayed"
+                                body=""
+                                bodyStyle={{color:"#F18524"}}
+                                dataType="date"  
+                                align="center" 
+                                header="Status" 
+                                headerStyle={{color:'#696969'}}>
+                            </Column> */}
+                            <Column
+                                body={installmentCheck}
+                                bodyStyle={{color:"#F18524"}}
+                                align="center" 
+                                header="Confirmar pagamento"
+                                headerStyle={{color:'#696969'}}>
+                            </Column>
+                        </DataTable>
+                    );
+                    setModalContent(contentToModal)
+
+                } else if (event.field == "client.fullName"){
+                    let titleContent: JSX.Element = ( 
+                        <Title height='2rem'>
+                            Informações de Cliente
+                        </Title>
+                    );
+                    setTitleContent(titleContent)
+
+                    let contentToModal: JSX.Element = ( 
+                        <ContainerUserInfo>
+                            <div>
+                                <label>Nome</label>
+                                <input type="text" value={event.props.rowData.client["fullName"]} disabled />
+                            </div>
+                            <div>
+                                <label>CPF</label>
+                                <input type="text" value={event.props.rowData.client["cpf"]} disabled />
+                            </div>
+                            <div>
+                                <label>Email</label>
+                                <input type="text" value={event.props.rowData.client["email"]} disabled />
+                            </div>
+                            <div>
+                                <label>Telefone</label>
+                                <input type="text" value={event.props.rowData.client["telephone"]} disabled />
+                            </div>
+                            <div>
+                                <label>Data Nasc.</label>
+                                <input type="text" value={event.props.rowData.client["birthDate"]} disabled />
+                            </div>
+                        </ContainerUserInfo>
+                    );
+
+                    setModalContent(contentToModal)
+                }
+                setVisible(true)
+            })
         })
-        
-        if (event.field == "id"){
-            let titleContent: JSX.Element = ( 
-                <Title height='2rem' color="#696969">
-                    Informações de Venda
-                </Title>
-            );
-
-            setTitleContent(titleContent);
-            let contentToModal: JSX.Element = (
-                <DataTable 
-                    value={contentFormated}
-                    tableStyle={{ minWidth: '50rem' }}
-                >
-                    <Column 
-                        field="installmentNumber" 
-                        bodyStyle={{color:"#F18524"}}
-                        align="center" 
-                        header="Parcela" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column>
-                    <Column 
-                        field="paymentDate"
-                        bodyStyle={{color:"#F18524"}}
-                        align="center" 
-                        header="Data de Pagamento" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column>
-                    <Column 
-                        field="creditDate"
-                        bodyStyle={{color:"#F18524"}}
-                        align="center" 
-                        header="Data de Credito" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column>
-                    <Column 
-                        field="installmentDueDate"
-                        filter 
-                        filterElement="idInstallment"
-                        bodyStyle={{color:"#F18524"}}
-                        align="center" 
-                        header="Data de Vencimento" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column>
-                    <Column 
-                        field="installmentValue"
-                        body={priceBodyTemplate} 
-                        align="center"
-                        bodyStyle={{color:"#F18524" }}
-                        header="Valor da Parcela" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column>
-                    {/* <Column 
-                        field="isInstallmentPayed"
-                        body=""
-                        bodyStyle={{color:"#F18524"}}
-                        dataType="date"  
-                        align="center" 
-                        header="Status" 
-                        headerStyle={{color:'#696969'}}>
-                    </Column> */}
-                    <Column
-                        body={installmentCheck}
-                        bodyStyle={{color:"#F18524"}}
-                        align="center" 
-                        header="Confirmar pagamento"
-                        headerStyle={{color:'#696969'}}>
-                        
-                    </Column>
-                </DataTable>
-            );
-            setModalContent(contentToModal)
-
-        } else if (event.field == "client.fullName"){
-            let titleContent: JSX.Element = ( 
-                <Title height='2rem'>
-                    Informações de Cliente
-                </Title>
-            );
-            setTitleContent(titleContent)
-
-            let contentToModal: JSX.Element = ( 
-                <ContainerUserInfo>
-                    <div>
-                        <label>Nome</label>
-                        <input type="text" value={event.props.rowData.client["fullName"]} disabled />
-                    </div>
-                    <div>
-                        <label>CPF</label>
-                        <input type="text" value={event.props.rowData.client["cpf"]} disabled />
-                    </div>
-                    <div>
-                        <label>Email</label>
-                        <input type="text" value={event.props.rowData.client["email"]} disabled />
-                    </div>
-                    <div>
-                        <label>Telefone</label>
-                        <input type="text" value={event.props.rowData.client["telephone"]} disabled />
-                    </div>
-                    <div>
-                        <label>Data Nasc.</label>
-                        <input type="text" value={event.props.rowData.client["birthDate"]} disabled />
-                    </div>
-                </ContainerUserInfo>
-            );
-
-            setModalContent(contentToModal)
-        }
-        setVisible(true)
-
     };
     
     return(
