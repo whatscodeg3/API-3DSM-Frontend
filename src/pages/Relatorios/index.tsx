@@ -62,10 +62,6 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
     
 
     const reportTotals = (props) => {
-        
-
-        console.log(installmentsFiltered)
-
         let totalAtrasado = 0
         let totalCreditado = 0
         let totalPago = 0
