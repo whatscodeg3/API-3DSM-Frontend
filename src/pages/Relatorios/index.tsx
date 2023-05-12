@@ -99,8 +99,6 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                 totalOfPage += installmentsFiltered[i].installmentValue
             }
 
-
-            
             if(filtroSelecionado === 1 ){
                 return (
                     <div className="flex flex-column gap-2" style={{width:'20rem'}}>

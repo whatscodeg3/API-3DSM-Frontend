@@ -22,9 +22,9 @@ import IconBack from '../../assets/img/IconBack.svg'
 
 //API's
 import { apiClient, apiPurchases } from '../../services/api';
+import ToastProps from "../../interfaces/selfInterfaces";
 
-
-const ListagemVendas: React.FC = () => {
+const ListagemVendas: React.FC<ToastProps> = (props) => {
     const tokenClient = localStorage.getItem("tokenClient");
     const tokenPurchases = localStorage.getItem("tokenPurchases");
     const [loading, setLoading] = useState(true);
@@ -110,9 +110,9 @@ const ListagemVendas: React.FC = () => {
             confirmPayment()
             setModalContent(<></>)
             setTitleContent(<></>)
-            window.alert("Pagamento da parcela confirmado")
+            props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Pagamento da parcela confirmado!', life: 3000})
         }else{
-            window.alert("Confirmação do pagamento cancelada")
+            props.toastContent({severity:'error', summary: 'Erro', detail: 'Confirmação do pagamento cancelada!', life: 3000});
         }
         setVisible(false)
     }
@@ -161,7 +161,6 @@ const ListagemVendas: React.FC = () => {
                 }
 
                 data.push(item)
-                console.log(data)
 
                 if (event.field == "id"){
                     let titleContent: JSX.Element = ( 
@@ -296,7 +295,7 @@ const ListagemVendas: React.FC = () => {
                         className='shadow'
                     >
                         <Column 
-                            field="client.fullName"
+                            field="clientName"
                             align="center" 
                             header="Nome" 
                             headerStyle={{color:'#F18524'}}

@@ -34,6 +34,7 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 	const [paymentValue, setpaymentValue] = useState<string>("");
 	const [valorOriginal, setValorOriginal] = useState<string>("");
 	const [ValueRedirect, setRedirect] = useState(false)
+	const [consultaCpf, setCPF] = useState("")
 
 	// Syntaxe do UseForm
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
@@ -85,7 +86,8 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 	////////////////////////////////////////////////////////////////
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
-		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');	
+		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
+		setCPF(CpfParaVerificar)	
 
 		if(CpfParaVerificar.length == 11){
 
@@ -130,48 +132,49 @@ const CadastroVenda: React.FC<ToastProps> = (props) => {
 			formattedDate = `${year}-${month}-${day}`;
 		}
 
-
-		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
-		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
-		ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
-
-		const cpf = data.cpf.replace(/\D/g, '');
-		
-		axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
+		axios.get(`http://localhost:8080/client/queryFromCpf/${consultaCpf}`
+		, {
 			headers: {
-				Authorization: `Bearer ${tokenPurchases}`
-			  }
-		})
+				Authorization: `Bearer ${tokenClient}`,
+			},
+		}
+		).then(response => {
+			const ResultadoDevolvido = response.data
 
-		.then(response => {
+			const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
+			ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
+			ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
+			ObjetoSoComValorTotaleIdCliente.clientName = ResultadoDevolvido.fullName
 
-			const ObjetoRetornadoPeloMetodoDaRota = response.data;
-			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
-	
+			const cpf = data.cpf.replace(/\D/g, '');
+			
+			axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
+				headers: {
+					Authorization: `Bearer ${tokenPurchases}`
+				}
+			})
 
-			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal, {
-                headers: {
-                    Authorization: `Bearer ${tokenPurchases}`,
-                },
-            })
-			.then((response) => {
-				setRedirect(true)
-				// window.alert("Cadastrado com sucesso!");
+			.then(response => {
 
-			  })
-
-			.catch((error) => {
-				props.toastContent({severity:'error', summary: 'Erro', detail: 'Erro na Criação de Parcelas !', life: 3000});
-
-				// window.alert("Erro na Criação de Parcelas !");
-			});
-		})
-		.catch(error => {
-			props.toastContent({severity:'error', summary: 'Erro', detail: 'Erro ao Cadastrar a Venda!', life: 3000});
-
-			// window.alert("Erro ao Cadastrar a Venda!")
-		})
+				const ObjetoRetornadoPeloMetodoDaRota = response.data;
+				const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
 		
+
+				axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal, {
+					headers: {
+						Authorization: `Bearer ${tokenPurchases}`,
+					},
+				}).then((response) => {
+					setRedirect(true)
+				})
+				.catch((error) => {
+					props.toastContent({severity:'error', summary: 'Erro', detail: 'Erro na Criação de Parcelas !', life: 3000});
+				});
+			})
+			.catch(error => {
+				props.toastContent({severity:'error', summary: 'Erro', detail: 'Erro ao Cadastrar a Venda!', life: 3000});
+			})	
+		})
 	}
 
 	useEffect(() => {

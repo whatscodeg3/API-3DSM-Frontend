@@ -44,12 +44,8 @@ const Login: React.FC<ToastProps> = (props) => {
         try{
             await login(CpfParaVerificar, Password);
             props.toastContent({severity:'success', summary: 'Successo', detail:'Login realizado com sucesso', life: 3000})
-
-            // window.alert("Login realizado com sucesso !")
-
         }catch{
             props.toastContent({severity:'error', summary: 'Erro', detail:'Credencial inserida inválida', life: 3000});
-            // window.alert("Credencial inserida inválida")
         }
         
     }

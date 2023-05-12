@@ -7,7 +7,7 @@ import HomeComercial from "./pages/HomeComercial/index";
 import ListagemVendas from "./pages/ListagemVendas";
 import CadastroVenda from "./pages/CadastroVenda/index";
 import CadastroCliente from "./pages/CadastroCliente";
-import ListaClienteUsuario from "./pages/ListagemCliente";
+import ListaCliente from "./pages/ListagemCliente";
 import HomeRelatorios from "./pages/HomeRelatorios";
 import Login from "./pages/Login";
 import { Toast } from "primereact/toast";
@@ -36,9 +36,9 @@ const Rotas: React.FC = () => {
                 <Route path="/cadastro/cliente" element={<Private><CadastroCliente toastContent={setToastContent}/></Private>} />
                 <Route path="/cadastro/funcionario" element={<Private><CadastroFuncionario toastContent={setToastContent}/></Private>} />
                 <Route path="/cadastro/venda" element={<Private><CadastroVenda toastContent={setToastContent}/></Private>} />
-                <Route path="/listagem/venda" element={<Private><ListagemVendas /></Private>} />
-                <Route path="/listagem/cliente" element={<Private><ListaClienteUsuario/></Private>} />
-                <Route path="/relatorios" element={<Private><HomeRelatorios/></Private>} />
+                <Route path="/listagem/venda" element={<Private><ListagemVendas toastContent={setToastContent}/></Private>} />
+                <Route path="/listagem/cliente" element={<Private><ListaCliente toastContent={setToastContent}/></Private>} />
+                <Route path="/relatorios" element={<Private><HomeRelatorios toastContent={setToastContent}/></Private>} />
             </Routes>
         </AuthProvider>
         <Toast ref={toast} />
