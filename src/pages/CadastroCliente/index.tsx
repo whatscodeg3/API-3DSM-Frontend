@@ -23,9 +23,9 @@ import InputMask from "react-input-mask"
 
 // Img
 import IconBack from "../../assets/img/IconBack.svg";
+import ToastProps from "../../interfaces/selfInterfaces";
 
-
-const CadastroCliente: React.FC = () => {
+const CadastroCliente: React.FC<ToastProps> = (props) => {
     const tokenClient = localStorage.getItem("tokenClient");
     const tokenPurchases = localStorage.getItem("tokenPurchases");
 
@@ -66,8 +66,12 @@ const CadastroCliente: React.FC = () => {
               headers: {
                   Authorization: `Bearer ${tokenClient}`,
               },
-          })
+          }).then(response => {
+            props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Cliente cadastrado com sucesso!', life: 3000})
             navigate("/home");
+          }).catch((error) => {
+            props.toastContent({severity:'error', summary: 'Erro', detail: 'Erro ao Cadastrar o Cliente!', life: 3000});
+          })
           }
       } catch(error) {
         if(error.response.data["cpf"] == undefined){

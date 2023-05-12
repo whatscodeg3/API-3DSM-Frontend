@@ -33,8 +33,8 @@ const Rotas: React.FC = () => {
             <Routes>
                 <Route path="/" element={<Login toastContent={setToastContent}/>} />
                 <Route path="/home" element={<Private><HomeComercial/></Private>} />
-                <Route path="/cadastro/cliente" element={<Private><CadastroCliente /></Private>} />
-                <Route path="/cadastro/funcionario" element={<Private><CadastroFuncionario/></Private>} />
+                <Route path="/cadastro/cliente" element={<Private><CadastroCliente toastContent={setToastContent}/></Private>} />
+                <Route path="/cadastro/funcionario" element={<Private><CadastroFuncionario toastContent={setToastContent}/></Private>} />
                 <Route path="/cadastro/venda" element={<Private><CadastroVenda toastContent={setToastContent}/></Private>} />
                 <Route path="/listagem/venda" element={<Private><ListagemVendas /></Private>} />
                 <Route path="/listagem/cliente" element={<Private><ListaClienteUsuario/></Private>} />
