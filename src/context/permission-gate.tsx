@@ -1,7 +1,13 @@
+import { useContext } from "react"
+import { AuthContext } from "./auth"
+
+
 
 const useGetUserPermissions = () => {
+    const {role} = useContext(AuthContext)
+ 
     // logica pegar permissions
-    return ['admin']
+    return role
 }
 
 

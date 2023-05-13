@@ -25,6 +25,7 @@ const Login: React.FC<ToastProps> = (props) => {
     const [user, setUser] = useState(null);
 
 
+
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
     };
@@ -55,20 +56,6 @@ const Login: React.FC<ToastProps> = (props) => {
         }
         
     }
-
-
-    //resetando usuario para "deslogado" ao entrar no login
-    const resetUser = () => {
-        localStorage.removeItem('tokenClient');
-        localStorage.removeItem('tokenPurchases');
-        apiClient.defaults.headers.Authorization = undefined
-        apiPurchases.defaults.headers.Authorization = undefined
-        setUser(null);
-    }
-
-    useEffect(() => {
-        resetUser()
-    }, []);
 
     return (
 
