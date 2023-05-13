@@ -1,6 +1,7 @@
-import React, { useState, useContext, useRef  } from "react";
+import React, { useState, useContext, useRef, useEffect  } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from '../../context/auth';
+import { apiClient, apiPurchases } from "../../services/api";
 // import { Toast } from 'primereact/toast';
 
 
@@ -21,6 +22,8 @@ const Login: React.FC<ToastProps> = (props) => {
     const [password, setPassword] = useState("");
     const { register, handleSubmit } = useForm();
     const toast = useRef(null);
+    const [user, setUser] = useState(null);
+
 
 
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +54,7 @@ const Login: React.FC<ToastProps> = (props) => {
     }
 
     return (
+
         <>
             <GlobalStyle />
             <Container>
