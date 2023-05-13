@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
 
     async function response () {
-      const emplooyesReturned: any =  await apiClient.get('funcionario', {
+      const emplooyesReturned: any =  await apiClient.get('/employee', {
           headers: { 
               'Authorization': `Bearer ${tokenClient}`
           },

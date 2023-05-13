@@ -42,13 +42,13 @@ const Rotas: React.FC = () => {
         <AuthProvider>
             <Routes>
                 <Route path="/" element={<Login toastContent={setToastContent}/>}/> 
-                <Route path="/home" element={<Private permissions={['admin', 'comercial', 'financeiro']}> <HomeComercial /> </Private>} />
-                <Route path="/cadastro/cliente" element={<Private  permissions={['admin', 'comercial']}> <CadastroCliente toastContent={setToastContent}/> </Private>} />
-                <Route path="/cadastro/funcionario" element={<Private permissions={['admin']}> <CadastroFuncionario toastContent={setToastContent}/> </Private>} />
-                <Route path="/cadastro/venda" element={<Private permissions={['admin', 'comercial']}> <CadastroVenda toastContent={setToastContent} /> </Private>} />
-                <Route path="/listagem/venda" element={<Private permissions={['admin', 'comercial', 'financeiro']}> <ListagemVendas toastContent={setToastContent}/> </Private>} />
-                <Route path="/listagem/cliente" element={<Private permissions={['admin', 'comercial']}> <ListaCliente toastContent={setToastContent}/> </Private>} />
-                <Route path="/relatorios" element={<Private permissions={['admin', 'financeiro']}> <HomeRelatorios toastContent={setToastContent}/> </Private>} />
+                <Route path="/home" element={<Private permissions={['Administrador', 'Comercial', 'Financeiro']}> <HomeComercial /> </Private>} />
+                <Route path="/cadastro/cliente" element={<Private  permissions={['Administrador', 'Comercial']}> <CadastroCliente toastContent={setToastContent}/> </Private>} />
+                <Route path="/cadastro/funcionario" element={<Private permissions={['Administrador']}> <CadastroFuncionario toastContent={setToastContent}/> </Private>} />
+                <Route path="/cadastro/venda" element={<Private permissions={['Administrador', 'Comercial']}> <CadastroVenda toastContent={setToastContent} /> </Private>} />
+                <Route path="/listagem/venda" element={<Private permissions={['Administrador', 'Comercial', 'Financeiro']}> <ListagemVendas toastContent={setToastContent}/> </Private>} />
+                <Route path="/listagem/cliente" element={<Private permissions={['Administrador', 'Comercial']}> <ListaCliente toastContent={setToastContent}/> </Private>} />
+                <Route path="/relatorios" element={<Private permissions={['Administrador', 'Financeiro']}> <HomeRelatorios toastContent={setToastContent}/> </Private>} />
             </Routes>
         </AuthProvider>
         <Toast ref={toast} />
