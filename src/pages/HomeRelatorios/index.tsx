@@ -16,8 +16,9 @@ import IconBack from "../../assets/img/IconBack.svg"
 import Relatorios from "../Relatorios";
 
 import { AxiosResponse } from "axios";
+import ToastProps from "../../interfaces/selfInterfaces";
 
-const HomeRelatorios: React.FC = () => {
+const HomeRelatorios: React.FC<ToastProps> = (props) => {
     const tokenClient = localStorage.getItem("tokenClient");
     const tokenPurchases = localStorage.getItem("tokenPurchases");
     const [loading, setLoading] = useState(true);
@@ -45,7 +46,7 @@ const HomeRelatorios: React.FC = () => {
     const onSubmit = () => {
 
         if (initialDate > finalDate) {
-            window.alert('A data inicial não pode ser maior que a data final.');
+            props.toastContent({severity:'error', summary: 'Erro', detail: 'A data inicial não pode ser maior que a data final.!', life: 3000});
         } else {
             const ReportModel : any = {initalDate: initialDate, finalDate: finalDate, filterType: typeDate}
 

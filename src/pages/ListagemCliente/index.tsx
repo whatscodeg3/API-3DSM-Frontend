@@ -21,8 +21,9 @@ import IconBack from '../../assets/img/IconBack.svg'
 
 //API's
 import { apiClient, apiPurchases } from '../../services/api';
+import ToastProps from "../../interfaces/selfInterfaces";
 
-const ListaClienteUsuario: React.FC = () => {
+const ListaCliente: React.FC<ToastProps> = (props) => {
     const tokenClient = localStorage.getItem("tokenClient");
     const tokenPurchases = localStorage.getItem("tokenPurchases");
     const { register, handleSubmit, setValue, setFocus} = useForm();
@@ -88,7 +89,7 @@ const ListaClienteUsuario: React.FC = () => {
         confirmDelete()
         setModalContent(<></>)
         setTitleContent(<></>)
-        window.alert("Exclusão realizada")
+        props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Cliente deletado com sucesso!', life: 3000})
 
         setVisible(false)
     }
@@ -123,7 +124,7 @@ const ListaClienteUsuario: React.FC = () => {
                         Authorization: `Bearer ${tokenClient}`,
                     },
                 })
-                window.alert("Atualizado com Sucesso!")
+                props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Cliente atualizado com sucesso!', life: 3000})
                 setModalContent(<></>)
                 setTitleContent(<></>)
                 setVisible(false)
@@ -131,9 +132,9 @@ const ListaClienteUsuario: React.FC = () => {
             }
         } catch(error) {
             if(error.response.data["cpf"] == undefined) {
-                    window.alert("Email Inválido !");
+                    props.toastContent({severity:'error', summary: 'Erro', detail: 'Email inválido!', life: 3000});
                 } else if (error.response.data["email"] == undefined) {
-                  window.alert("CPF Inválido !");
+                    props.toastContent({severity:'error', summary: 'Erro', detail: 'CPF inválido!', life: 3000});
                 }
         }
     }
@@ -342,4 +343,4 @@ const ListaClienteUsuario: React.FC = () => {
 
 }
 
-export default ListaClienteUsuario;
+export default ListaCliente;
