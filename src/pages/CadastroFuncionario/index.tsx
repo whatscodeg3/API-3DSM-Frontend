@@ -178,9 +178,9 @@ const CadastroFuncionario: React.FC<ToastProps> = (props) => {
 
             <Select onChange={handlePermissaoSet}>
                 <option>Tipo</option>
-                <option value={"comercial"}>Comercial</option>
-                <option value={"financeiro"}>Financeiro</option>
-                <option value={"administrador"}>Administrador</option>
+                <option value={"Comercial"}>Comercial</option>
+                <option value={"Financeiro"}>Financeiro</option>
+                <option value={"Administrador"}>Administrador</option>
             </Select>
 
             <InputField
