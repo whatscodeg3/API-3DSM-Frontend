@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import {useForm, Controller } from "react-hook-form";
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -13,10 +13,12 @@ import { InputText } from 'primereact/inputtext';
 
 // Images
 import IconBack from '../../assets/img/IconBack.svg'
+import ToastProps from "../../interfaces/selfInterfaces";
 
-const CadastroVenda: React.FC = () => {
+const CadastroVenda: React.FC<ToastProps> = (props) => {
     const tokenClient = localStorage.getItem("tokenClient");
     const tokenPurchases = localStorage.getItem("tokenPurchases");
+
 	// UseState da verificação de cpf
 	const [nome, setNome] = useState('');
 	const [email, setEmail] = useState('');
@@ -24,12 +26,15 @@ const CadastroVenda: React.FC = () => {
 	const [dataNascimento, setDataNascimento] = useState('');
 	const [cep, setCep] = useState('');
 	const [error, setError] = useState(false);
+	const [formCorrect, setFormCorrect] = useState(false);
+
 
 	// UseState do cadastro da venda
 	const [installment, setinstallment] = useState(1); 
 	const [paymentValue, setpaymentValue] = useState<string>("");
 	const [valorOriginal, setValorOriginal] = useState<string>("");
 	const [ValueRedirect, setRedirect] = useState(false)
+	const [consultaCpf, setCPF] = useState("")
 
 	// Syntaxe do UseForm
 	const { control, handleSubmit, register, formState: { errors }, watch } = useForm();
@@ -59,7 +64,13 @@ const CadastroVenda: React.FC = () => {
 	};
 
 	const onChangeValorInserido = (e: any) => {
+		const valor = Number(parseFloat(e.target.value.slice(2).replace(/[^\d]/g, "")))
+		setFormCorrect(false)
+		if (valor > 0){
+			setFormCorrect(true)
+		}
 	  	const ValorInseridoPosFormatacao = formatarValorParaComecarDaDireita(e.target.value);
+	
 	  // Seta o novo valor pos formação usando o setState do useState
 	  	setpaymentValue(ValorInseridoPosFormatacao);
 	};
@@ -76,12 +87,14 @@ const CadastroVenda: React.FC = () => {
 	// Codigo relacionado a verificar o Cpf inserido e trazer as informações do cliente
 	function handleInput(cpf: any) {
 		const CpfParaVerificar = cpf.target.value.replace(/\D/g, '');
-		const cpfFormatado = CpfParaVerificar.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+		setCPF(CpfParaVerificar)	
 
-		axios.get(`http://localhost:8080/client/queryFromCpf/${cpfFormatado}`
+		if(CpfParaVerificar.length == 11){
+
+		axios.get(`http://localhost:8080/client/queryFromCpf/${CpfParaVerificar}`
 		, {
 			headers: {
-				Authorization: `Bearer ${tokenPurchases}`,
+				Authorization: `Bearer ${tokenClient}`,
 			},
 		}
 		)
@@ -95,7 +108,7 @@ const CadastroVenda: React.FC = () => {
 				setCep(ResultadoDevolvido.address.cep);
 		})
 		.catch(error => {
-			setError(true);
+			setError(true)
 			setNome('')
 			setEmail('')
 			setTelefone('')
@@ -103,52 +116,71 @@ const CadastroVenda: React.FC = () => {
 			setCep('')
 		});
 	  }
+	}
 
 	////////////////////////////////////////////////////////////////
 
 	const onSubmit = (data : any) => {
+		const today = new Date();
+		const day = today.getDate();
+		const month = String(today.getMonth() + 1).padStart(2, '0');
+		const year = today.getFullYear();
+		var formattedDate = ``
+		if(day < 10){
+			formattedDate = `${year}-${month}-0${day}`;
+		} else {
+			formattedDate = `${year}-${month}-${day}`;
+		}
 
-		const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
-		ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
-
-		const cpf = data.cpf
-
-		axios.post(`http://localhost:8081/api/purchases/${cpf}`, ObjetoSoComValorTotaleIdCliente, {
+		axios.get(`http://localhost:8080/client/queryFromCpf/${consultaCpf}`
+		, {
 			headers: {
-				Authorization: `Bearer ${tokenPurchases}`,
-				//Authorization2: `Bearer ${tokenClient}`
-			  }
-		})
+				Authorization: `Bearer ${tokenClient}`,
+			},
+		}
+		).then(response => {
+			const ResultadoDevolvido = response.data
 
-		.then(response => {
+			const ObjetoSoComValorTotaleIdCliente : any = { installmentQuantity: data.installment};
+			ObjetoSoComValorTotaleIdCliente.paymentValue= FormataDinheiro
+			ObjetoSoComValorTotaleIdCliente.purchaseDate = formattedDate
+			ObjetoSoComValorTotaleIdCliente.clientName = ResultadoDevolvido.fullName
 
-			const ObjetoRetornadoPeloMetodoDaRota = response.data;
-			const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
-	
-
-			axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal, {
-                headers: {
-                    Authorization: `Bearer ${tokenPurchases}`,
-                },
-            })
-			.then((response) => {
-
-				window.alert("Cadastrado com sucesso!");
-				setRedirect(true)
-
-			  })
-
-			.catch((error) => {
-				window.alert("Erro na Criação de Parcelas !");});
+			const cpf = data.cpf.replace(/\D/g, '');
+			
+			axios.post(`http://localhost:8081/api/purchases/${cpf}?token=${tokenClient}`, ObjetoSoComValorTotaleIdCliente, {
+				headers: {
+					Authorization: `Bearer ${tokenPurchases}`
+				}
 			})
-		.catch(error => 
-			window.alert("Erro ao Cadastrar a Venda!"))
+
+			.then(response => {
+
+				const ObjetoRetornadoPeloMetodoDaRota = response.data;
+				const ObjetoComIdDaVendaParcelasValorTotal = { purchaseId: ObjetoRetornadoPeloMetodoDaRota.id, installmentQuantity: data.installment, purchaseValue: ObjetoSoComValorTotaleIdCliente.paymentValue }
 		
+
+				axios.post('http://localhost:8081/api/installments', ObjetoComIdDaVendaParcelasValorTotal, {
+					headers: {
+						Authorization: `Bearer ${tokenPurchases}`,
+					},
+				}).then((response) => {
+					setRedirect(true)
+				})
+				.catch((error) => {
+					props.toastContent({severity:'error', summary: 'Erro', detail: 'Erro na Criação de Parcelas !', life: 3000});
+				});
+			})
+			.catch(error => {
+				props.toastContent({severity:'error', summary: 'Erro', detail: 'Erro ao Cadastrar a Venda!', life: 3000});
+			})	
+		})
 	}
 
 	useEffect(() => {
 		if (ValueRedirect) {
-			navigate('/home');
+			props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Venda cadastrada com sucesso!', life: 3000})
+			navigate('/home')
 		}
 	  }, [ValueRedirect, navigate]);
 
@@ -160,7 +192,7 @@ const CadastroVenda: React.FC = () => {
 						<Cpf>
 							<Center>
 
-								<InputFieldMask 
+								<InputFieldMask
 									mask="999.999.999-99"
 									type="text" 
 									name="cpf" 
@@ -172,7 +204,6 @@ const CadastroVenda: React.FC = () => {
 								{error && <p className="error-message">CPF Não foi encontrado</p>}
 								
 							</Center>
-
 							<Center>
 								<StyledInputText style={{ width: '400px' }} value={nome} name="nome" disabled/>
 							</Center>
@@ -243,7 +274,7 @@ const CadastroVenda: React.FC = () => {
 
 							</Center>
 
-							<StyledBotaoCadastro disabled={error} onClick={() => handleSubmit(onSubmit)()} label="Cadastrar"></StyledBotaoCadastro>
+							<StyledBotaoCadastro disabled={!formCorrect} onClick={() => handleSubmit(onSubmit)()} label="Cadastrar"></StyledBotaoCadastro>
 
 						</Card>
 					</Cards>

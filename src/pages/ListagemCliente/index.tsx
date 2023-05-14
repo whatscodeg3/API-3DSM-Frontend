@@ -11,7 +11,7 @@ import { Container, Title, ContainerUserDelete, ContainerUserUpdate, ContainerUs
 import SearchField from '../../components/organisms/SearchField';
 
 //Prime React Components
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner'
@@ -21,8 +21,9 @@ import IconBack from '../../assets/img/IconBack.svg'
 
 //API's
 import { apiClient, apiPurchases } from '../../services/api';
+import ToastProps from "../../interfaces/selfInterfaces";
 
-const ListaClienteUsuario: React.FC = () => {
+const ListaCliente: React.FC<ToastProps> = (props) => {
     const tokenClient = localStorage.getItem("tokenClient");
     const tokenPurchases = localStorage.getItem("tokenPurchases");
     const { register, handleSubmit, setValue, setFocus} = useForm();
@@ -31,7 +32,7 @@ const ListaClienteUsuario: React.FC = () => {
     const [modalContent, setModalContent] = useState<JSX.Element>();
     const [titleContent, setTitleContent] = useState<JSX.Element>();
     const [visible, setVisible] = useState(false);
-    const [filters, setFilters] = useState({'cpf': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
+    const [filters, setFilters] = useState<DataTableFilterMeta>({'fullName': { value: null, matchMode: FilterMatchMode.STARTS_WITH }});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     ////////////////////////////////////////////// Codigo do filto da tabela e isCell pra bloquear poder clicar nos lugares que nao deve
     useEffect(() => {
@@ -52,12 +53,13 @@ const ListaClienteUsuario: React.FC = () => {
         setLoading(false);
     }, []);
     
-    const onGlobalFilterChange = (e) => {
+    const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+   
         
-        let _filters = { ...filters };
+        let _filters: any = { ...filters };
 
-        _filters['cpf'].value = value;
+        _filters['fullName'].value = value;
 
         setFilters(_filters);
         setGlobalFilterValue(value);
@@ -87,7 +89,7 @@ const ListaClienteUsuario: React.FC = () => {
         confirmDelete()
         setModalContent(<></>)
         setTitleContent(<></>)
-        window.alert("Exclusão realizada")
+        props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Cliente deletado com sucesso!', life: 3000})
 
         setVisible(false)
     }
@@ -122,7 +124,7 @@ const ListaClienteUsuario: React.FC = () => {
                         Authorization: `Bearer ${tokenClient}`,
                     },
                 })
-                window.alert("Atualizado com Sucesso!")
+                props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Cliente atualizado com sucesso!', life: 3000})
                 setModalContent(<></>)
                 setTitleContent(<></>)
                 setVisible(false)
@@ -130,9 +132,9 @@ const ListaClienteUsuario: React.FC = () => {
             }
         } catch(error) {
             if(error.response.data["cpf"] == undefined) {
-                    window.alert("Email Inválido !");
+                    props.toastContent({severity:'error', summary: 'Erro', detail: 'Email inválido!', life: 3000});
                 } else if (error.response.data["email"] == undefined) {
-                  window.alert("CPF Inválido !");
+                    props.toastContent({severity:'error', summary: 'Erro', detail: 'CPF inválido!', life: 3000});
                 }
         }
     }
@@ -152,13 +154,46 @@ const ListaClienteUsuario: React.FC = () => {
 
      //////////////////////////////////////////////
 
-      ////////////////////////////////////////////// Codigo do modal que aparece ao selecionar um campo, com os if e codigo dentro deles, determinando o que aparece em cada campo selecionado
+    ////////////////////////////////////////////// Codigo do modal que aparece ao selecionar um campo, com os if e codigo dentro deles, determinando o que aparece em cada campo selecionado
 
     const showModal = (event: any) =>{
-
         const Client = event.rowData
 
-        if (event.field == "delete"){
+         if (event.field == "update"){
+            let titleContent: JSX.Element = ( 
+                <Title height='2rem'>
+                    Informações de {Client.fullName}
+                </Title>
+            );
+            setTitleContent(titleContent)
+
+            let contentToModal: JSX.Element = ( 
+                <ContainerUserUpdate onSubmit={handleSubmit(onSubmit)}>
+                    <StyledInput>
+                        <InputField style={{ width: '400px' }} id="myInput" name="fullname" defaultValue={`${Client.fullName}`} placeholder={`Nome completo: ${Client.fullName}`} required {...register("fullName")}/>
+                        <InputField style={{ width: '400px' }} name="email" defaultValue={`${Client.email}`} placeholder={`Email: ${Client.email}`} required {...register("email")}/>
+                        <InputField style={{ width: '400px' }} name="telephone" defaultValue={`${Client.telephone}`} placeholder={`Telefone: ${Client.telephone}`} required {...register("telephone")}/>
+                        <InputField style={{ width: '400px' }} type="date" name="birthDate" defaultValue={Client.birthDate} required {...register("birthDate")}/>
+                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" defaultValue={`${Client.address.cep}`} placeholder={`Cep: ${Client.address.cep}`} required {...register("cep")} onBlur={checkCEP}/>
+                        <InputField style={{ width: '400px' }} name="publicPlace" defaultValue={`${Client.address.publicPlace}`} placeholder={`Logradouro: ${Client.address.publicPlace}`} required {...register("publicPlace")}/>
+                    </StyledInput>
+                    <div>
+                    </div>
+                    <StyledInput>
+                        <InputField style={{ width: '400px' }} name="state" defaultValue={`${Client.address.state}`} placeholder={`Estado: ${Client.address.state}`} required {...register("state")}/>
+                        <InputField style={{ width: '400px' }} name="neighborhood" defaultValue={`${Client.address.neighborhood}`} placeholder={`Bairro: ${Client.address.neighborhood}`} required {...register("neighborhood")}/>
+                        <InputField style={{ width: '400px' }} name="city" defaultValue={`${Client.address.city}`} placeholder={`Cidade: ${Client.address.city}`} required {...register("city")}/>
+                        <InputField style={{ width: '400px' }} name="numero" placeholder="Número *" {...register("numero")}/>
+                        <InputField style={{ width: '400px' }} name="complement" defaultValue={`${Client.address.complement}`} placeholder={`Complemento: ${Client.address.complement}`} {...register("complement")}/>
+                        <input type="hidden" name="clientId" value={Client.id} {...register("clientId")} />
+                        <input type="hidden" name="address" value={Client.address.id} {...register("addressId")} />
+                        <ButtonSubmit type="submit">Atualizar</ButtonSubmit>
+                    </StyledInput>
+                </ContainerUserUpdate>
+            )
+            setModalContent(contentToModal)
+
+        } else if (event.field == "delete"){
             let titleContent: JSX.Element = ( 
                 <Title height='2rem' color="#696969">
                     Deseja excluir {Client.fullName} ?
@@ -176,40 +211,6 @@ const ListaClienteUsuario: React.FC = () => {
                     </div>
                 </ContainerUserDelete>
             );
-            setModalContent(contentToModal)
-
-        } else if (event.field == "update"){
-            let titleContent: JSX.Element = ( 
-                <Title height='2rem'>
-                    Informações de {Client.fullName}
-                </Title>
-            );
-            setTitleContent(titleContent)
-
-            let contentToModal: JSX.Element = ( 
-                <ContainerUserUpdate onSubmit={handleSubmit(onSubmit)}>
-                    <StyledInput>
-                        <InputField style={{ width: '400px' }} name="fullname" placeholder={`${Client.fullName}`} required {...register("fullName")}/>
-                        <InputField style={{ width: '400px' }} name="email" placeholder={`${Client.email}`} required {...register("email")}/>
-                        <InputField style={{ width: '400px' }} name="telephone" placeholder={`${Client.telephone}`} required {...register("telephone")}/>
-                        <InputField style={{ width: '400px' }} type="date" name="birthDate" defaultValue={Client.birthDate} required {...register("birthDate")}/>
-                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" placeholder={`${Client.address.cep}`} required {...register("cep")} onBlur={checkCEP}/>
-                        <InputField style={{ width: '400px' }} name="publicPlace" placeholder={`${Client.address.publicPlace}`} required {...register("publicPlace")}/>
-                    </StyledInput>
-                    <div>
-                    </div>
-                    <StyledInput>
-                        <InputField style={{ width: '400px' }} name="state" placeholder={`${Client.address.state}`} required {...register("state")}/>
-                        <InputField style={{ width: '400px' }} name="neighborhood" placeholder={`${Client.address.neighborhood}`} required {...register("neighborhood")}/>
-                        <InputField style={{ width: '400px' }} name="city" placeholder={`${Client.address.city}`} required {...register("city")}/>
-                        <InputField style={{ width: '400px' }} name="numero" placeholder="Número *" required {...register("numero")}/>
-                        <InputField style={{ width: '400px' }} name="complement" placeholder={`${Client.address.complement}`} required {...register("complement")}/>
-                        <input type="hidden" name="clientId" value={Client.id} {...register("clientId")} />
-                        <input type="hidden" name="address" value={Client.address.id} {...register("addressId")} />
-                        <ButtonSubmit type="submit">Atualizar</ButtonSubmit>
-                    </StyledInput>
-                </ContainerUserUpdate>
-            )
             setModalContent(contentToModal)
 
         } else if (event.field == "address"){
@@ -260,7 +261,7 @@ const ListaClienteUsuario: React.FC = () => {
             <GlobalStyle/>
             <Container>     
                 <Title color='#F18524'>Listagem de Clientes</Title>
-                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um CPF'/>
+                <SearchField value={globalFilterValue} onChange={onGlobalFilterChange} placeholder='| Digite um Nome'/>
                 {loading && <ProgressSpinner/>}
                 {!loading && 
                     <DataTable
@@ -342,4 +343,4 @@ const ListaClienteUsuario: React.FC = () => {
 
 }
 
-export default ListaClienteUsuario;
+export default ListaCliente;

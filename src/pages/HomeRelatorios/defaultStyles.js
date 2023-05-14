@@ -30,11 +30,12 @@ export const Title = styled.p`
 
 export const ImageBack = styled.img`
     position: fixed;
-    top: 90%;
-    left: 95%;
+    top: 0%;
+    left: 0%;
+    transform: rotateY(180deg);
 
     :hover {
-        transform: scale(1.1);
+        transform: rotateY(180deg) scale(1.1);
         transition: all 0.5s;
     }
 `;
@@ -63,6 +64,7 @@ export const Calendar = styled.input`
     width: 200px;
     font-size: 17px;
     justify-content: center;
+    text-align: center;
     align-items: center;
 
     appearance: none;
