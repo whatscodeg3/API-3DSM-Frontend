@@ -40,7 +40,6 @@ const Rotas: React.FC = () => {
   const tokenPurchases = localStorage.getItem("tokenPurchases");
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("teste")
       axios.get("http://localhost:8080/check", {
           headers: {
             Authorization: `Bearer ${tokenClient}`,
@@ -56,7 +55,7 @@ const Rotas: React.FC = () => {
         }).catch((error) => {
             setRedirect(false); 
         });
-    }, 60000);
+    }, 300000);
 
     return () => {
       clearInterval(interval);
