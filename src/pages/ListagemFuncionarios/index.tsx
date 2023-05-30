@@ -66,13 +66,6 @@ const ListaFuncionarios: React.FC<ToastProps> = (props) => {
 
     const isCellSelectable = (event) => (event.data.field === 'cpf' || event.data.field === 'name' || event.data.field === 'email' ? false : true);
 
-    const handlePermissaoSet = (event) => {
-        if(event.target.value == "Selecionar Permissão"){
-            props.toastContent({severity:'error', summary: 'Falha!', detail: 'Selecione uma permissão valida!', life: 3000})
-        } else {
-            setPermissao(event.target.value)
-        }
-      } 
 
     //////////////////////////////////////////////
 
@@ -81,7 +74,6 @@ const ListaFuncionarios: React.FC<ToastProps> = (props) => {
     const excluir = (funcId: any) => {
 
         async function confirmDelete(){
-            console.log(funcId)
             await apiClient.delete(`/employee/${funcId}`, {
                 headers: {
                     Authorization: `Bearer ${tokenClient}`,
@@ -106,28 +98,38 @@ const ListaFuncionarios: React.FC<ToastProps> = (props) => {
 
      ////////////////////////////////////////////// Função que faz o Update e traz o endereço baseado no Cep
 
-    const onSubmit = async (value) => {
+    const onSubmit = async (value: any) => {
 
-        let permissoes = value['permissions']
-        console.log(permissoes)
-        let valido = true
-        try{
-            if(valido == true){
+        if(value['role'] == 'Selecionar Permissão'){
+            props.toastContent({severity:'error', summary: 'Falha!', detail: 'Selecione uma permissão valida!', life: 3000})
         
-                await apiClient.put(`/employee/replacement/${permissoes}`, value,{
-                    headers: {
-                        Authorization: `Bearer ${tokenClient}`,
-                    },
-                })
-                props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Funcionário atualizado com sucesso!', life: 3000})
-                setModalContent(<></>)
-                setTitleContent(<></>)
-                setVisible(false)
-                location.reload()
+        } else { 
+            let format_json = {
+                role: value['role']
             }
-        } catch(error) {
-            props.toastContent({severity:'error', summary: 'Falha!', detail: 'Erro ao atualizar o funcionário!', life: 3000})
+            const Id = value["id"]
+    
+            let valido = true
+            try{
+                if(valido == true){
+                    // tem q ser patch pra só alterar oq eu quiser
+                    await apiClient.put(`/employee/replacement/${Id}`, format_json,{
+                        headers: {
+                            Authorization: `Bearer ${tokenClient}`,
+                        },
+                    })
+                    props.toastContent({severity:'success', summary: 'Sucesso', detail: 'Funcionário atualizado com sucesso!', life: 3000})
+                    setModalContent(<></>)
+                    setTitleContent(<></>)
+                    setVisible(false)
+                    location.reload()
+                }
+            } catch(error) {
+                props.toastContent({severity:'error', summary: 'Falha!', detail: 'Erro ao atualizar o funcionário!', life: 3000})
+            }
+
         }
+       
     }
 
 
@@ -146,15 +148,19 @@ const ListaFuncionarios: React.FC<ToastProps> = (props) => {
 
             let contentToModal: JSX.Element = ( 
                 <ContainerUserUpdate onSubmit={handleSubmit(onSubmit)}>   
-                <div>           
-                    <Select name='permissions' onChange={handlePermissaoSet}>
-                        <option>Selecionar Permissão</option>
-                        <option value={"Comercial"}>Comercial</option>
-                        <option value={"Financeiro"}>Financeiro</option>
-                        <option value={"Administrador"}>Administrador</option>
-                    </Select>
-                </div> 
-                    <ButtonSubmit type="submit">Atualizar</ButtonSubmit>
+
+                    <StyledInput>
+                        <Select name='role' required {...register("role")}>
+                            <option>Selecionar Permissão</option>
+                            <option value={"Comercial"}>Comercial</option>
+                            <option value={"Financeiro"}>Financeiro</option>
+                            <option value={"Administrador"}>Administrador</option>
+                        </Select>
+                       
+                        <input type="hidden" name="id" value={Employee.id} {...register("id")} />
+                        <ButtonSubmit type="submit">Atualizar</ButtonSubmit>
+                    </StyledInput>
+                    
                 </ContainerUserUpdate>
             )
     
