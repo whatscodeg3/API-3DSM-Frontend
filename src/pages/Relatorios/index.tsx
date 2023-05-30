@@ -32,6 +32,15 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
         return value.toLocaleDateString()
     };
 
+    const formatarData = (data) => {
+        const dataObjeto = new Date(data);
+        const dia = dataObjeto.getDate() + 1;
+        const mes = dataObjeto.getMonth() + 1;
+        const ano = dataObjeto.getFullYear();
+        const dataFormatada = `${dia}/${mes < 10 ? '0' + mes : mes}/${ano}`;
+        return dataFormatada;
+    }
+
     const priceBodyTemplate = (price: number) => {
         return formatCurrency(price)
     };
@@ -220,7 +229,11 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                     ?
                     <>
                         <Title color='#F18524'>
-                            Relatório das datas de Vencimento
+                            Relatório das datas de Vencimento do dia {
+                                formatarData(props.reportConsultModel["initalDate"])
+                            } ao dia {
+                                formatarData(props.reportConsultModel["finalDate"])
+                            }
                         </Title>
                         <DataTable
                             value={installmentsFiltered}
@@ -304,7 +317,11 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                     ? 
                     <>
                         <Title color='#F18524'>
-                            Relatório das datas de Pagamento
+                            Relatório das datas de Pagamento do dia {
+                                formatarData(props.reportConsultModel["initalDate"])
+                            } ao dia {
+                                formatarData(props.reportConsultModel["finalDate"])
+                            }
                         </Title>
                         <DataTable
                             value={installmentsFiltered}
@@ -387,7 +404,11 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                     : 
                     <>
                         <Title color='#F18524'>
-                            Relatório das datas de Credito
+                            Relatório das datas de Credito do dia {
+                                formatarData(props.reportConsultModel["initalDate"])
+                            } ao dia {
+                                formatarData(props.reportConsultModel["finalDate"])
+                            }
                         </Title>
                         <DataTable
                             value={installmentsFiltered}
