@@ -59,8 +59,8 @@ export const AuthProvider = ({ children }) => {
     const tokenClient = responseClient.data;
     const tokenPurchases = responsePurchases.data;
 
-    //console.log(`Client: ${tokenClient}`)
-    //console.log(`Purcheses: ${tokenPurchases}`)
+    console.log(`Client: ${tokenClient}`)
+    console.log(`Purcheses: ${tokenPurchases}`)
 
    
 
