@@ -55,7 +55,7 @@ const CadastroCliente: React.FC<ToastProps> = (props) => {
             complement: value["complement"],
         },
       };
-
+      console.log(tokenClient)
       try{
           if(
             cpfExistsError === false && 
