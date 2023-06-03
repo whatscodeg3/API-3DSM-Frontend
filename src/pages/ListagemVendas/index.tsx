@@ -65,7 +65,7 @@ const ListagemVendas: React.FC<ToastProps> = (props) => {
         setGlobalFilterValue(value);
     };
 
-    const isCellSelectable = (event: any) => (event.data.field === 'paymentValue' || event.data.field === 'installment.length' ? false : true);
+    const isCellSelectable = (event: any) => (event.data.field === 'paymentValue' || event.data.field === 'installment.length' || event.data.field === 'clientName' ? false : true);
 
     const formatCurrency = (value: any) => {
         return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });

@@ -107,7 +107,8 @@ const ListaCliente: React.FC<ToastProps> = (props) => {
           address: {
             id: value["addressId"],
             cep: value["cep"],
-            publicPlace: value["publicPlace"] + " " + value["numero"],
+            publicPlace: value["publicPlace"],
+            number: value["numero"],
             neighborhood: value["neighborhood"],
             city: value["city"],
             state: value["state"],
@@ -170,21 +171,21 @@ const ListaCliente: React.FC<ToastProps> = (props) => {
             let contentToModal: JSX.Element = ( 
                 <ContainerUserUpdate onSubmit={handleSubmit(onSubmit)}>
                     <StyledInput>
-                        <InputField style={{ width: '400px' }} id="myInput" name="fullname" defaultValue={`${Client.fullName}`} placeholder={`Nome completo: ${Client.fullName}`} required {...register("fullName")}/>
-                        <InputField style={{ width: '400px' }} name="email" defaultValue={`${Client.email}`} placeholder={`Email: ${Client.email}`} required {...register("email")}/>
-                        <InputField style={{ width: '400px' }} name="telephone" defaultValue={`${Client.telephone}`} placeholder={`Telefone: ${Client.telephone}`} required {...register("telephone")}/>
-                        <InputField style={{ width: '400px' }} type="date" name="birthDate" defaultValue={Client.birthDate} required {...register("birthDate")}/>
-                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" defaultValue={`${Client.address.cep}`} placeholder={`Cep: ${Client.address.cep}`} required {...register("cep")} onBlur={checkCEP}/>
-                        <InputField style={{ width: '400px' }} name="publicPlace" defaultValue={`${Client.address.publicPlace}`} placeholder={`Logradouro: ${Client.address.publicPlace}`} required {...register("publicPlace")}/>
+                        <InputField style={{ width: '400px' }} id="myInput" name="fullname" placeholder={`Nome completo: ${Client.fullName}`}{...register("fullName")}/>
+                        <InputField style={{ width: '400px' }} name="email" placeholder={`Email: ${Client.email}`} {...register("email")}/>
+                        <InputField style={{ width: '400px' }} name="telephone" placeholder={`Telefone: ${Client.telephone}`} {...register("telephone")}/>
+                        <InputField style={{ width: '400px' }} type="date" name="birthDate" defaultValue={Client.birthDate} {...register("birthDate")}/>
+                        <InputFieldMask style={{ width: '400px' }} mask="99999-999" name="cep" placeholder={`Cep: ${Client.address.cep}`} {...register("cep")} onBlur={checkCEP}/>
+                        <InputField style={{ width: '400px' }} name="publicPlace" placeholder={`Logradouro: ${Client.address.publicPlace}`} {...register("publicPlace")}/>
                     </StyledInput>
                     <div>
                     </div>
                     <StyledInput>
-                        <InputField style={{ width: '400px' }} name="state" defaultValue={`${Client.address.state}`} placeholder={`Estado: ${Client.address.state}`} required {...register("state")}/>
-                        <InputField style={{ width: '400px' }} name="neighborhood" defaultValue={`${Client.address.neighborhood}`} placeholder={`Bairro: ${Client.address.neighborhood}`} required {...register("neighborhood")}/>
-                        <InputField style={{ width: '400px' }} name="city" defaultValue={`${Client.address.city}`} placeholder={`Cidade: ${Client.address.city}`} required {...register("city")}/>
+                        <InputField style={{ width: '400px' }} name="state" placeholder={`Estado: ${Client.address.state}`}  {...register("state")}/>
+                        <InputField style={{ width: '400px' }} name="neighborhood" placeholder={`Bairro: ${Client.address.neighborhood}`}  {...register("neighborhood")}/>
+                        <InputField style={{ width: '400px' }} name="city" placeholder={`Cidade: ${Client.address.city}`}  {...register("city")}/>
                         <InputField style={{ width: '400px' }} name="numero" placeholder="Número *" {...register("numero")}/>
-                        <InputField style={{ width: '400px' }} name="complement" defaultValue={`${Client.address.complement}`} placeholder={`Complemento: ${Client.address.complement}`} {...register("complement")}/>
+                        <InputField style={{ width: '400px' }} name="complement" placeholder={`Complemento: ${Client.address.complement}`} {...register("complement")}/>
                         <input type="hidden" name="clientId" value={Client.id} {...register("clientId")} />
                         <input type="hidden" name="address" value={Client.address.id} {...register("addressId")} />
                         <ButtonSubmit type="submit">Atualizar</ButtonSubmit>

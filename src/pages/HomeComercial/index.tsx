@@ -116,6 +116,21 @@ const HomeComercial: React.FC = () => {
                         </Link>
                         </PermissionGateRender>
 
+                        {/* Card listagem funcionario */}
+                        <PermissionGateRender permissions={['Administrador']}>
+                        <Link to={"/listagem/funcionario"} style={{ textDecoration: 'none' }}>
+                            <Card className="animate__animated animate__slideInUp">
+                                <img src={IconListagemCliente} style={{ width: "4vw" }} alt="IconBag" />
+                                <p>
+                                    Listagem<br/>funcionarios
+                                </p>
+                            </Card>
+                        </Link>
+                        </PermissionGateRender>
+
+
+
+
 
 
                     </Cards>

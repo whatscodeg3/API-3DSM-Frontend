@@ -21,9 +21,30 @@ interface RelatoriosProps {
 
 
 const Relatorios: React.FC<RelatoriosProps> = (props) => {
-    const installmentsFiltered = props.reportData
+    const installmentsFiltered = props.reportData ?? [];
     const filtroSelecionado = props.reportConsultModel['filterType']
     
+
+    if(filtroSelecionado == 3){
+    
+        if (Array.isArray(installmentsFiltered)) {
+                installmentsFiltered.map(item => {
+                    const today = new Date()
+                    const creditDate = item.creditDate? new Date(item.creditDate.replace('-',' ')) : false
+                    const paymentDate = item.paymentDate? new Date(item.paymentDate.replace('-',' ')) : false
+                    if(paymentDate){
+                        if(creditDate >= today ){
+                            let index = installmentsFiltered.indexOf(item)
+                            installmentsFiltered.splice(index, 1)
+                       
+                        }
+                    }
+                })
+            }
+    }
+    
+
+
     const formatCurrency = (price: number) => {
         return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     };
@@ -31,6 +52,15 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
     const formatDate = (value: Date) => {
         return value.toLocaleDateString()
     };
+
+    const formatarData = (data) => {
+        const dataObjeto = new Date(data);
+        const dia = dataObjeto.getDate() + 1;
+        const mes = dataObjeto.getMonth() + 1;
+        const ano = dataObjeto.getFullYear();
+        const dataFormatada = `${dia}/${mes < 10 ? '0' + mes : mes}/${ano}`;
+        return dataFormatada;
+    }
 
     const priceBodyTemplate = (price: number) => {
         return formatCurrency(price)
@@ -170,15 +200,6 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
             } else if (filtroSelecionado === 3) {
                 return (
                     <div className="flex flex-column gap-2" style={{width:'20rem'}}>
-                
-                        <div 
-                            className="flex flex justify-content-between gap-10 font-bold" 
-                           style={{ padding: '10px', borderRadius: '5px', background: '#F18524', border: '#F18524',
-                           color:'white'}}
-                        >
-                            <div>Parcelas Pagas</div>
-                            {priceBodyTemplate(totalPago)}
-                        </div>
     
     
                         <div 
@@ -220,7 +241,11 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                     ?
                     <>
                         <Title color='#F18524'>
-                            Relatório das datas de Vencimento
+                            Relatório das datas de Vencimento do dia {
+                                formatarData(props.reportConsultModel["initalDate"])
+                            } ao dia {
+                                formatarData(props.reportConsultModel["finalDate"])
+                            }
                         </Title>
                         <DataTable
                             value={installmentsFiltered}
@@ -304,7 +329,11 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                     ? 
                     <>
                         <Title color='#F18524'>
-                            Relatório das datas de Pagamento
+                            Relatório das datas de Pagamento do dia {
+                                formatarData(props.reportConsultModel["initalDate"])
+                            } ao dia {
+                                formatarData(props.reportConsultModel["finalDate"])
+                            }
                         </Title>
                         <DataTable
                             value={installmentsFiltered}
@@ -387,7 +416,11 @@ const Relatorios: React.FC<RelatoriosProps> = (props) => {
                     : 
                     <>
                         <Title color='#F18524'>
-                            Relatório das datas de Credito
+                            Relatório das datas de Credito do dia {
+                                formatarData(props.reportConsultModel["initalDate"])
+                            } ao dia {
+                                formatarData(props.reportConsultModel["finalDate"])
+                            }
                         </Title>
                         <DataTable
                             value={installmentsFiltered}
