@@ -56,7 +56,7 @@ const Rotas: React.FC = () => {
         }).catch((error) => {
             setRedirect(false); 
         });
-    }, 60000);
+    }, 300000);
 
     return () => {
       clearInterval(interval);

@@ -47,14 +47,15 @@ const CadastroCliente: React.FC<ToastProps> = (props) => {
         birthDate: value["birthDate"],
         address: {
             cep: value["cep"],
-            publicPlace: value["publicPlace"] + " " + value["numero"],
+            publicPlace: value["publicPlace"],
+            number: value["numero"],
             neighborhood: value["neighborhood"],
             city: value["city"],
             state: value["state"],
             complement: value["complement"],
         },
       };
-
+      console.log(tokenClient)
       try{
           if(
             cpfExistsError === false && 
