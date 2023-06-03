@@ -10,6 +10,7 @@ import CadastroVenda from "./pages/CadastroVenda/index";
 import CadastroCliente from "./pages/CadastroCliente";
 import ListaCliente from "./pages/ListagemCliente";
 import HomeRelatorios from "./pages/HomeRelatorios";
+import ListaFuncionarios from "./pages/ListagemFuncionarios";
 import Login from "./pages/Login";
 import { Toast } from "primereact/toast";
 import CadastroFuncionario from "./pages/CadastroFuncionario";
@@ -73,6 +74,7 @@ const Rotas: React.FC = () => {
                 <Route path="/cadastro/venda" element={<Private permissions={['Administrador', 'Comercial']}> <CadastroVenda toastContent={setToastContent} /> </Private>} />
                 <Route path="/listagem/venda" element={<Private permissions={['Administrador', 'Comercial', 'Financeiro']}> <ListagemVendas toastContent={setToastContent}/> </Private>} />
                 <Route path="/listagem/cliente" element={<Private permissions={['Administrador', 'Comercial']}> <ListaCliente toastContent={setToastContent}/> </Private>} />
+                <Route path="/listagem/funcionario" element={<Private permissions={['Administrador']}> <ListaFuncionarios toastContent={setToastContent}/> </Private>} />
                 <Route path="/relatorios" element={<Private permissions={['Administrador', 'Financeiro']}> <HomeRelatorios toastContent={setToastContent}/> </Private>} />
             </Routes>
         </AuthProvider>
