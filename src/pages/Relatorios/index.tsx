@@ -22,22 +22,27 @@ interface RelatoriosProps {
 
 const Relatorios: React.FC<RelatoriosProps> = (props) => {
     const installmentsFiltered = props.reportData ?? [];
-    console.log(installmentsFiltered)
     const filtroSelecionado = props.reportConsultModel['filterType']
     
 
-    if (Array.isArray(installmentsFiltered)) {
-        installmentsFiltered.map(item => {
-            const today = new Date()
-            const creditDate = item.creditDate? new Date(item.creditDate.replace('-',' ')) : false
-            const paymentDate = item.paymentDate? new Date(item.paymentDate.replace('-',' ')) : false
-            if(paymentDate){
-                if(creditDate >= today ){
-                    installmentsFiltered.pop()
-                }
+    if(filtroSelecionado == 3){
+    
+        if (Array.isArray(installmentsFiltered)) {
+                installmentsFiltered.map(item => {
+                    const today = new Date()
+                    const creditDate = item.creditDate? new Date(item.creditDate.replace('-',' ')) : false
+                    const paymentDate = item.paymentDate? new Date(item.paymentDate.replace('-',' ')) : false
+                    if(paymentDate){
+                        if(creditDate >= today ){
+                            let index = installmentsFiltered.indexOf(item)
+                            installmentsFiltered.splice(index, 1)
+                       
+                        }
+                    }
+                })
             }
-        })
     }
+    
 
 
     const formatCurrency = (price: number) => {
